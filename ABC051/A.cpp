@@ -10,5 +10,9 @@ typedef long long int ll;
 const ll INF=(ll)1e18;
 
 int main(){
+  string s;
+  cin >> s;
+  s[5] = s[13] = ' ';
+  cout << s << endl;
 }
 

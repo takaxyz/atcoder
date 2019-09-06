@@ -10,5 +10,9 @@ typedef long long int ll;
 const ll INF=(ll)1e18;
 
 int main(){
-}
+  int a,b;
+  char op;
 
+  cin >> a >> op >> b;
+  cout <<  (op=='+' ? a+b : a-b) << endl;
+}
