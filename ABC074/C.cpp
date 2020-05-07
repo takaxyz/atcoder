@@ -49,4 +49,3 @@ int main(){
         cout << A*100 << " " << 0 << endl;
     }
 }
-

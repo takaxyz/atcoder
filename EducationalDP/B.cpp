@@ -1,37 +1,32 @@
-#include<iostream>
-#include<vector>
-#include<map>
-#include<algorithm>
-#include<string>
+#include <bits/stdc++.h>
+using namespace std;
 
 #define FOR(i,a,b) for(int i=(a);i<(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define MOD 1000000007
 
-using namespace std;
-
 typedef long long int ll;
 
-const ll INF=(ll)1e18;
-
-int N, K;
+//const ll INF=(ll)1e18;
+const int INF=(1<<30);
 
 int main(){
-    cin >> N >> K;
-    ll dp[N];
-    
-    vector<ll> h(N);
-    REP(i,N)cin >> h[i];
-    REP(i,N)dp[i]=INF;
-    
-    dp[0]=0;
-    FOR(i,1,N){
-      FOR(j,1,K+1){
-        if(i-j<0)break;
-        if(dp[i] > (dp[i-j] + abs(h[i] - h[i-j]))){
-          dp[i] = (dp[i-j] + abs(h[i] - h[i-j]));
-        }
+  int N,K;
+  cin >> N >> K;
+  vector<int> h(N);
+  REP(i,N){
+    cin >> h[i];
+  }
+
+  vector<int> dp(N,INF);
+  dp[0]=0;
+  REP(i,N){
+    FOR(j,1,K+1){
+      if(i+j<N){
+        dp[i+j] = min(dp[i] + abs(h[i]-h[i+j]), dp[i+j]);
       }
     }
-    cout << dp[N-1] << endl;
+  }
+  cout << dp[N-1] << endl;
 }
+
