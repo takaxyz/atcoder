@@ -7,23 +7,18 @@ using namespace std;
 #define VI         vector<int>
 #define MOD 1000000007
 
-typedef long long int ll;
+using ll = long long int;
+using P = pair<int,int>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
 
 const ll INF=(ll)1e19;
 //const int INF=(1<<30);
 
-
 int main(){
-  ll n, k;
-  cin >> n >> k;
-
-  ll ans = 0;
-  if(k%2==0){
-    ans += (n/k)*(n/k)*(n/k);
-    ans += ((n+k/2)/k)*((n+k/2)/k)*((n+k/2)/k);
-  }else{
-    ans += (n/k)*(n/k)*(n/k);
-  }
-  cout << ans << endl;
+  int x,y;
+  cin >>x >> y;
+  cout << x+y/2 << endl;
 }
 

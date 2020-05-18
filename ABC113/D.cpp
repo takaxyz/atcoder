@@ -1,3 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define REP(i,n)   FOR(i,0,n)
+#define ALL(a)     (a).begin(),(a).end()
+#define VI         vector<int>
+#define MOD 1000000007
+
+using ll = long long int;
+using P = pair<int,int>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+const ll INF=(ll)1e19;
+//const int INF=(1<<30);
+
 const int mod = 1000000007;
 struct mint {
   ll x; // typedef long long ll;
@@ -73,4 +91,39 @@ struct combination {
     return fact[n]*ifact[k]*ifact[n-k];
   }
 } c(200005);
+
+mint dp[101][8];
+
+int nn[] = {1,2,3,5,8,13,21,34};
+
+
+int main(){
+  int h,w,k;
+  cin >> h >> w >> k;
+
+  if(w==1){
+    cout << 1 << endl;
+    return 0;
+  }
+
+  REP(i,h+1)REP(j,w)dp[i][j]=0;
+  dp[0][0]=1;
+
+  FOR(i,1,h+1)REP(j,w){
+    if(j==0 || j==w-1){
+      dp[i][j] += dp[i-1][j] * nn[w-2];
+    }else{
+      dp[i][j] += dp[i-1][j] * (nn[j-1] * nn[w-j-2]);
+    }
+    if(j>0){
+
+      dp[i][j] += dp[i-1][j-1] * (nn[max(0,j-2)] * nn[max(0,w-j-2)]);
+    }
+    if(j<w-1){
+      dp[i][j] += dp[i-1][j+1] * (nn[max(0,j-1)] * nn[max(0,w-j-3)]);
+    }
+  }
+
+  cout << dp[h][k-1].x << endl;
+}
 

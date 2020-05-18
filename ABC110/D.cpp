@@ -1,3 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define REP(i,n)   FOR(i,0,n)
+#define ALL(a)     (a).begin(),(a).end()
+#define VI         vector<int>
+#define MOD 1000000007
+
+using ll = long long int;
+using P = pair<int,int>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+const ll INF=(ll)1e19;
+//const int INF=(1<<30);
+
 const int mod = 1000000007;
 struct mint {
   ll x; // typedef long long ll;
@@ -48,7 +66,6 @@ struct mint {
   }
 };
 
-
 mint mpow(int x, int n){
   if(n==0)return 1;
 
@@ -73,4 +90,29 @@ struct combination {
     return fact[n]*ifact[k]*ifact[n-k];
   }
 } c(200005);
+
+map<ll, int > prime_factor(ll n) {
+  map<ll, int > ret;
+  for(ll i = 2; i * i <= n; i++) {
+    while(n % i == 0) {
+      ret[i]++;
+      n /= i;
+    }
+  }
+  if(n != 1) ret[n] = 1;
+  return ret;
+}
+
+int main(){
+  int n,m;
+  cin >> n >> m;
+
+  map<ll,int> mp = prime_factor(m);
+
+  mint ans=1;
+  for(auto v: mp){
+    ans *= c(v.second+n-1, v.second);
+  }
+  cout << ans.x << endl;
+}
 

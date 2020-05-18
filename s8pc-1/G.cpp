@@ -31,30 +31,33 @@ struct eg{
 vector<vector<eg>> edge;
 
 int dfs(int S, int v){
-//  printf("%d %d\n", S, v);
-  if(dp[S][v]>=0)return dp[S][v];
+  printf("dfs %d %d\n", S, v);
+  //if(dp[S][v]>=0)return dp[S][v];
 
   if(S==((1<<n)-1) && v == 0)return dp[S][v] = 0;
 
   int tmp = INF;
   for(auto &p : edge[v]){
-    if(p.time >= dp[S][v] + p.d)continue;
+    if(p.time < dp[S][v] + p.d)continue;
 
     int i = p.t;
     printf("%d %d\n",v,i);
 
     if(!((S>>i) & 1)){
-
-      if(dp[S | (1<<i)][i] < dp[S | (1<<i)][i] + p.d){
-        cnt[S | (1<<i)][i] = cnt[S][v]; 
-        dp[S | (1<<i)][i] = dp[S | (1<<i)][i] + p.d;
+      int next = S | (1<<i);
+      if(dp[next][i] > dp[S][i] + p.d){
+        cnt[next][i] = cnt[S][v]; 
+        dp[next][i] = dp[S][i] + p.d;
+        printf("aa %d %d %d\n", next, i, dp[next][i]);
+      }else if(dp[next][i] == dp[S][i] + p.d){
+        cnt[next][i] += cnt[S][v]; 
       }
     }
 
   }
 //  cout << tmp << endl;
-  return dp[S][v] = tmp;
 }
+
 
 int main(){
   cin >> n >> m;
@@ -75,16 +78,16 @@ int main(){
     edge[t].emplace_back(e2);
   }
 
+  dfs(0,0);
 
   REP(i,(1<<n))REP(j,n){
     cout << i << " " << j << " " << dp[i][j] << endl;
   }
 
-  int ans = dfs(0,0);
-  if(ans == INF){
+  if(dp[(1<<n)-1][0] == INF){
     cout << "IMPOSSIBLE" << endl;
   }else{
-    cout << ans << " " << cnt[(1<<n)][0] << endl;
+    cout << dp[(1<<n)-1][0] << " " << cnt[(1<<n)-1][0] << endl;
   }
 
 
