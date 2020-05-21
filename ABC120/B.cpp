@@ -1,4 +1,4 @@
-  #include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 #define FOR(i,a,b) for(int i=(a);i<(b);++i)
@@ -17,38 +17,14 @@ const ll INF=(ll)1e19;
 //const int INF=(1<<30);
 
 int main(){
-  ll n,k;
-  cin >> n >> k;
-
-  VI bit(42,0);
-  vector<ll> a(n);
-  REP(i,n){
-    cin >> a[i];
-    ll b = a[i];
-    REP(j,42){
-      bit[j] += b % 2;
-      b = (b >> 1);
+  int a,b,k;
+  VI ans;
+  cin >> a >> b >> k;
+  FOR(i,1,101){
+    if(a%i == 0 && b%i == 0){
+      ans.emplace_back(i);
     }
   }
-
-  //bit[0]: 1ビット目の1の数
-
-  ll kk=k+1;
-
-  for(int i = 41; i>=0; i--){
-    if(((kk>>i)&1) == 0)continue;
-    ll mask = ~((1<<(i+1)) - 1);
-
-    if( (kk & mask) == 0)continue;
-
-    REP(j,i){
-      
-    }
-
-
-    cout << i << " " << kk << " " <<  (kk & mask) << " " << mask << endl;
-  }   
-
-
+  cout << ans[ans.size()-k] << endl;
 }
 

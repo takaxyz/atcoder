@@ -1,4 +1,4 @@
-  #include <bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 #define FOR(i,a,b) for(int i=(a);i<(b);++i)
@@ -17,37 +17,30 @@ const ll INF=(ll)1e19;
 //const int INF=(1<<30);
 
 int main(){
-  ll n,k;
-  cin >> n >> k;
+  int n,a,b,c;
+  cin >> n >> a >> b >> c;
 
-  VI bit(42,0);
-  vector<ll> a(n);
-  REP(i,n){
-    cin >> a[i];
-    ll b = a[i];
-    REP(j,42){
-      bit[j] += b % 2;
-      b = (b >> 1);
+  VI l(n);
+  REP(i,n)cin >> l[i];
+
+  int ans=(1<<30);
+  REP(i,(1<<(2*n))){
+    VI cnt(3,0);
+    VI sum(3,0);
+
+    REP(j,n){
+      int k = ((i>>(2*j)) & 3);
+      cnt[k]++;
+      sum[k]+=l[j];
     }
+
+    if(cnt[0]==0 || cnt[1]==0 || cnt[2] ==0)continue;
+
+    int mp= abs(a-sum[0]) + (cnt[0]-1)*10 + abs(b-sum[1]) + (cnt[1]-1)*10 +abs(c-sum[2]) + (cnt[2]-1)*10;
+    chmin(ans, mp);
   }
 
-  //bit[0]: 1ビット目の1の数
-
-  ll kk=k+1;
-
-  for(int i = 41; i>=0; i--){
-    if(((kk>>i)&1) == 0)continue;
-    ll mask = ~((1<<(i+1)) - 1);
-
-    if( (kk & mask) == 0)continue;
-
-    REP(j,i){
-      
-    }
-
-
-    cout << i << " " << kk << " " <<  (kk & mask) << " " << mask << endl;
-  }   
+  cout << ans << endl;
 
 
 }
