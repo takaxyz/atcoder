@@ -35,14 +35,10 @@ const int MOD = 1e9 + 7;
 int main(){
   int N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
-
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  if(N%1000==0){
+    PRINT(0);
+  }else{
+    PRINT(1000-N%1000);
   }
-
-  printf("%.10f\n", sum * 2 / N);
 }
 

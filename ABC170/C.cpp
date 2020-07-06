@@ -33,16 +33,30 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  int x, n;
+  cin >> x >> n;
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  vi p(n);
+  REP(i,n)cin >> p[i];
+
+  sort(ALL(p));
+
+  int diff = INF;
+  int ans;
+
+  REP(i,102){
+    bool ok=true;
+    REP(j,n){
+      if(i==p[j])ok=false;
+    }
+    if(ok==false)continue;
+
+    if(diff > abs(x - i)){
+      diff = abs(x - i);
+      ans = i;
+    }
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  PRINT(ans);
 }
 

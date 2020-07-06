@@ -33,16 +33,46 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  int n,q;
+  cin >> n >> q;
+  vi x(n), r(n), h(n);
+  vector<double> v(n);
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  REP(i,n){
+    cin >> x[i] >> r[i] >> h[i];
+    v[i] = M_PI * r[i] * r[i] * h[i] / 3;
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  REP(i,q){
+    int a,b;
+    cin >> a >> b;
+
+    double ans=0;
+    REP(j,n){
+      int bot = x[j];
+      int top = x[j]+h[j];
+
+      if(top <= a || b <= bot)continue;
+
+
+
+      if(a <= bot && top <= b){
+        ans += v[j];
+      }else if(bot <= a && a<= top && top <= b){
+        double rat = (double)(top-a) / (double)h[j];
+        ans += v[j] * rat * rat * rat; 
+      }else if(a <= bot && bot <= b && b<= top){
+        double rat = (double)(top-b) / (double)h[j];
+//        printf("%d %d %d %d %d\n", a,b,top, bot, h[j]);
+        ans += v[j] * (1 - rat * rat * rat); 
+      }else{
+        double rat1 = (double)(top-b) / (double)h[j];
+        double rat2 = (double)(top-a) / (double)h[j];
+
+        ans += v[j] * (rat2 * rat2 * rat2- rat1*rat1*rat1); 
+      }
+    }
+    printf("%f\n", i, ans);
+  }
 }
 

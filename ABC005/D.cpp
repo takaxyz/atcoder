@@ -33,16 +33,42 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  int n;
+  cin >> n;
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  vvi d(n, vi(n));
+  REP(i,n)REP(j,n)cin >> d[i][j];
+
+  vvi s(n+1, vi(n+1,0));
+  REP(i,n)REP(j,n){
+    s[i+1][j+1] = s[i+1][j] + s[i][j+1] - s[i][j] + d[i][j];
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  // REP(i,n+1)REP(j,n+1){
+  //   cout << s[i][j] << (j==n ? "\n" : " ");
+  // }
+
+  map<int,int> mp;
+  FOR(xs,1,n+1)FOR(xg,xs,n+1)FOR(ys,1,n+1)FOR(yg,ys,n+1){
+    int area = (xg-xs+1)*(yg-ys+1);
+    int val = s[xg][yg] - s[xs-1][yg] - s[xg][ys-1] + s[xs-1][ys-1];
+    chmax(mp[area],val);
+  }
+
+  FOR(i,1,n*n+1){
+    chmax(mp[i],mp[i-1]);   
+  }
+  // for(auto v: mp){
+  //   cout << v.first << " " << v.second << endl;
+  // }
+
+  int q;
+  cin >> q;
+  REP(i,q){
+    int p;
+    cin >> p;
+    PRINT(mp[p]);
+  }
+
 }
 

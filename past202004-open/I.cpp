@@ -35,14 +35,36 @@ const int MOD = 1e9 + 7;
 int main(){
   int N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  
+  int m = (1<<N);
+  vvi t(N,vi());
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  REP(i,m){
+    int tt;
+    cin >> tt;
+    t[0].emplace_back(tt);
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  map<int,int> ans;
+  REP(i,N-1){
+    REP(j,(m>>i)/2){
+      int x=2*j;
+      int y=2*j+1;
+      if(t[i][x] > t[i][y]){
+        t[i+1].eb(t[i][x]);
+        ans[t[i][x]] = i+1;
+        ans[t[i][y]] = i;
+      }else{
+        t[i+1].eb(t[i][y]);
+        ans[t[i][y]] = i+1;
+        ans[t[i][x]] = i;
+      }
+    }
+  }
+
+
+  REP(i,m){
+    PRINT(ans[t[0][i]]+1);
+  }
 }
 

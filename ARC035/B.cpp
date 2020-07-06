@@ -1,3 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define REP(i,n)   FOR(i,0,n)
+#define ALL(a)     (a).begin(),(a).end()
+#define VI         vector<int>
+#define MOD 1000000007
+
+using ll = long long int;
+using P = pair<int,int>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+const ll INF=(ll)1e19;
+//const int INF=(1<<30);
+//const int INF=(1<<29);
+
 const int mod = 1000000007;
 struct mint {
   ll x; // typedef long long ll;
@@ -73,4 +92,33 @@ struct combination {
     return fact[n]*ifact[k]*ifact[n-k];
   }
 };
+
+int main(){
+  int N;
+  cin >> N;
+  VI t(N);
+  map<int,int> mp;
+  REP(i,N){
+    cin >> t[i];
+    mp[t[i]]++;
+  }
+  sort(ALL(t));
+  vector<ll> sum(N+1);
+  sum[0] = 0;
+  REP(i,N){
+    sum[i+1] = sum[i] + t[i];
+  }
+
+  ll ans = 0;
+  REP(i,N+1)ans+=sum[i];
+
+  mint ans2=1;
+  for(auto v: mp){
+    FOR(i,1,v.second+1){
+      ans2 *= i;
+    }
+  }
+  cout << ans << endl;
+  cout << ans2.x << endl;
+}
 

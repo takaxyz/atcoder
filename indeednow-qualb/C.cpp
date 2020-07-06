@@ -35,14 +35,34 @@ const int MOD = 1e9 + 7;
 int main(){
   int N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  vvi edge(N+1, vi());
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  REP(i,N-1){
+    int a,b;
+    cin >> a >> b;
+    edge[a].emplace_back(b);
+    edge[b].emplace_back(a);
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  vector<bool> visited(N+1,false);
+
+  vi ans;
+  minPQ<int> q;
+  q.push(1);
+  visited[1]=true;
+  while(!q.empty()){
+    int v = q.top(); q.pop();
+    ans.eb(v);
+    for(auto w: edge[v]){
+      if(visited[w])continue;
+      q.push(w);
+      visited[w]=true;
+    }
+  }
+
+  REP(i, ans.size()){
+    cout << ans[i] << (i==ans.size()-1 ? "\n":" ");
+  }
+
 }
 

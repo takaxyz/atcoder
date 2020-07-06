@@ -1,3 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define REP(i,n)   FOR(i,0,n)
+#define ALL(a)     (a).begin(),(a).end()
+#define VI         vector<int>
+#define MOD 1000000007
+
+using ll = long long int;
+using P = pair<int,int>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+const ll INF=(ll)1e19;
+//const int INF=(1<<30);
+//const int INF=(1<<29);
+
 const int mod = 1000000007;
 struct mint {
   ll x; // typedef long long ll;
@@ -72,5 +91,35 @@ struct combination {
     if (k < 0 || k > n) return 0;
     return fact[n]*ifact[k]*ifact[n-k];
   }
-};
+} c(200005);
+
+
+
+int main(){
+  int N;
+  cin >> N;
+  VI col(3,0);
+  mint ans=1;
+
+  REP(i,N){
+    int a;
+    cin >> a;
+    bool ok=false;
+    mint cnt=0;
+    REP(j,3){
+      if(col[j] == a){
+        cnt+=1;
+        if(cnt.x==1)col[j]++;
+        ok=true;
+      }
+    }
+    if(ok=false){
+      cout << 0 << endl;
+      return 0;
+    }
+    ans *= cnt;
+
+  }
+  cout << ans.x << endl;
+}
 

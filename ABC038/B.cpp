@@ -33,16 +33,9 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  int h1,w1,h2,w2;
+  cin >> h1 >> w1 >> h2 >> w2;
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
-  }
-
-  printf("%.10f\n", sum * 2 / N);
+  cout << ((h1==h2 || h1 == w2 || w1 == h2 || w1 == w2) ? "YES" : "NO") << endl;
 }
 

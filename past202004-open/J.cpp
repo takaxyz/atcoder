@@ -32,17 +32,51 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+//(ab)c  5
+//01234
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+string rev(string s){
+  // xxx(xxx)xxx
+  int cnt_l =0;
+  int cnt_r =0;
+
+  string ret="";
+
+  string x = "";
+  REP(i,s.size()){
+    if(s[i] == '('){
+      cnt_l++;
+      if(cnt_l==1)continue;
+    }
+    if(s[i] == ')'){
+      cnt_r++;
+    }
+
+    if(cnt_l==0){
+      ret += s[i];
+      continue;
+    }
+
+    if(cnt_l > cnt_r){
+      if(s[i]!='(')x += s[i];
+    }else{
+      cout << x << endl;
+      string tmp = rev(x);
+      ret += tmp;
+      reverse(ALL(tmp));
+      ret += tmp;
+      cnt_l = 0;
+      cnt_r = 0;
+    }
   }
+  return ret;
+}
 
-  printf("%.10f\n", sum * 2 / N);
+int main(){
+  string S;
+  cin >> S;
+
+  cout << rev(S) << endl;
+
 }
 

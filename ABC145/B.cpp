@@ -35,14 +35,15 @@ const int MOD = 1e9 + 7;
 int main(){
   int N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  string S;
+  cin >> S;
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  if(N%2==1){
+    PRINT("No");
+  }else if(S.substr(0,N/2) == S.substr(N/2,N/2)){
+    PRINT("Yes");
+  }else{
+    PRINT("No");
   }
-
-  printf("%.10f\n", sum * 2 / N);
 }
 

@@ -33,16 +33,33 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  ll n,m,k;
+  cin >> n >> m >> k;
+  vector<ll> a(n),b(m);
+  REP(i,n)cin >> a[i];
+  REP(i,m)cin >> b[i];
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  vector<ll> as(n+1,0);
+  vector<ll> bs(m+1,0);
+
+  REP(i,n){
+    as[i+1] = a[i] + as[i];
+  }
+  REP(i,m){
+    bs[i+1] = b[i] + bs[i];
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  // aをi冊選ぶとする
+  int j=m;
+  int ans=0;
+  REP(i,n+1){
+    if(as[i] > k)break;
+    while(as[i] + bs[j] > k && j >= 0)j--;
+    if(j>=0){
+      chmax(ans,i+j);
+    }
+  }
+  cout << ans << endl;
+
 }
 

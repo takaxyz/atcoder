@@ -35,14 +35,16 @@ const int MOD = 1e9 + 7;
 int main(){
   int N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
-
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  map<string, int> mp;
+  REP(i,N){
+    string s;
+    cin >> s;
+    mp[s]++;
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  string c[4] = {"AC","WA","TLE","RE"};
+  REP(i,4){
+    cout << c[i] << " x " << mp[c[i]] << endl;
+  }
 }
 

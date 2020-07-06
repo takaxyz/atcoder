@@ -32,17 +32,44 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+vector< int > divisor(int n) {
+  vector< int > ret;
+  for(int i = 1; i * i <= n; i++) {
+    if(n % i == 0) {
+      ret.push_back(i);
+      if(i * i != n) ret.push_back(n / i);
+    }
+  }
+  sort(begin(ret), end(ret));
+  return (ret);
+}
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+int main(){
+  int n;
+  cin >> n;
+  vi a(n);
+  map<int,int> mp;
+  REP(i,n){
+    cin >> a[i];
+    mp[a[i]]++;
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  int ans=0;
+  REP(i,n){
+    vi v = divisor(a[i]);
+    bool ok = true;
+    for(auto x: v){
+//      cout << x << endl;
+      if(x == a[i]){
+        if(mp[x]>1)ok=false;
+      }else{
+        if(mp[x]>=1)ok=false;
+      }
+    }
+    if(ok)ans++;
+  }
+
+  PRINT(ans);
+  
 }
 

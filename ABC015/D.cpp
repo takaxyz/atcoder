@@ -33,16 +33,35 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int N;
-  cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  int W;
+  cin >> W;
+  int N,K;
+  cin >> N >> K;
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  // dp[i][j][k]: i枚目まででj枚選んでいる幅kの重要度
+  vvvi dp(N+1,vvi(K+1, vi(W+1, -1)));
+  vi a(N+1),b(N+1);
+  REP(i,N)cin >> a[i+1] >> b[i+1];
+
+  dp[0][0][0]=0;
+  FOR(i,1,N+1)REP(j,K+1)REP(k,W+1){
+    if(dp[i-1][j][k]==-1)continue;
+    // 選ばない
+    chmax(dp[i][j][k], dp[i-1][j][k]);
+
+    if(a[i]+k> W|| j+1 > K)continue;
+    // 選ぶ
+    chmax(dp[i][j+1][k+a[i]], dp[i-1][j][k]+b[i]);
   }
 
-  printf("%.10f\n", sum * 2 / N);
+  int ans=0;
+  REP(i,N+1)REP(j,K+1)REP(k,W+1){
+    //printf("%d %d %d: %d\n", i,j,k,dp[i][j][k]);
+  }
+  REP(i,K+1)REP(j,W+1){
+    chmax(ans, dp[N][i][j]);
+  }
+  PRINT(ans);
+
 }
 

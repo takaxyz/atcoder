@@ -32,17 +32,26 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+ll mpow(ll x, ll n){
+  if(n==0)return 1;
+
+  ll y = mpow(x, n/2);
+  y *= y;
+
+  if(n%2==1) y *=x;
+  return y;
+}
+
 int main(){
-  int N;
+  ll N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
+  ll ans=N*(N+1)/2;
 
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  for(ll i = 2; i < N+1; i++){
+    ll n = N / i * i;
+
+    ans += (N/i) * (i + n) / 2; 
   }
-
-  printf("%.10f\n", sum * 2 / N);
+  PRINT(ans);
 }
 

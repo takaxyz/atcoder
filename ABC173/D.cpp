@@ -4,6 +4,7 @@ using namespace std;
 #define FOR(i,a,b) for(int i=(a);i<(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
+#define RALL(a)     (a).rbegin(),(a).rend()
 #define PRINT(a)   cout << (a) << endl
 #define RALL(v) rbegin(v), rend(v)
 
@@ -35,14 +36,13 @@ const int MOD = 1e9 + 7;
 int main(){
   int N;
   cin >> N;
-  vi x(N),y(N);
-  REP(i,N)cin >> x[i] >> y[i];
-
-  double sum=0;
-  REP(i,N)FOR(j,i,N){
-    sum += sqrt((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]));
+  vector<ll> a(N);
+  REP(i,N)cin >> a[i];
+  sort(RALL(a));
+  ll ans=a[0];
+  REP(i,N-2){
+    ans+=a[i/2+1];
   }
-
-  printf("%.10f\n", sum * 2 / N);
+  PRINT(ans);
 }
 
