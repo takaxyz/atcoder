@@ -32,35 +32,41 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
+int main(){
+  int n,c;
+  cin >> n >> c;
+  map<int,int> mp1, mp2;
+  REP(i,n){
+    int a;
+    cin >> a;
+    if(i%2==0){
+      mp1[a]++;
     }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+      mp2[a]++;
     }
   }
-  return ret;
-}
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  vector<P> cnt1, cnt2;
+  for(auto v: mp1)cnt1.emplace_back(make_pair(v.second, v.first));
+  for(auto v: mp2)cnt2.emplace_back(make_pair(v.second, v.first));
+  cnt1.emplace_back(make_pair(0,0));
+  cnt2.emplace_back(make_pair(0,0));
+  sort(RALL(cnt1));
+  sort(RALL(cnt2));
 
+  int ans = 0;
+  if(cnt1[0].second == cnt2[0].second){
+    if((n+1)/2 - cnt1[1].first > n/2 - cnt2[1].first){
+      ans += ((n+1)/2 - cnt1[0].first)*c;
+      ans += (n/2 - cnt2[1].first) * c;
+    }else{
+      ans += ((n+1)/2 - cnt1[1].first)*c;
+      ans += (n/2 - cnt2[0].first) * c;
+    }
+  }else{
+    ans += ((n+1)/2 - cnt1[0].first)*c;
+    ans += (n/2 - cnt2[0].first)*c;
+  }
+  cout << ans << endl;
 }
 

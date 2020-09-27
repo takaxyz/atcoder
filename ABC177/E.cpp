@@ -32,35 +32,47 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+map<int, int > prime_factor(int n) {
+  map<int, int > ret;
+  for(int i = 2; i * i <= n; i++) {
+    while(n % i == 0) {
+      ret[i]++;
+      n /= i;
     }
   }
+  if(n != 1) ret[n] = 1;
   return ret;
 }
 
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  int n;
+  cin >> n;
+  bool pairwise=true;
+  vector<int> cnt(1000001,0);
+  REP(i,n){
+    int a;
+    cin >> a;
+    map<int, int> mp = prime_factor(a);
+    for(auto v: mp){
+      int p = v.first;
+      if(cnt[p] != 0){
+        pairwise=false;
+      }
+      cnt[p]++;
+    }
+  }
+  if(pairwise){
+    cout << "pairwise coprime" << endl;
+  }else{
+    bool setwise=true;
+    FOR(i,2,1000001){
+      if(cnt[i]==n)setwise=false;
+    }
+    if(setwise){
+      cout << "setwise coprime" << endl;
+    }else{
+      cout << "not coprime" << endl;
+    }
+  }
 }
 

@@ -32,35 +32,42 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
-  }
-  return ret;
-}
-
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  int b[10];
+  int c[10];
+  REP(i,10){
+    int t;
+    cin >> t;
+    b[t] = i;
+    c[i] = t;
+  }
+
+  int n;
+  cin >> n;
+  vi a;
+  REP(i,n){
+    string s;
+    cin >> s;
+    int m=0;
+    REP(j,s.size()){
+      m *= 10;
+      m += b[s[j] - '0'];
+    }
+    a.emplace_back(m);
+  }
+  sort(ALL(a));
+
+  REP(i,a.size()){
+    string s = to_string(a[i]);
+    int m=0;
+    REP(j,s.size()){
+      m *= 10;
+      m += c[s[j] - '0'];
+    }
+    cout << m << endl;
+  }
+
+
 
 }
 

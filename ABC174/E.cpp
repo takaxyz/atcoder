@@ -32,35 +32,38 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
+
+int n,k ;
+
+bool check(int m, vi &a){
+  ll cnt=0;
+  REP(i,a.size()){
+    cnt += (a[i]-1)/m;
   }
-  return ret;
+  return cnt <= k;
 }
 
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  cin >> n >> k;
+  vi a(n);
 
+  int l=1;
+  int r=0;
+  REP(i,n){
+    cin >> a[i];
+    chmax(r,a[i]);
+  }
+
+  //  checkの戻り値が FFFTTT で一番左のTを見つけたい場合
+  while(l<r){
+    ll m = (l+r)/2;
+    //cout << l << " " << r << " " << m << endl;
+    if(check(m,a)){
+      r=m;
+    }else{
+      l=m+1;
+    }
+  }
+  cout << l << endl;
 }
 

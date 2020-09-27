@@ -32,35 +32,29 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+int main(){
+  int n;
+  cin >> n;
+  vector<ll> a(n);
+  REP(i,n)cin >> a[i];
+
+  ll m=1000;
+  ll st=0;
+
+  REP(i,n-1){
+    if(a[i]==a[i+1])continue;
+    if(a[i] < a[i+1] && st==0){
+//      cout << i << " " << "buy" << endl;
+      st += m/a[i];
+      m -= st * a[i];
+    }else if(a[i] > a[i+1] && st>0){
+//      cout << i << " " << "sell" << endl;
+      m += st * a[i];
+      st = 0;
     }
   }
-  return ret;
-}
+  if(st > 0)m += st * a[n-1];
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  cout << m << endl;
 }
 

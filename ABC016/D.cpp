@@ -32,35 +32,26 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
-  }
-  return ret;
+bool isCross(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy){
+  ll ta = (cx - dx) * (ay - cy) + (cy - dy) * (cx - ax);
+  ll tb = (cx - dx) * (by - cy) + (cy - dy) * (cx - bx);
+  ll tc = (ax - bx) * (cy - ay) + (ay - by) * (ax - cx);
+  ll td = (ax - bx) * (dy - ay) + (ay - by) * (ax - dx);
+  return tc * td < 0 && ta * tb < 0;
 }
 
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  int ax, ay, bx, by;
+  int n;
+  cin >> ax >> ay >> bx >> by >> n;
 
+  vi x(n), y(n);
+  REP(i,n)cin >> x[i] >> y[i];
+  int cnt=0;
+  REP(i,n){
+    if(isCross(ax,ay,bx,by,x[i],y[i],x[(i+1)%n],y[(i+1)%n]))cnt++;
+  }
+
+  cout << cnt/2+1 << endl;
 }
 

@@ -32,35 +32,24 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
+int main(){
+  int n;
+  int mx=0;
+  ll ans=0;
+  cin >> n;
+  REP(i,n){
+    int a;
+    cin >> a;
+    if(i==0){
+      mx=a;
     }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
+      if(mx > a){
+        ans += mx-a;
+      }else{
+        mx = a;
       }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
     }
   }
-  return ret;
-}
-
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  cout << ans << endl;
 }
 

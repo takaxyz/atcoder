@@ -32,35 +32,61 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+int main(){
+  int H,W,M;
+  cin >> H >> W >> M;
+
+  map<int,int> hmp, wmp;
+  vector<P> bomb;
+  vi hv(M), wv(M);
+  REP(i,M){
+    int h,w;
+
+    cin >> h >> w;
+    hv[i] = h;
+    wv[i] = w;
+    hmp[h]++;
+    wmp[w]++;
+  }
+
+  int max_h = 0;
+  int max_w = 0;
+
+  set<int> max_h_set, max_w_set;
+  for(auto v: hmp){
+    chmax(max_h, v.second);
+  }
+  for(auto v: hmp){
+    if(v.second == max_h){
+      max_h_set.insert(v.first);
     }
   }
-  return ret;
-}
+  for(auto v: wmp){
+    chmax(max_w, v.second);
+  }
+  for(auto v: wmp){
+    if(v.second == max_w){
+      max_w_set.insert(v.first);
+    }
+  }
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  // for(auto v: max_h_set){
+  //   cout << v << endl;
+  // }
+  // cout << "--" << endl;
+  // for(auto v: max_w_set){
+  //   cout << v << endl;
+  // }
+
+  int cnt=0;
+  REP(i,M){
+    if(max_h_set.count(hv[i]) == 1 &&  max_w_set.count(wv[i]) == 1)cnt++;
+  }
+  if(max_h_set.size() * max_w_set.size() == cnt){
+    cout << max_h + max_w - 1 << endl;
+  }else{
+    cout << max_h + max_w << endl;
+  }
 
 }
 

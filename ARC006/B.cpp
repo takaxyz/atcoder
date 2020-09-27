@@ -32,35 +32,29 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
+int main(){
+  int N,L;
+  cin >> N >> L;
+  cin.ignore();
+  vector<string> a(L);
+  REP(i,L)getline(cin, a[i]);
+
+  string goal;
+  getline(cin, goal);
+  int pos = goal.find("o");
+  for(int i = L-1; i >= 0; i--){
+    if(pos == 0 ){
+      if(a[i][pos+1]=='-')pos+=2;
+    }else if(pos == 2*N-2){
+      if(a[i][pos-1]=='-')pos-=2;
     }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
+      if(a[i][pos+1]=='-'){
+        pos+=2;
+      }else if(a[i][pos-1]=='-'){
+        pos-=2;
       }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
     }
   }
-  return ret;
-}
-
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  cout << pos/2 + 1 << endl;
 }
 

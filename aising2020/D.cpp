@@ -32,35 +32,54 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
+int fn(int n){
+  int ret=1;
+  while(n!=0){
+    n %= ;
   }
-  return ret;
 }
 
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  int n;
+  cin >> n;
+  vector<char> s(n);
+  int p = 0;
+  REP(i,n){
+    cin >> s[n-1-i];
+    if(s[n-1-i]=='1')p++;
+  }
+  int m=1;
+  int f1=0;
+  p++;
+  REP(i,n){
+    int l = s[i] - '0';
+    f1 += l * m;
+    f1 %= p;
+    m = m << 1;
+    m %= p;
+  }
+  p-=2;
+  m=1;
+  int f2=0;
+  REP(i,n){
+    int l = s[i] - '0';
+    f2 += l * m;
+    f2 %= p;
+    m = m << 1;
+    m %= p;
+  }
+
+  m=1;
+  REP(i,n){
+    int l = s[i] - '0';
+    if(l==1){
+      f2 - m
+    }else{
+      f1 + m
+    }
+
+  }
+
 
 }
 

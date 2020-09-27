@@ -32,35 +32,37 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
+int main(){
+  int n,m;
+  cin >> n >> m;
+  map<int,int> mp;
+  REP(i,n){
+    int a;
+    cin >> a;
+    mp[a]++;
+  }
+  REP(i,m){
+    int b,c;
+    cin >> b >> c;
+    mp[c]+=b;
+  }
+  vector<P> c;
+  for(auto v: mp){
+    c.push_back({v.first, v.second});
+  }
+  sort(RALL(c));
+
+  ll ans=0;
+  int cnt=0;
+  REP(i,c.size()){
+    if(cnt + c[i].second >= n){
+      ans += (n-cnt)*(ll)c[i].first;
+      break;
     }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+      ans += (ll)c[i].first * c[i].second;
+      cnt += c[i].second;
     }
   }
-  return ret;
-}
-
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  cout << ans << endl;
 }
 

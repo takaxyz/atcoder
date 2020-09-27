@@ -32,35 +32,47 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+int main(){
+  int h,w,k;
+  cin >> h >> w >> k;
+  vector<string> s(h);
+  REP(i,h)cin>>s[i];
+
+  vi hh;
+  REP(i,h)REP(j,w){
+    if(s[i][j]=='#'){
+      hh.emplace_back(i);
+      break;
     }
   }
-  return ret;
-}
+  hh.emplace_back(h);
+  // REP(i,hh.size()){
+  //   cout << hh[i] << endl;
+  // }
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  vector<vector<int>> ans(h, vector<int>(w));
 
+  int cnt=0;
+  REP(i,hh.size()-1){
+    int x = hh[i];
+    int y = hh[i+1];
+    int now=0;
+    cnt++;
+    REP(j,w){
+      if(s[x][j]=='#' && now++){
+        cnt++;
+        now++;
+      }
+      if(i==0){
+        FOR(k,0,x)ans[k][j]=cnt;
+      }
+      FOR(k,x,y)ans[k][j]=cnt;
+    }
+  }
+
+  REP(i,h)REP(j,w){
+    cout << ans[i][j];
+    cout << (j==w-1 ? "\n" : " ");
+  }
 }
 

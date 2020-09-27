@@ -32,35 +32,43 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
+int dx[] = {0,1,0,-1};
+int dy[] = {1,0,-1,0};
+
+void dfs(int x,int y, vector<vector<char>> &b){
+  b[x][y]='x';
+  REP(i,4){
+    int nx = x + dx[i];
+    int ny = y + dy[i];
+    if(nx < 0 || nx >= 10 || ny < 0 || ny >= 10)continue;
+    if(b[nx][ny]=='x')continue;
+
+    dfs(nx,ny,b);
   }
-  return ret;
 }
 
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  vector<vector<char>> a(10, vector<char>(10));
+  REP(i,10)REP(j,10)cin >> a[i][j];
+
+  REP(i,10)REP(j,10){
+    if(a[i][j]=='o')continue;
+
+    vector<vector<char>> b = a;
+    b[i][j] = 'o';
+
+    dfs(i,j,b);
+
+    bool ok=true;
+    REP(i,10)REP(j,10){
+      if(b[i][j]=='o')ok=false;
+    }
+    if(ok){
+      cout << "YES" << endl;
+      return 0;
+    }
+  }
+  cout << "NO" << endl;
 
 }
 

@@ -22,6 +22,6 @@ int main(){
 
   string S;
   cin >> S;
-  transform(S.begin()+K-1, S.begin()+K, S.begin()+K-1, ::tolower);
+  S[K-1] = tolower(S[K-1]);
   cout << S << endl;
 }

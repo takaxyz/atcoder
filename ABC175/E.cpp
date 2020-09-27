@@ -9,7 +9,6 @@ using namespace std;
 
 #define pb push_back
 #define eb emplace_back
-#define mp make_pair
 #define Fi first
 #define Se second
 
@@ -32,35 +31,48 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
-  }
-  return ret;
-}
+ll dp[3001][3001][4];
 
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  int r,c,k;
+  cin >> r >> c >> k;
+  
+  map<P, int> mp;
+
+  REP(i,k){
+    int rr,cc,v;
+    cin >> rr >> cc >> v;
+    mp[make_pair(rr,cc)]=v;
+  }
+
+  FOR(i,1,r+1)FOR(j,1,c+1){
+    if(mp.end() != mp.find(make_pair(i,j))){
+      ll v = mp[make_pair(i,j)];
+      FOR(k,1,4){
+        dp[i][j][k] = max(dp[i][j][k], dp[i][j-1][k-1]+v);        
+      }
+      REP(l,4){
+        dp[i][j][1] = max(dp[i][j][1], dp[i-1][j][l]+v);        
+      }
+      REP(k,4){
+        dp[i][j][k] = max(dp[i][j][k], max(dp[i-1][j][k], dp[i][j-1][k]));        
+      }
+    }else{
+      REP(k,4){
+        dp[i][j][k] = max(dp[i][j][k], dp[i][j-1][k]);        
+        dp[i][j][0] = max(dp[i][j][0], dp[i-1][j][k]);        
+      }
+    }
+  }
+
+  ll ans = 0;
+  REP(i,4)chmax(ans, dp[r][c][i]);
+
+  // REP(i,r+1)REP(j,c+1)REP(k,4){
+  //   cout << dp[i][j][k] << endl;
+  // }
+
+  cout << ans << endl;
 
 }
 

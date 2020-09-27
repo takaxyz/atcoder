@@ -32,35 +32,46 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
-  }
-  return ret;
-}
-
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  int n;
+  cin >> n;
+  vector<string> ans;
+  REP(i,n){
+    string s;
+    cin >> s;
+    transform(ALL(s), s.begin(), ::tolower);
+    string t;
+    for(auto c: s){
+      if(c=='b' || c == 'c'){
+        t += "1";
+      }else if(c=='d' || c == 'w'){
+        t += "2";
+      }else if(c=='t' || c == 'j'){
+        t += "3";
+      }else if(c=='f' || c == 'q'){
+        t += "4";
+      }else if(c=='l' || c == 'v'){
+        t += "5";
+      }else if(c=='s' || c == 'x'){
+        t += "6";
+      }else if(c=='p' || c == 'm'){
+        t += "7";
+      }else if(c=='h' || c == 'k'){
+        t += "8";
+      }else if(c=='n' || c == 'g'){
+        t += "9";
+      }else if(c=='z' || c == 'r'){
+        t += "0";
+      }
+    }
+    if(t.size())ans.emplace_back(t);
+  }
 
+  REP(i,ans.size()){
+    cout << ans[i];
+    if(i<ans.size()-1)cout << " ";
+  }
+  cout << endl;
 }
+
 

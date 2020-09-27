@@ -32,35 +32,45 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
+int main(){
+  int N;
+  cin >> N;
+
+  vector<vector<P>> edge(N);
+  vi col(N,-1);
+
+  REP(i,N-1){
+    int u,v,w;
+    cin >> u >> v >> w;
+    u--; v--;
+    edge[u].emplace_back(v,w);
+    edge[v].emplace_back(u,w);
+  }
+
+  queue<int> q;
+  col[0]=0;
+  q.push(0);
+
+  while(!q.empty()){
+    int x = q.front();
+    q.pop();
+    
+    for(auto e: edge[x]){
+      int y = e.first;
+      int w = e.second;
+      if(col[y]!=-1)continue;
+
+      if(w%2==0){
+        col[y] = col[x];
+      }else{
+        col[y] = col[x] ^ 1;
       }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+      q.push(y);
     }
   }
-  return ret;
-}
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  REP(i,N){
+    cout << col[i] << endl;
+  }
 }
 

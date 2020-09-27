@@ -32,35 +32,43 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+int main(){
+  map<int,int> mp1,mp2;
+  int n;
+  cin >> n;
+  vi a(n),b(n);
+  REP(i,n){
+    cin >> a[i];
+    mp1[a[i]]++;
+  }
+  REP(i,n){
+    cin >> b[i];
+    mp2[b[i]]++;
+  }
+
+  for(auto v: mp2){
+    if(n - mp1[v.first] < v.second){
+      cout << "No" << endl;
+      return 0;
     }
   }
-  return ret;
-}
+  sort(RALL(b));
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  auto ia=a.begin();
+  auto ib=b.begin();
 
+  while(ia!=a.end()){
+    if(ia!=a.begin())cout << " ";
+    if(*ia != *ib){
+      cout << *ib;
+      ia++;
+      b.erase(ib);
+      ib=b.begin();
+    }else{
+      while()
+
+    }
+  }
+  cout << endl;
 }
 

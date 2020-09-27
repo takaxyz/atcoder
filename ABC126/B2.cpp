@@ -32,35 +32,22 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
-    }
-  }
-  return ret;
-}
-
 int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  string S;
+  cin >> S;
+  // 1〜2文字目を数値に変換
+  int x = (S[0]-'0')*10+(S[1]-'0');
+  // 3〜4文字目を数値に変換
+  int y = (S[2]-'0')*10+(S[3]-'0');
 
+  if(1<=x && x<=12 && 1<=y && y<=12){
+    cout << "AMBIGUOUS" << endl;
+  }else if(1<=x && x<=12){
+    cout << "MMYY" << endl;
+  }else if(1<=y && y<=12){
+    cout << "YYMM" << endl;
+  }else{
+    cout << "NA" << endl;
+  }
 }
 

@@ -32,35 +32,32 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
+int main(){
+  int n;
+  cin >> n;
+
+  vector<P> a; 
+  REP(i,n){
+    int x,l;
+    cin >> x >> l;
+    a.emplace_back(make_pair(x+l,x-l));
+  }
+  sort(ALL(a));
+
+  // REP(i,a.size()){
+  //   printf("%d %d\n",a[i].first, a[i].second);
+  // }
+
+
+  int m = a[0].first;
+  int ans=n;
+  FOR(i,1,a.size()){
+    if(a[i].second < m){
+      ans--;
     }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+      m = a[i].first;
     }
   }
-  return ret;
-}
-
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  cout << ans << endl;
 }
 

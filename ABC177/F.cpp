@@ -32,35 +32,45 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
+int main(){
+  int h,w;
+  cin >> h >> w;
+  vector<vector<int>> dp(2,vector<int>(w,0));
+
+  vi A(h),B(h);
+  REP(i,h){
+    cin >> A[i] >> B[i];
+    A[i]--; B[i]--;
+  }
+
+  vi ans(h,INF);
+  REP(k,w){
+    int v = 0;
+    int p = k;
+    int hh = -1;
+    REP(i,h){
+      int a,b;
+      a = A[i]; b = B[i];
+      int s = i % 2;
+      int t = (i+1) % 2;
+
+      if(a<=p && p<=b){
+        if(b==w-1){
+          hh = i;
+          break;
+        }
+        v += b-p+2;
+        p = b+1;
+      }else{
+        v++;
       }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+      chmin(ans[i],v);
     }
   }
-  return ret;
-}
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  REP(i,h){
+    cout << (ans[i] != INF ? ans[i] : -1) << endl;
+  }
 
 }
 

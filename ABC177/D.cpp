@@ -102,18 +102,18 @@ int main(){
   int n,m;
   cin >> n >> m;
   UnionFindTree tree(n);
+
   REP(i,m){
-    int x,y,z;
-    cin >> x >> y >> z;
-    x--;y--;
-
-    tree.unite(x,y);
+    int a,b;
+    cin >> a >> b;
+    a--;b--;
+    tree.unite(a,b);
   }
 
-  set<int> st;
+  int ans=0;
   REP(i,n){
-    st.insert(tree.findSet(i));
+    chmax(ans,tree.getCount(i));
   }
-  cout << st.size() << endl;
+  cout << ans << endl;
 }
 

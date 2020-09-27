@@ -32,35 +32,40 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
+int main(){
+  int h,w;
+  cin >> h >> w;
+
+  vector<vector<char>> s(h,vector<char>(w));
+  REP(i,h)REP(j,w)cin >> s[i][j];
+
+  vvi dp(h,vi(w,INF));
+  if(s[0][0]=='#')dp[0][0]=1;
+  else dp[0][0]=0;
+
+  REP(i,h)REP(j,w){
+    int di,dj;
+    if(i+j==0)continue;
+
+    if(i==0){
+      dj = (s[i][j]!=s[i][j-1] ? 1 : 0);
+      dp[i][j] = dp[i][j-1]+dj;
+    }else if(j==0){
+      di = (s[i][j]!=s[i-1][j] ? 1 : 0);
+      dp[i][j] = dp[i-1][j]+di;
     }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
-      }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+      dj = (s[i][j]!=s[i][j-1] ? 1 : 0);
+      di = (s[i][j]!=s[i-1][j] ? 1 : 0);
+      dp[i][j] = min(dp[i-1][j]+di, dp[i][j-1]+dj);
     }
   }
-  return ret;
-}
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
+  if(s[h-1][w-1]=='#')dp[h-1][w-1]++;
+
+  // REP(i,h)REP(j,w){
+  //   cout << dp[i][j] << (j==w-1 ? "\n" : " ");
+  // }
+  cout << dp[h-1][w-1]/2 << endl;
 
 }
 

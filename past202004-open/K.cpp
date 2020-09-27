@@ -32,35 +32,45 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-string solve(string s){
-  int cnt = 0;
-  string ret="";
-  for(int i = 0; i < s.size(); i++){
-    if(s[i] != '('){
-      ret += s[i];
-    }else{
-      string tmp;
-      ll cnt=1;
-      i++;
-      for(; i < s.size(); i++){
-        if(s[i]=='(')cnt++;
-        else if(s[i]==')')cnt--;
-        if(cnt==0)break;
-        tmp += s[i];
+int main(){
+  int n;
+  string s;
+  cin >> n >> s;
+  vi c(n),d(n);
+  REP(i,n)cin >> c[i];
+  REP(i,n)cin >> d[i];
+
+  vector<vector<ll>> dp(n+1, vector<ll>(n+1, LINF));
+
+  dp[0][0]=0;
+
+  REP(i,s.size()){
+    if(s[i]=='('){
+      REP(j,i+1){
+        if(dp[i][j]==LINF)continue;
+        // そのまま
+        chmin(dp[i+1][j+1],dp[i][j]);
+        // 取り除く
+        chmin(dp[i+1][j],dp[i][j]+d[i]);
+        // 反転
+        if(j > 0)chmin(dp[i+1][j-1],dp[i][j]+c[i]);
       }
-      tmp = solve(tmp);
-      ret += tmp;
-      reverse(ALL(tmp));
-      ret += tmp;
+    }else{
+      REP(j,i+1){
+        if(dp[i][j]==LINF)continue;
+        // そのまま
+        if(j>0)chmin(dp[i+1][j-1],dp[i][j]);
+        // 取り除く
+        chmin(dp[i+1][j],dp[i][j]+d[i]);
+        // 反転
+        chmin(dp[i+1][j+1],dp[i][j]+c[i]);
+      }
     }
   }
-  return ret;
-}
 
-int main(){
-  string s;
-  cin >> s;
-  cout << solve(s) << endl;
-
+  // REP(i,n+1)REP(j,n+1){
+  //   printf("%d %d: %ld\n",i,j,dp[i][j]);
+  // }
+  PRINT(dp[n][0]);
 }
 
