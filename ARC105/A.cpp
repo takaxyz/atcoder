@@ -32,47 +32,26 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int md[] = {0,31,29,31,30,31,30,31,31,30,31,30,31};
-
-int conv(int m, int d){
-  return md[m-1] + d;
-}
 int main(){
-  vi h(367,0);
-
-  REP(i,12){
-    md[i+1] += md[i];
+  vi a(4);
+  int sum=0;
+  REP(i,4){
+    cin >> a[i];
+    sum += a[i];
   }
 
-  FOR(i,1,367)if(i%7==1 || i%7==0)h[i]=1;
-
-  int n;
-  cin >> n;
-  vector<P> md;
-  REP(i,n){
-    int m,d;
-    char c;
-    cin >> m >> c >> d;
-    md.emplace_back(m,d);
+  REP(i,(1<<4)){
+    int tmp=0;
+    REP(j,4){
+      if(i & (1<<j)){
+        tmp += a[j];
+      }
+    }
+    if(sum == tmp * 2){
+      cout << "Yes" << endl;
+      return 0;
+    }
   }
-  sort(ALL(md));
-
-  REP(i,n){
-    int x = conv(md[i].first, md[i].second);
-    while(h[x]==1 && x < 367)x++;
-    if(x<367)h[x]=1;
-  }
-
-  //FOR(i,1,366)cout << h[i] << " ";
-
-  int cnt=0;
-  int ans=0;
-  FOR(i,1,367){
-    if(h[i])cnt++;
-    else cnt=0;
-    chmax(ans,cnt);
-  }
-    chmax(ans,cnt);
-  cout << ans << endl;
+  cout << "No" << endl;
 }
 

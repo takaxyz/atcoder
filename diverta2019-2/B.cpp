@@ -32,47 +32,27 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int md[] = {0,31,29,31,30,31,30,31,31,30,31,30,31};
-
-int conv(int m, int d){
-  return md[m-1] + d;
-}
 int main(){
-  vi h(367,0);
-
-  REP(i,12){
-    md[i+1] += md[i];
-  }
-
-  FOR(i,1,367)if(i%7==1 || i%7==0)h[i]=1;
-
   int n;
   cin >> n;
-  vector<P> md;
+  vector<ll> x(n), y(n);
   REP(i,n){
-    int m,d;
-    char c;
-    cin >> m >> c >> d;
-    md.emplace_back(m,d);
-  }
-  sort(ALL(md));
-
-  REP(i,n){
-    int x = conv(md[i].first, md[i].second);
-    while(h[x]==1 && x < 367)x++;
-    if(x<367)h[x]=1;
+    cin >> x[i] >> y[i];
   }
 
-  //FOR(i,1,366)cout << h[i] << " ";
+  map<pair<ll, ll>, int> mp;
+  REP(i,n)REP(j,n){
+    if(i==j)continue;
+    ll xi = x[i] - x[j];
+    ll yi = y[i] - y[j];
 
-  int cnt=0;
+    mp[{xi, yi}]++;
+  }
+
   int ans=0;
-  FOR(i,1,367){
-    if(h[i])cnt++;
-    else cnt=0;
-    chmax(ans,cnt);
+  for(auto v: mp){
+    chmax(ans, v.second);
   }
-    chmax(ans,cnt);
-  cout << ans << endl;
+  cout << n - ans << endl;
 }
 
