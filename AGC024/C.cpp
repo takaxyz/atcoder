@@ -18,19 +18,35 @@ const ll INF=(ll)1e19;
 //const int INF=(1<<29);
 
 int main(){
-  int N;
-  cin >> N;
-  VI a(N);
-  REP(i,N)cin >> a[i];
+  int n;
+  cin >> n;
+  VI a(n);
+  REP(i,n)cin >> a[i];
 
-  REP(i,N-1){
-    if(a[i+1] == a[i] + 1){
-      
-    }else{
-      
-    }
-
-
+  if(a[0]!=0){
+    cout << -1 << endl;
+    return 0;
   }
+  bool ok=true;
+  REP(i,n-1){
+    if(a[i+1]-a[i]>1){
+      ok=false;
+    }
+  }
+  if(!ok){
+    cout << -1 << endl;
+    return 0;
+  }
+
+  ll ans=0;
+  REP(i,n-1){
+    if(a[i]>=a[i+1]){
+      ans+=a[i];
+    }
+  }
+  ans+=a[n-1];
+  cout << ans << endl;
+
+
 }
 
