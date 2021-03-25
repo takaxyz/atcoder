@@ -35,19 +35,20 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-
-  int ans=INF;
+  map<ll,ll> mp;
   REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+    int a;
+    cin >> a;
+    mp[a]++;
+  }
+  ll ans=0;
+  for(auto x: mp){
+    for(auto y: mp){
+      if(x.first > y.first){
+        ans += (x.first - y.first) * (x.first - y.first) * x.second * y.second;
+      }
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << ans << endl;
 }
 

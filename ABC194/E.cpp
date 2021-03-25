@@ -33,21 +33,39 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
+  int n,m;
+  cin >> n >> m;
+  vvi p(n+1,vi());
 
-  int ans=INF;
+  REP(i,n+1){
+    p[i].push_back(-1);   
+  }
   REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+    int x;
+    cin >> x;
+    p[x].push_back(i);
+  }
+  REP(i,n+1){
+    p[i].push_back(n);   
+  }
+
+  REP(i,n+1){
+    REP(j,p[i].size()-1){
+      if(p[i][j+1]-p[i][j] > m){
+        cout << i << endl;
+        return 0;
+      }
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+
+
+  // REP(i,n){
+  //   cout << i << " : ";
+  //   REP(j,p[i].size()){
+  //     cout << p[i][j] << " ";
+  //   }
+  //   cout << endl;
+  // }
+
 }
 

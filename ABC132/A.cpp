@@ -33,21 +33,18 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+  string s;
+  cin >> s;
+  map<char,int> mp;
+  for(auto c: s){
+    mp[c]++;
+  }
+  for(auto v: mp){
+    if(v.second != 2){
+      cout << "No" << endl;
+      return 0;
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << "Yes" << endl;
 }
 

@@ -33,5 +33,8 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  double a,b;
+  cin >> a >> b;
+  printf("%f\n",(a-b)/a*100);
 }
 

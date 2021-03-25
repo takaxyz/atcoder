@@ -33,21 +33,14 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
+  int a,b,w;
+  cin >> a >> b >> w;
+  w *= 1000;
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
-  }
-  if(ans==INF){
-    cout << -1 << endl;
+  if(w/a < (w+b-1)/b){
+    cout << "UNSATISFIABLE" << endl;
   }else{
-    cout << ans << endl;
+    cout << (w+b-1)/b << " " <<  w/a << endl;
   }
 }
 

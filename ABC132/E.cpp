@@ -33,21 +33,38 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
+  int n,m;
+  cin >> n >> m;
+  vvi edge(3*n,vi() );
+  REP(i,m){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[u].push_back(n+v);
+    edge[n+u].push_back(2*n+v);
+    edge[2*n+u].push_back(v);
+  }
+  int s,t;
+  cin >> s >> t;
+  s--;t--;
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+  vi dist(3*n,INF);
+  dist[s]=0;
+  queue<int> q;
+  q.push(s);
+
+  while(!q.empty()){
+    int x = q.front();
+    q.pop();
+
+    for(auto y: edge[x]){
+      if(dist[y] != INF)continue;
+
+      dist[y] = dist[x] + 1;
+      q.push(y);
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+
+  cout << (dist[t]==INF ? -1 : dist[t] / 3) << endl;
 }
 

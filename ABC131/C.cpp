@@ -32,22 +32,28 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int n;
-  cin >> n;
+ll gcd(ll a, ll b)
+{
+   if (a%b == 0)
+   {
+       return(b);
+   }
+   else
+   {
+       return(gcd(b, a%b));
+   }
+}
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
-  }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+ll lcm(ll a, ll b)
+{
+   return a / gcd(a, b) * b;
+}
+int main(){
+  ll a,b,c,d;
+  cin >> a >> b >> c >> d;
+  a--;
+  ll e = lcm(c,d);
+  
+  cout << b - (b/c) - (b/d) + b/e - (a - (a/c) - (a/d) + a/e) << endl;
 }
 

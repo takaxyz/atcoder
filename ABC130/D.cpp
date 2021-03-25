@@ -34,20 +34,24 @@ const int MOD = 1e9 + 7;
 
 int main(){
   int n;
-  cin >> n;
+  ll k;
+  cin >> n >> k;
+  vi a(n);
+  REP(i,n)cin >> a[i];
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+  ll ans=0;
+  int r=0;
+  ll sum=0;
+
+  for(int l = 0; l < n; l++){
+    while(sum < k && r < n){
+      sum += a[r];
+      r++;
     }
+    if(sum < k)break;
+    ans += n - r + 1;
+    sum -= a[l];
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << ans << endl;
 }
 

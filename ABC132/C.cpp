@@ -35,19 +35,11 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
+  vi d(n);
+  REP(i,n)cin >> d[i];
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
-  }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  sort(ALL(d));
+
+  cout << d[n/2] - d[n/2-1] << endl;
 }
 

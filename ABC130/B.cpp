@@ -33,21 +33,16 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-
-  int ans=INF;
+  int n,x;
+  cin >> n >> x;
+  int ans=1;
   REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
+    int l;
+    cin >> l;
+    x -= l;
+    if(x < 0)break;
+    ans++;
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << ans << endl;
 }
 

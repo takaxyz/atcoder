@@ -35,19 +35,21 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-
-  int ans=INF;
+  vector<P> ba;
   REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+    int a,b;
+    cin >> a >> b;
+    ba.emplace_back(b,a);
+  }
+  sort(ALL(ba));
+  int now = 0;
+  for(auto& v: ba){
+    now += v.second;
+    if(v.first < now){
+      cout << "No" << endl;
+      return 0;
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << "Yes" << endl;
 }
 

@@ -35,19 +35,12 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
+  vi p(n);
+  REP(i,n)cin >> p[i];
+  int ans=0;
+  REP(i,n-2){
+    if(p[i] < p[i+1] && p[i+1] < p[i+2] || p[i] > p[i+1] && p[i+1] > p[i+2])ans++;
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << ans << endl;
 }
 

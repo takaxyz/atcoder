@@ -32,6 +32,52 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int calc(vi &v, int x){
+  vi cnt(11);
+  REP(i,4)cnt[v[i]]++;
+  cnt[x]++;
+
+  int ret=0;
+  FOR(i,1,10){
+    int tmp=i;
+    REP(j,cnt[i])tmp*=10;
+    ret += tmp;
+  }
+  return ret;
+}
+
 int main(){
+  int k;
+  cin >> k;
+  vi s(4),t(4);
+  vi om(11);
+  string ss,tt;
+  cin >> ss >> tt;
+  REP(i,4){
+    s[i] = ss[i]-'0';
+    om[s[i]]++;
+  }
+  REP(i,4){
+    t[i] = tt[i]-'0';
+    om[t[i]]++;
+  }
+
+  double ans=0;
+  FOR(i,1,10){
+    double tmp = 0;
+    if(k - om[i]==0)continue;
+    tmp = ((double)(k - om[i])) /  (9 * k - 8);
+    om[i]++;
+    FOR(j,1,10){
+      if(k - om[j]==0)continue;
+      double tmp2 = tmp * ((double)(k - om[j])) /  (9 * k - 9);
+      if(calc(s,i) > calc(t,j)){
+        ans += tmp2;
+      }
+    }
+    om[i]--;
+  }
+  printf("%0.7f\n",ans);
+
 }
 

@@ -32,22 +32,52 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int n;
-  cin >> n;
+void solve(vector<P>& vw, vi& x){
+  sort(ALL(x));
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+
+  int ans=0;
+  for(auto& p : vw){
+    int v = p.first;
+    int w = p.second;
+
+    REP(i,x.size()){
+      if(x[i]>=w){
+        ans += v;
+        x.erase(x.begin() + i);
+        break;
+      }
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
+  cout << ans << endl;
+}
+
+
+int main(){
+  int n,m,q;
+  cin >> n >> m >> q;
+
+  vector<P> vw(n);
+  REP(i,n){
+    int a,b;
+    cin >> a >> b;
+    vw.emplace_back(b,a);
   }
+  sort(ALL(vw));
+  reverse(ALL(vw));
+
+  vi x(m);
+  REP(i,m)cin >> x[i];
+
+  REP(i,q){
+    int l,r;
+    cin >> l >> r;
+
+    vi xx;
+    REP(j,l-1)xx.push_back(x[j]);
+    FOR(j,r,m)xx.push_back(x[j]);
+    solve(vw,xx);
+  }
+
 }
 

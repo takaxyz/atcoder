@@ -32,22 +32,49 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int n;
-  cin >> n;
+vvi used;
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
+int h,w,a,b;
+
+ll dfs(int i, int j, int a, int b){
+  ll res=0;
+
+//  fprintf(stderr, "%d %d %d %d\n",i,j,a,b);
+
+  if(a < 0 || b < 0)return 0;
+  if(j==w)j=0, i++;
+  if(i==h)return 1;
+
+  if(used[i][j])return dfs(i,j+1,a,b);
+
+
+  // choose b
+  used[i][j]=1;
+  res += dfs(i, j+1, a, b-1);
+
+  // choose a : yoko
+  if(j+1 < w && used[i][j+1] != 1){
+    used[i][j+1] = 1;
+    res += dfs(i,j+1,a-1,b);
+    used[i][j+1] = 0;
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
+
+  // choose a : tate
+  if(i+1 < h && used[i+1][j] != 1){
+    used[i+1][j] = 1;
+    res += dfs(i,j+1,a-1,b);
+    used[i+1][j] = 0;
   }
+  used[i][j]=0;
+  return res;
+}
+
+int main(){
+  cin >> h >> w >> a >> b;
+
+  used.resize(h, vi(w));
+
+  int ans = dfs(0,0,a,b);
+  cout << ans << endl;
 }
 

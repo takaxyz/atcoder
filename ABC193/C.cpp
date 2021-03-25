@@ -32,6 +32,19 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+
+
 int main(){
+  ll n;
+  cin >> n;
+  map<ll,int> mp;
+  for(ll i = 2; i <= 100000; i++){
+    ll d = i * i;
+    while(d <= n){
+      mp[d]++;
+      d *= i;
+    }
+  }
+  cout << n - mp.size() << endl;
 }
 

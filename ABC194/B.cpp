@@ -35,19 +35,17 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
+  vi a(n),b(n);
+  REP(i,n)cin >> a[i] >> b[i];
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+  ll ans=LINF;
+  REP(i,n)REP(j,n){
+    if(i==j){
+      chmin(ans, (ll)(a[i]+b[j]));
+    }else{
+      chmin(ans, (ll)max(a[i],b[j]));
     }
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  cout << ans << endl;
 }
 

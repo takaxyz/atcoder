@@ -33,21 +33,30 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
-  }
-  if(ans==INF){
+  int n,k;
+  cin >> n >> k;
+  if(k > (n-1)*(n-2)/2){
     cout << -1 << endl;
-  }else{
-    cout << ans << endl;
+    return 0;
+  }
+
+  vector<P> e;
+  FOR(i,2,n+1){
+    e.emplace_back(1,i);
+  }
+  int cnt=(n-1)*(n-2)/2-k;
+  FOR(i,2,n+1){
+    FOR(j,i+1,n+1){
+      if(cnt==0)break;
+        e.emplace_back(i,j);
+      cnt--;
+    }
+    if(cnt==0)break;
+  }
+
+  cout << e.size() << endl;
+  for(auto &v: e){
+    cout << v.first << " " << v.second << endl;
   }
 }
 

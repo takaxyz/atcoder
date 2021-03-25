@@ -32,22 +32,56 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int n;
-  cin >> n;
+struct edge{
+  int to;
+  int cost;
+  int k;
+};
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+int main(){
+  int n,m,x,y;
+  cin >> n >> m >> x >> y;
+  x--; y--;
+  vector<vector<edge>> G(n);
+
+  REP(i,m){
+    int a,b,t,k;
+    cin >> a >> b >> t >> k;
+    a--; b--;
+    G[a].push_back({b,t,k});
+    G[b].push_back({a,t,k});
+  }
+
+  priority_queue<P, vector<P>, greater<P>> q;
+  vector<ll> dist(n,LINF);
+  dist[x]=0;
+
+  q.push({0,x});
+
+  while(!q.empty()){
+    P p = q.top();
+    q.pop();
+    int v = p.second;
+    int d = p.first;
+
+    if(dist[v] < d)continue;
+
+    for(auto e: G[v]){
+      ll nd;
+      if(dist[v] % e.k == 0){
+        nd = dist[v] + e.cost;
+      }else{
+        nd = dist[v] + e.k - dist[v] % e.k + e.cost;
+      }
+      if(nd < dist[e.to]){
+        dist[e.to] = nd;
+        q.push({dist[e.to], e.to});
+      }
     }
+
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+
+  cout << (dist[y]==LINF ? -1 : dist[y]) << endl;
+
 }
 

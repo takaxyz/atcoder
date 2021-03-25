@@ -35,19 +35,10 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
-    }
+  double ans=0;
+  FOR(i,1,n){
+    ans += (double)n / i;
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+  printf("%.8f\n", ans);
 }
 

@@ -33,5 +33,22 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int t;
+  cin >> t;
+  REP(i,t){
+    ll x,y,p,q;
+    cin >> x >> y >> p >> q;
+    REP(j,10){
+      ll tl = (2*x+2*y)*j+x;
+      ll tr = tl+y;
+      cout << tl << " " << tr << endl;
+
+      ll l1 = (tl-p)/(p+q)*(p+q) + p;
+      ll r1 = l1 + q;
+      ll l2 = ((tl-p)/(p+q)+1)*(p+q) + p;
+      ll r2 = l2 + q;
+      cout << l1 << " " << r1 << " " << l2 << " " << r2 << endl;
+    }
+  }
 }
 

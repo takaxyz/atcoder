@@ -34,20 +34,31 @@ const int MOD = 1e9 + 7;
 
 int main(){
   int n;
-  cin >> n;
+  string s,x;
+  cin >> n >> s >> x;
 
-  int ans=INF;
-  REP(i,n){
-    int a,p,x;
-    cin >> a >> p >> x;
-    if(x-a>0){
-      chmin(ans,p);
+  vvi dp(n+1,vi(7,0));
+  dp[n][0] = 1;
+
+  int ten=1;
+  for(int i = n; i > 0; i-- ){
+    for(int j = 0; j < 7; j++){
+      int nj = (j + ten * (s[i-1]-'0')) % 7;
+      if(x[i-1]=='T'){
+        dp[i-1][j] = dp[i][nj] | dp[i][j];  
+      }else{
+        dp[i-1][j] = dp[i][nj] & dp[i][j];  
+      }
+
     }
+    ten = (ten*10 % 7);
   }
-  if(ans==INF){
-    cout << -1 << endl;
-  }else{
-    cout << ans << endl;
-  }
+
+  // REP(i,n+1)REP(j,7){
+  //   printf("dp[%d][%d] = %d\n", i,j,dp[i][j]);
+  // }
+
+  cout << (dp[0][0] ? "Takahashi" : "Aoki") << endl;
+
 }
 
