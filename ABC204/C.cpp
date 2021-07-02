@@ -33,58 +33,35 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 vvi edge;
-vi nodes;
-vi used;
-vi col;
-void dfs(int v){
-  used[v]=1;
-  nodes.push_back(v);
-  for(auto w: edge[v]){
-    if(used[w]==1)continue;
-    dfs(w);
+vi cnt;
+vector<bool> visited;
+int dfs(int x){
+  int ret=1;
+  visited[x]=true;
+  for(auto v: edge[x]){
+    if(visited[v])continue;
+    ret += dfs(v);
   }
-}
-ll now;
-void dfs2(int i){
-  if(i==nodes.size()){now++; return;}
-
-  REP(c,3){
-    bool ok=true;
-    col[nodes[i]]=c;
-    for(auto v: edge[nodes[i]]){
-      if(col[v]==c)ok=false;
-    }
-    if(ok){
-      dfs2(i+1);
-    }
-  }
-  col[nodes[i]]=-1;
+  return ret;
 }
 
 int main(){
   int n,m;
   cin >> n >> m;
-  edge = vvi(n, vi());
-  used = vi(n,0);
-  REP(i,m){
-    int a, b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].push_back(b);
-    edge[b].push_back(a);
-  }
+  edge.resize(n);
 
-  ll ans=1;
+  visited.resize(n);
+  REP(i,m){
+    int a,b;
+    cin >> a >> b;
+    a--;b--;
+    edge[a].push_back(b);
+  }
+  int ans=0;
   REP(i,n){
-    if(used[i]==1)continue;
-    ans *= 3;
-    nodes = vi();
-    dfs(i);
-    now=0;
-    col = vi(n,-1);
-    col[nodes[0]]=0;
-    dfs2(1);
-    ans *= now;
+    REP(j,n)visited[j]=false;
+    ans += dfs(i);
+    
   }
   cout << ans << endl;
 }

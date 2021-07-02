@@ -32,60 +32,27 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vvi edge;
-vi nodes;
-vi used;
-vi col;
-void dfs(int v){
-  used[v]=1;
-  nodes.push_back(v);
-  for(auto w: edge[v]){
-    if(used[w]==1)continue;
-    dfs(w);
-  }
-}
-ll now;
-void dfs2(int i){
-  if(i==nodes.size()){now++; return;}
-
-  REP(c,3){
-    bool ok=true;
-    col[nodes[i]]=c;
-    for(auto v: edge[nodes[i]]){
-      if(col[v]==c)ok=false;
-    }
-    if(ok){
-      dfs2(i+1);
-    }
-  }
-  col[nodes[i]]=-1;
-}
-
 int main(){
-  int n,m;
-  cin >> n >> m;
-  edge = vvi(n, vi());
-  used = vi(n,0);
-  REP(i,m){
-    int a, b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].push_back(b);
-    edge[b].push_back(a);
-  }
-
-  ll ans=1;
+  int n,q;
+  cin >> n >> q;
+  vector<ll> a(n+1,0);
+  REP(i,n)cin >> a[i+1];
+  vector<ll> c(n+1,0);
   REP(i,n){
-    if(used[i]==1)continue;
-    ans *= 3;
-    nodes = vi();
-    dfs(i);
-    now=0;
-    col = vi(n,-1);
-    col[nodes[0]]=0;
-    dfs2(1);
-    ans *= now;
+    c[i+1] = c[i] + a[i+1]-a[i]-1;
   }
-  cout << ans << endl;
+  // REP(i,n+1){
+  //   cout << c[i] << endl;
+  // }
+  REP(i,q){
+    ll k;
+    cin >> k;
+    if(c[n] < k){
+      cout << a[n] + k - c[n] << endl;
+    }else{
+      int idx = lower_bound(ALL(c),k) - c.begin();
+      cout << a[idx-1] + k - c[idx-1] << endl;
+    }
+  }
 }
 
