@@ -32,62 +32,52 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll f(vector<ll> x, vector<ll> y){
-  ll ret=LINF;
-  int i=0;
-  int j=0;
-  while(i < x.size() && j < y.size()){
-    chmin(ret, abs(y[j]-x[i]));
-    if(x[i]==y[j])return 0;
-    else if(x[i]<y[j]){
-      i++;
-    }else{
-      j++;
-    }
-  }
-  return ret;
+int h,w;
+int dx[4] = {0,1,0,-1};
+int dy[4] = {1,0,-1,0};
+
+P conv(int x){
+  return make_pair(x/w, x%w);
 }
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> r,g,b;
+  cin >> h >> w;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
 
-  REP(i,2*n){
-    ll a;
-    char c;
-    cin >> a >> c;
-    if(c=='R'){
-      r.emplace_back(a);
-    }else if(c=='G'){
-      g.emplace_back(a);
-    }else{
-      b.emplace_back(a);
+  vector<bool> visited(h*w);
+  vi dist(h*w,INF);
+  deque<P> q;
+  q.push_back({0,0});
+  while(!q.empty()){
+    int v = q.front().first;
+    int d = q.front().second;
+    q.pop_front();
+    if(visited[v])continue;
+    visited[v]=true;
+    dist[v]=d;
+    int x = v%w;
+    int y = v/w;
+
+    REP(i,4){
+      int nx = x+dx[i];
+      int ny = y+dy[i];
+      if(nx<0 || nx>=w || ny<0 || ny>=h)continue;
+      if(s[ny][nx]=='#')continue;
+      q.push_front({ny*w+nx,d});
+    }
+
+    for(int i=-2; i<3; i++){
+      for(int j=-2; j<3; j++){
+        if(abs(i)+abs(j)==4 || (i==0 && j==0))continue;
+        int nx = x+i;
+        int ny = y+j;
+        if(nx<0 || nx>=w || ny<0 || ny>=h)continue;
+        q.push_back({ny*w+nx,d+1});
+      }
     }
   }
 
-  if(r.size()%2==0 && g.size()%2==0){
-    cout << 0 << endl;
-    return 0;
-  }
-  sort(ALL(r));
-  sort(ALL(g));
-  sort(ALL(b));
-  ll ans=LINF;
-
-  ll rg = f(r,g);
-  ll gb = f(g,b);
-  ll br = f(b,r);
-  if(r.size()%2==0){
-    chmin(ans, gb);
-    chmin(ans, rg+br);
-  }else if(g.size()%2==0){
-    chmin(ans, br);
-    chmin(ans, rg+gb);
-  }else{
-    chmin(ans,rg);
-    chmin(ans,gb+br);
-  }
-  cout << ans << endl;
+  cout << dist[h*w-1] << endl;
 }
 

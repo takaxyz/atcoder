@@ -32,61 +32,32 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll f(vector<ll> x, vector<ll> y){
-  ll ret=LINF;
-  int i=0;
-  int j=0;
-  while(i < x.size() && j < y.size()){
-    chmin(ret, abs(y[j]-x[i]));
-    if(x[i]==y[j])return 0;
-    else if(x[i]<y[j]){
-      i++;
-    }else{
-      j++;
-    }
-  }
-  return ret;
-}
-
 int main(){
   int n;
-  cin >> n;
-  vector<ll> r,g,b;
+  ll w;
+  cin >> n >> w;
+  vector<P> ab(n);
+  REP(i,n){
+    int a,b;
+    cin >> a >> b;
+    ab.emplace_back(a,b);
+  }
+  sort(ALL(ab));
+  reverse(ALL(ab));
 
-  REP(i,2*n){
-    ll a;
-    char c;
-    cin >> a >> c;
-    if(c=='R'){
-      r.emplace_back(a);
-    }else if(c=='G'){
-      g.emplace_back(a);
+  ll ans=0;
+  REP(i,n){
+    ll a = ab[i].first;
+    ll b = ab[i].second;
+
+    if(w<b){
+      ans += a*w;
+      break;
     }else{
-      b.emplace_back(a);
-    }
-  }
+      w-=b;
+      ans += a*b;
+    }    
 
-  if(r.size()%2==0 && g.size()%2==0){
-    cout << 0 << endl;
-    return 0;
-  }
-  sort(ALL(r));
-  sort(ALL(g));
-  sort(ALL(b));
-  ll ans=LINF;
-
-  ll rg = f(r,g);
-  ll gb = f(g,b);
-  ll br = f(b,r);
-  if(r.size()%2==0){
-    chmin(ans, gb);
-    chmin(ans, rg+br);
-  }else if(g.size()%2==0){
-    chmin(ans, br);
-    chmin(ans, rg+gb);
-  }else{
-    chmin(ans,rg);
-    chmin(ans,gb+br);
   }
   cout << ans << endl;
 }
