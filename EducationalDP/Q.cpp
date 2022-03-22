@@ -148,3 +148,4 @@ int main(){
   cout << seg.query(0,n+1) << endl;
 }
 
+
