@@ -32,64 +32,49 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vi p;
-vector<ll> c;
+int n,m;
+vvi edge;
+vi visited;
 
-ll solve(int st, int k){
-  ll sum=0;
-  int v = st;
-  int cnt=0;
-  ll mx = -LINF;
-  vector<ll> cc;
-
-  while(true){
-    sum += c[v];
-    chmax(mx,sum);
-    v = p[v];
-    cc.push_back(c[v]);
-    cnt++;
-    if(v==st)break;
-  }
-
-  ll ret=0;
-
-  if(k > cnt){
-    ret = 0;
-    if(sum > 0){
-      ret += sum * ((k / cnt)-1);
-      k -= ((k/cnt)-1) * cnt;
-      ll tmp = ret;
-      REP(i,k){
-        tmp += cc[i%cc.size()];
-        chmax(ret, tmp);
-      }
+int dfs(int v, set<int> st, int p = -1){
+  int ret=0;
+  cout << " " << v << endl;
+  for(auto x: edge[v]){
+    if(x==p)continue;
+    if(visited[x] || st.count(x)){
+      ret = 1;
     }else{
-      ret = mx;  
-    }
-  }else{
-    ll tmp = 0;
-    ret = -LINF;
-    REP(i,k){
-      tmp += cc[i%cc.size()];
-      chmax(ret, tmp);
+      st.insert(x);
+      int tmp = dfs(x, st, v);
+      if(tmp)ret=1;
+      st.erase(st.find(x));
     }
   }
+  if(ret)visited[v]=1;
   return ret;
 }
 
 int main(){
-  int n, k;
-  cin >> n >> k;
-  p.resize(n);
-  c.resize(n);
-  REP(i,n){
-    cin >> p[i];
-    p[i]--;
+  cin >> n >> m;
+  edge.resize(n);
+  REP(_,m){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[u].push_back(v);
   }
-  REP(i,n)cin >> c[i];
 
-  ll ans=-LINF;
-  REP(i,n)chmax(ans, solve(i, k));
-  cout << ans << endl;
+  visited.resize(n);
+  REP(i,n)visited[i]=0;
+
+  REP(i,n){
+    set<int> st;
+    st.insert(i);
+    if(visited[i]==0)dfs(i, st);
+  }
+
+  REP(i,n){
+    cout << visited[i] << endl;
+  }
 }
 

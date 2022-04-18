@@ -32,64 +32,36 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vi p;
-vector<ll> c;
-
-ll solve(int st, int k){
-  ll sum=0;
-  int v = st;
-  int cnt=0;
-  ll mx = -LINF;
-  vector<ll> cc;
-
-  while(true){
-    sum += c[v];
-    chmax(mx,sum);
-    v = p[v];
-    cc.push_back(c[v]);
-    cnt++;
-    if(v==st)break;
-  }
-
-  ll ret=0;
-
-  if(k > cnt){
-    ret = 0;
-    if(sum > 0){
-      ret += sum * ((k / cnt)-1);
-      k -= ((k/cnt)-1) * cnt;
-      ll tmp = ret;
-      REP(i,k){
-        tmp += cc[i%cc.size()];
-        chmax(ret, tmp);
-      }
-    }else{
-      ret = mx;  
-    }
-  }else{
-    ll tmp = 0;
-    ret = -LINF;
-    REP(i,k){
-      tmp += cc[i%cc.size()];
-      chmax(ret, tmp);
-    }
-  }
-  return ret;
-}
-
 int main(){
-  int n, k;
+  int n,k;
   cin >> n >> k;
-  p.resize(n);
-  c.resize(n);
-  REP(i,n){
-    cin >> p[i];
-    p[i]--;
-  }
-  REP(i,n)cin >> c[i];
+  vi a(n),b(n);
+  REP(i,n)cin >> a[i];
+  REP(i,n)cin >> b[i];
 
-  ll ans=-LINF;
-  REP(i,n)chmax(ans, solve(i, k));
-  cout << ans << endl;
+  vi dp(n), ep(n);
+  dp[0]=1; ep[0]=1;
+  FOR(i,1,n){
+    if(dp[i-1] && abs(a[i] - a[i-1]) <= k){
+      dp[i]=1;
+    }else if(ep[i-1] && abs(a[i] - b[i-1]) <= k){
+      dp[i]=1;
+    }else{
+      dp[i]=0;
+    }
+    if(dp[i-1] && abs(b[i] - a[i-1]) <= k){
+      ep[i]=1;
+    }else if(ep[i-1] && abs(b[i] - b[i-1]) <= k){
+      ep[i]=1;
+    }else{
+      ep[i]=0;
+    }
+  }
+
+  if(dp[n-1] || ep[n-1]){
+    cout << "Yes" << endl;
+  }else{
+    cout << "No" << endl;
+  }
 }
 

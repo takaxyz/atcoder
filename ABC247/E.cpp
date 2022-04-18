@@ -32,64 +32,55 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vi p;
-vector<ll> c;
-
-ll solve(int st, int k){
-  ll sum=0;
-  int v = st;
-  int cnt=0;
-  ll mx = -LINF;
-  vector<ll> cc;
-
-  while(true){
-    sum += c[v];
-    chmax(mx,sum);
-    v = p[v];
-    cc.push_back(c[v]);
-    cnt++;
-    if(v==st)break;
-  }
-
-  ll ret=0;
-
-  if(k > cnt){
-    ret = 0;
-    if(sum > 0){
-      ret += sum * ((k / cnt)-1);
-      k -= ((k/cnt)-1) * cnt;
-      ll tmp = ret;
-      REP(i,k){
-        tmp += cc[i%cc.size()];
-        chmax(ret, tmp);
-      }
-    }else{
-      ret = mx;  
-    }
-  }else{
-    ll tmp = 0;
-    ret = -LINF;
-    REP(i,k){
-      tmp += cc[i%cc.size()];
-      chmax(ret, tmp);
-    }
-  }
-  return ret;
-}
 
 int main(){
-  int n, k;
-  cin >> n >> k;
-  p.resize(n);
-  c.resize(n);
-  REP(i,n){
-    cin >> p[i];
-    p[i]--;
-  }
-  REP(i,n)cin >> c[i];
+  int n, x, y;
+  cin >> n >> x >> y;
+  vi a(n);
+  REP(i,n)cin >> a[i];
 
-  ll ans=-LINF;
-  REP(i,n)chmax(ans, solve(i, k));
+  if(x==y){
+    int prev=-1;
+    ll c=0;
+    ll ans = 0;
+    REP(i,n){
+      if(a[i]==x)c++;
+      else{
+        if(c>0){
+          ans += c * (c+1) / 2;
+        }
+        c = 0;
+      }
+    }
+    if(c>0)ans += c*(c+1)/2;
+    cout << ans << endl;
+    return 0;
+
+  }
+
+  vi mi, mx, mo;
+  REP(i,n){
+    if(a[i] == y)mi.push_back(i);
+    else if(a[i] == x)mx.push_back(i);
+    else if(a[i] > x || y > a[i])mo.push_back(i);
+  }
+
+  ll ans=0;
+  REP(i,n){
+    if(a[i] > x || y > a[i])continue;
+    auto it1 = lower_bound(ALL(mi), i);
+    auto it2 = lower_bound(ALL(mx), i);
+    auto it3 = lower_bound(ALL(mo), i);
+
+    if(it1 == mi.end() || it2 == mx.end())break;
+    int r = max(*it1, *it2);
+    int rr;
+    if(it3 == mo.end())rr=n;
+    else rr=*it3;
+
+    if(r > rr)continue;
+    ans += rr - r;
+  }
   cout << ans << endl;
 }
 

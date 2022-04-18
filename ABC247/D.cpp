@@ -32,64 +32,38 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vi p;
-vector<ll> c;
-
-ll solve(int st, int k){
-  ll sum=0;
-  int v = st;
-  int cnt=0;
-  ll mx = -LINF;
-  vector<ll> cc;
-
-  while(true){
-    sum += c[v];
-    chmax(mx,sum);
-    v = p[v];
-    cc.push_back(c[v]);
-    cnt++;
-    if(v==st)break;
-  }
-
-  ll ret=0;
-
-  if(k > cnt){
-    ret = 0;
-    if(sum > 0){
-      ret += sum * ((k / cnt)-1);
-      k -= ((k/cnt)-1) * cnt;
-      ll tmp = ret;
-      REP(i,k){
-        tmp += cc[i%cc.size()];
-        chmax(ret, tmp);
-      }
-    }else{
-      ret = mx;  
-    }
-  }else{
-    ll tmp = 0;
-    ret = -LINF;
-    REP(i,k){
-      tmp += cc[i%cc.size()];
-      chmax(ret, tmp);
-    }
-  }
-  return ret;
-}
-
 int main(){
-  int n, k;
-  cin >> n >> k;
-  p.resize(n);
-  c.resize(n);
-  REP(i,n){
-    cin >> p[i];
-    p[i]--;
-  }
-  REP(i,n)cin >> c[i];
+  int Q;
+  cin >> Q;
+  deque<pair<ll, ll>> q;
 
-  ll ans=-LINF;
-  REP(i,n)chmax(ans, solve(i, k));
-  cout << ans << endl;
+  REP(_, Q){
+    int t;
+    ll x, c;
+    cin >> t;
+
+    if(t == 1){
+      cin >> x >> c;
+      q.push_back({x,c});
+    }else{
+      cin >> c;
+      ll sum=0;
+      while(c){
+        ll cx = q.front().first;
+        ll cc = q.front().second;
+        q.pop_front();
+
+        if(cc > c){
+          sum += c * cx;
+          q.push_front({cx, cc - c});
+          break;
+        }else{
+          c -= cc;
+          sum += cc * cx;
+        }
+      }
+      cout << sum << endl;
+    }
+  }
 }
 

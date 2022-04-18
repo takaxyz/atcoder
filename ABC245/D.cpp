@@ -32,64 +32,20 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vi p;
-vector<ll> c;
-
-ll solve(int st, int k){
-  ll sum=0;
-  int v = st;
-  int cnt=0;
-  ll mx = -LINF;
-  vector<ll> cc;
-
-  while(true){
-    sum += c[v];
-    chmax(mx,sum);
-    v = p[v];
-    cc.push_back(c[v]);
-    cnt++;
-    if(v==st)break;
-  }
-
-  ll ret=0;
-
-  if(k > cnt){
-    ret = 0;
-    if(sum > 0){
-      ret += sum * ((k / cnt)-1);
-      k -= ((k/cnt)-1) * cnt;
-      ll tmp = ret;
-      REP(i,k){
-        tmp += cc[i%cc.size()];
-        chmax(ret, tmp);
-      }
-    }else{
-      ret = mx;  
-    }
-  }else{
-    ll tmp = 0;
-    ret = -LINF;
-    REP(i,k){
-      tmp += cc[i%cc.size()];
-      chmax(ret, tmp);
-    }
-  }
-  return ret;
-}
-
 int main(){
-  int n, k;
-  cin >> n >> k;
-  p.resize(n);
-  c.resize(n);
-  REP(i,n){
-    cin >> p[i];
-    p[i]--;
-  }
-  REP(i,n)cin >> c[i];
+  int n,m;
+  cin >> n >> m;
+  vi a(n+1),c(n+m+1);
+  REP(i,n+1)cin >> a[i];
+  REP(i,n+m+1)cin >> c[i];
 
-  ll ans=-LINF;
-  REP(i,n)chmax(ans, solve(i, k));
-  cout << ans << endl;
+  vi b(m+1);
+  for(int i = m; i >= 0; i--){
+    b[i] = c[i+n]/a[n];
+    REP(j,n+1)c[i+j]-=b[i]*a[j];
+  }
+  REP(i,m+1){
+    cout << b[i] << endl;
+  }
 }
 

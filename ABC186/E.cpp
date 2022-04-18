@@ -32,15 +32,28 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int mpow(int x, int n, int mod){
+  int y=1;
+  while(n){
+    if(n & 1)y = (y * x) % mod;
+    x = x * x % mod;
+    n >>= 1;
+  }
+  return y % mod;
+}
+
 int main(){
   int t;
   cin >> t;
   REP(i,t){
     int n,s,k;
     cin >> n >> s >> k;
-    s %= k;
-    n %= k;
-    if(s)
+
+    if(k%n==0){
+      cout << -1 << endl;
+    }else{
+      cout << (n-s) * mpow(k,n-2,n) << endl;
+    }
   }
 }
 

@@ -32,64 +32,32 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-vi p;
-vector<ll> c;
-
-ll solve(int st, int k){
-  ll sum=0;
-  int v = st;
-  int cnt=0;
-  ll mx = -LINF;
-  vector<ll> cc;
-
-  while(true){
-    sum += c[v];
-    chmax(mx,sum);
-    v = p[v];
-    cc.push_back(c[v]);
-    cnt++;
-    if(v==st)break;
-  }
-
-  ll ret=0;
-
-  if(k > cnt){
-    ret = 0;
-    if(sum > 0){
-      ret += sum * ((k / cnt)-1);
-      k -= ((k/cnt)-1) * cnt;
-      ll tmp = ret;
-      REP(i,k){
-        tmp += cc[i%cc.size()];
-        chmax(ret, tmp);
-      }
-    }else{
-      ret = mx;  
-    }
-  }else{
-    ll tmp = 0;
-    ret = -LINF;
-    REP(i,k){
-      tmp += cc[i%cc.size()];
-      chmax(ret, tmp);
-    }
-  }
-  return ret;
-}
-
 int main(){
-  int n, k;
-  cin >> n >> k;
-  p.resize(n);
-  c.resize(n);
-  REP(i,n){
-    cin >> p[i];
-    p[i]--;
-  }
-  REP(i,n)cin >> c[i];
+  int n, k, x;
+  cin >> n >> k >> x;
+  vi a(n);
 
-  ll ans=-LINF;
-  REP(i,n)chmax(ans, solve(i, k));
-  cout << ans << endl;
+  REP(i,n)cin >> a[i];
+  sort(a.rbegin(), a.rend());
+  ll sum = 0;
+  REP(i,n)sum += a[i];
+
+  REP(i,n){
+    if(a[i] / x < k){
+      sum -= (a[i]/x)*x;
+      k -= a[i]/x;
+      a[i] %= x;
+    }else{
+      sum -= x * k;
+      k = 0;
+      a[i] = x * k;
+      break;
+    }
+  }
+
+  sort(a.rbegin(), a.rend());
+  REP(i,min(k,n))sum -= a[i];
+
+  cout << sum << endl;
 }
 
