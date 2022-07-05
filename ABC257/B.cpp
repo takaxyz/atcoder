@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
-#include <atcoder/all>
 using namespace std;
-using namespace atcoder;
 
 #define FOR(i,a,b) for(int i=(a);i<(b);++i)
 #define REP(i,n)   FOR(i,0,n)
@@ -35,5 +33,19 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int n,k,q;
+  cin >> n >> k >> q;
+  vi a(n);
+  REP(i,k)cin >> a[i];
+
+  REP(i,q){
+    int l;
+    cin >> l;
+    l--;
+    if(a[l]==n)continue;
+    if(l != k-1 && a[l] + 1 != a[l+1])a[l]++;
+    if(l == k-1)a[l]++;
+  }
+  REP(i,k)cout << a[i] << endl;
 }
 

@@ -34,6 +34,29 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+ll gcd(ll a, ll b)
+{
+   if (a%b == 0)
+   {
+       return(b);
+   }
+   else
+   {
+       return(gcd(b, a%b));
+   }
+}
+
+ll lcm(ll a, ll b)
+{
+   return a / gcd(a, b) * b;
+}
+
+
 int main(){
+  ll a,b,c;
+  cin >> a >> b >> c;
+  ll x = gcd(a ,gcd(b,c));
+
+  cout << a / x + b /x + c / x - 3 << endl;
 }
 

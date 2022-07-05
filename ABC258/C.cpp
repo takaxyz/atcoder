@@ -35,5 +35,29 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int n, q;
+  string s;
+  cin >> n >> q >> s;
+
+  int p = 0;
+  REP(i,q){
+    int t, x;
+    cin >> t >> x;
+
+    if(t == 1){
+      // string ss = s.substr(n-x, x);
+      // reverse(ALL(ss));
+      // s = ss + s.substr(0,n-x);
+      // cout << s << endl;
+      p -= x;
+      p += n;
+      p %= n;
+    }else{
+      //cout << p << endl;
+      cout << s[(p + x - 1)%n] << endl;
+    }
+
+  }
+
 }
 

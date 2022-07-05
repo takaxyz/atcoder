@@ -35,5 +35,25 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int n;
+  ll k;
+  cin >> n >> k;
+
+  vi a(n);
+  REP(i,n)cin >> a[i] , a[i]--;
+
+  int logK = 1;
+  while((1ll << logK) <= k)logK++;
+
+  vvi dp(logK+1, vi(n));
+  REP(i,n)dp[0][i] = a[i];
+  REP(i,logK)REP(j,n)dp[i+1][j] = dp[i][dp[i][j]];
+
+  int now = 0;
+  for(int i = logK; i >= 0; i--){
+    if((k >> i) & 1)now = dp[i][now];
+  }
+  cout << now + 1 << endl;
+
 }
 

@@ -34,6 +34,36 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int dx[8] = {0, 1, 1, 1,  0, -1, -1, -1};
+int dy[8] = {1, 1, 0, -1, -1, -1, 0, 1};
+
+
 int main(){
+  int n;
+  cin >> n;
+  vvi a(n,vi(n));
+  REP(i,n)REP(j,n){
+    char c; cin >> c;
+    a[i][j] = c - '0';
+  }
+
+  ll ans=0;
+  REP(i,n)REP(j,n){
+    REP(k,8){
+      int ni = i;
+      int nj = j;
+      ll t = 0;
+      REP(l, n){
+        t *= 10;
+        t += a[ni][nj];
+        ni += dx[k]+n; ni %= n;
+        nj += dy[k]+n; nj %= n;
+      }
+      //cout << t << endl;
+      chmax(ans, t);
+    }
+  }
+  cout << ans << endl;
+
 }
 

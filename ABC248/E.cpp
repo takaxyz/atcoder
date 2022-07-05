@@ -35,5 +35,34 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int n, k;
+  cin >> n >> k;
+  vector<ll> x(n), y(n);
+  REP(i,n)cin >> x[i] >> y[i];
+  int ans=0;
+  vector<vector<bool>> visited(n, vector<bool>(n));
+
+  if(k==1){
+    cout << "Infinity" << endl;
+    return 0;
+  }
+
+  REP(i,n)FOR(j,i+1,n){
+    if(visited[i][j])continue;
+    vi vlist;
+    vlist.emplace_back(i);
+    vlist.emplace_back(j);
+    int cnt=2;
+    FOR(k,j+1,n){
+      if((x[k]-x[i]) * (y[j]-y[i]) == (x[j]-x[i]) * (y[k]-y[i])){
+        vlist.emplace_back(k);
+        cnt++;
+      }
+    }
+    REP(i,vlist.size())FOR(j,i+1,vlist.size())visited[vlist[i]][vlist[j]]=true;
+
+    if(cnt>=k)ans++;
+  }
+  cout << ans << endl;
 }
 

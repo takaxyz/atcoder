@@ -34,6 +34,23 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+bitset<3001> st[3001];
+
 int main(){
+  int n;
+  cin >> n;
+  REP(i,n)REP(j,n){
+    char c;
+    cin >> c;
+    st[i][j] = c - '0';
+  }
+
+  ll ans=0;
+  REP(i,n)FOR(j,i+1,n){
+    if(st[i][j]==0)continue;
+    ans += (st[i] & st[j]).count();
+  }
+  cout << ans/3 << endl;
+
 }
 

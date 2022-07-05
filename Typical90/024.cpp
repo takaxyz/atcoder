@@ -35,5 +35,20 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int n, k;
+  cin >> n >> k;
+  vi a(n), b(n);
+  REP(i,n)cin >> a[i];
+  REP(i,n)cin >> b[i];
+
+  int s = 0;
+  REP(i,n)s += abs(a[i]-b[i]);
+  if(k >= s && (k - s)  % 2 == 0){
+    cout << "Yes" << endl;
+  }else{
+    cout << "No" << endl;
+  }
+
+
 }
 

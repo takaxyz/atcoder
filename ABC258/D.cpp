@@ -35,5 +35,24 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int n;
+  ll x;
+  cin >> n >> x;
+  vector<ll> a(n), b(n);
+  REP(i,n)cin >> a[i] >> b[i];
+
+  ll ans = LINF;
+  vector<ll> s(n+1);
+  REP(i,n)s[i+1] = s[i] + a[i] + b[i];
+
+  REP(i,n){
+    ll tmp = 0;
+    tmp += s[i+1];
+    tmp += b[i] * (x - i - 1);
+    if(x-i-1 < 0)break;
+    chmin(ans, tmp);
+  }
+  cout << ans << endl;
+
 }
 

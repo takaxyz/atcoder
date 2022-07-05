@@ -35,5 +35,14 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
+  int k;
+  cin >> k;
+
+  if(k<60){
+    printf("21:%02d\n",k);
+  }else{
+    printf("22:%02d\n",k-60);
+  }
+
 }
 
