@@ -34,54 +34,28 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n,m;
+  cin >> n >> m;
+  vi a(n),b(m);
+  REP(i,n)cin >> a[i];
+  REP(i,m)cin >> b[i];
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  vvi dp(n+1,vi(m+1, INF));
+  dp[0][0] = 0;
+
+  REP(i,n+1)REP(j,m+1){
+    if(i>0)chmin(dp[i][j], dp[i-1][j]+1);
+    if(j>0)chmin(dp[i][j], dp[i][j-1]+1);
+    if(i>0 && j > 0){
+      if(a[i-1]!=b[j-1]){
+        chmin(dp[i][j], dp[i-1][j-1]+1);
+      }else{
+        chmin(dp[i][j], dp[i-1][j-1]);
+      }
     }
-
   }
+
+  cout << dp[n][m] << endl;
 }
 

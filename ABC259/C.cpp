@@ -34,54 +34,64 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  string s,t;
+  cin >> s >> t;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
+  vector<pair<char, int>> ss, tt;
+
+  char c = s[0];
+  int cnt = 0;
+  REP(i,s.size()){
+    if(c==s[i]){
+      cnt++;
     }else{
-      cout << ((-s * x )%n + n)%n << endl;
+      ss.emplace_back(c,cnt);
+      c = s[i];
+      cnt=1;
+    }
+  }
+  ss.emplace_back(c,cnt);
+
+  c = t[0];
+  cnt = 0;
+  REP(i,t.size()){
+    if(c==t[i]){
+      cnt++;
+    }else{
+      tt.emplace_back(c,cnt);
+      c = t[i];
+      cnt=1;
+    }
+  }
+  tt.emplace_back(c,cnt);
+
+  // for(auto [c, cnt]: ss){
+  //   cout << c << " " << cnt << endl;
+  // }
+
+  if(tt.size()!=ss.size()){
+    cout << "No" << endl;
+    return 0;
+  }
+
+  REP(i, ss.size()){
+    if(ss[i].first != tt[i].first){
+      cout << "No" << endl;
+      return 0;
     }
 
+    if(ss[i].second < tt[i].second && ss[i].second==1){
+      cout << "No" << endl;
+      return 0;
+    }    
+    if(ss[i].second > tt[i].second){
+      cout << "No" << endl;
+      return 0;
+    }    
+
   }
+  cout << "Yes" << endl;
+
 }
 

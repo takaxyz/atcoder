@@ -34,54 +34,60 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
+bool visited[3001];
+vvi edge;
 
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
+void dfs(int v, int p){
+  visited[v]=true;
+  for(auto vv: edge[v]){
+    if(vv==p)continue;
+    if(visited[vv])continue;
+    dfs(vv, v);
   }
-  return d;
 }
-
 
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n;
+  cin >> n;
+  ll sx, sy, tx, ty;
+  cin >> sx >> sy >> tx >> ty;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  vector<ll> x(n),y(n),r(n);
+  REP(i,n)cin >> x[i] >> y[i] >> r[i];
+
+  int s,t;
+  REP(i,n){
+    if((sx-x[i])*(sx-x[i]) + (sy-y[i])*(sy-y[i]) == r[i]*r[i]){
+      s = i;
+      break;
     }
-
   }
+  REP(i,n){
+    if((tx-x[i])*(tx-x[i]) + (ty-y[i])*(ty-y[i]) == r[i]*r[i]){
+      t = i;
+      break;
+    }
+  }
+
+  edge.resize(n);
+  REP(i,n)FOR(j,i+1,n){
+    if((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]) <= (r[i]+r[j])*(r[i]+r[j]) &&
+      ((x[i]-x[j])*(x[i]-x[j]) + (y[i]-y[j])*(y[i]-y[j]) >= (r[i]-r[j])*(r[i]-r[j]))
+    ){
+      edge[i].emplace_back(j);
+      edge[j].emplace_back(i);
+    }
+  }
+
+  // REP(i,n){
+  //   for(auto v: edge[i]){
+  //     cout << i << " " << v << endl;
+  //   }
+  // }
+
+  dfs(s,-1);
+
+  cout << (visited[t] ? "Yes" : "No") << endl;
+
 }
 

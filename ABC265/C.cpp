@@ -34,54 +34,60 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int h,w;
+  cin >> h >> w;
+  vector<string> g(h);
+  REP(i,h)cin >> g[i];
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
+  vvi v(h,vi(w,0));
+  int i = 0;
+  int j = 0;
+
+  bool ok=true;
+  while(ok){
+    if(v[i][j]){
       cout << -1 << endl;
+      return 0;
     }else{
-      cout << ((-s * x )%n + n)%n << endl;
+      v[i][j]=1;
     }
 
+    switch (g[i][j])
+    {
+    case 'U':
+      if(i==0){
+        ok=false;
+      }else{
+        i--;
+      }
+      break;
+    
+    case 'D':
+      if(i==h-1){
+        ok=false;
+      }else{
+        i++;
+      }
+      break;
+
+    case 'L':
+      if(j==0){
+        ok=false;
+      }else{
+        j--;
+      }
+      break;
+
+    case 'R':
+      if(j==w-1){
+        ok=false;
+      }else{
+        j++;
+      }
+      break;
+    }
   }
+  cout << i+1 << " " << j+1 << endl;
 }
 

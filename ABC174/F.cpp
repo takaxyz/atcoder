@@ -34,54 +34,45 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n,q;
+  cin >> n >> q;
+  vi c(n);
+  REP(i,n)cin >> c[i];
+  vector<tuple<int,int,int>> rl(q);
+  REP(i,q){
+    int l,r;
+    cin >> l >> r;
+    l--; r--;
+    rl.emplace_back(r,l,i);
+  }
+  sort(ALL(rl));
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  map<int,int> mp;
+  int now = 0;
+  fenwick_tree<int> fwt(n);
+  vi ans(q);
+  for(auto x: rl){
+    int r,l,i;
+    tie(r,l,i) = x;
+
+    while(now <= r){
+      if(mp.count(c[now])==0){
+        fwt.add(now,1);
+        mp[c[now]]=now;
+      }else{
+        fwt.add(mp[c[now]],-1);
+        fwt.add(now,1);
+        mp[c[now]]=now;
+      }
+      now++;
     }
 
+    ans[i] = fwt.sum(l,r+1);
+  }
+
+  for(auto v: ans){
+    cout << v << endl;
   }
 }
 

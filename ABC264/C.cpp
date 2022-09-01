@@ -34,54 +34,43 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int h1,w1,h2,w2;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  cin >> h1 >> w1;
+  vvi a(h1,vi(w1));
+
+  REP(i,h1)REP(j,w1)cin >> a[i][j];
+
+  cin >> h2 >> w2;
+  vvi b(h2, vi(w2));
+  REP(i,h2)REP(j,w2)cin >> b[i][j];
+
+  REP(i, (1<<h1))REP(j, (1<<w1)){
+    if(__builtin_popcount(i) == h1 - h2 && __builtin_popcount(j) == w1 - w2){
+      bool ok=true;
+      int hh = 0;
+      REP(h,h1){
+        if(((i>>h) & 1) == 0){
+          int ww = 0;
+          REP(w,w1){
+            if(((j>>w) & 1) == 0){
+              //fprintf(stderr, "%d %d : %d %d %d %d\n",i,j,h,w,hh,ww);
+              if(a[h][w]!=b[hh][ww])ok=false;
+              ww++;
+            }
+          }
+          hh++;
+        }
+      }
+      if(ok){
+        cout << "Yes" << endl;
+        return 0;
+      }
+      
     }
-
   }
+  cout << "No" << endl;
+
 }
 

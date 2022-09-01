@@ -34,54 +34,41 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
 
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
+int n,a,b;
 
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
+bool f(vi &A, int x){
+  ll s = 0;
+  ll l = 0;
+
+  for(auto v: A){
+    if(v < x){
+      s += (x - v + a - 1)/a;
+    }else{
+      l += (v - x)/b;
+    }
   }
-  return d;
+  return s<=l;
 }
 
 
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  cin >> n >> a >> b;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
+  vi A(n);
+  REP(i,n)cin >> A[i];
+
+  int ok=0, ng=INF;
+
+  while(abs(ok-ng)>1){
+    int mid = (ok+ng)/2;
+
+    if(f(A,mid)){
+      ok=mid;
     }else{
-      cout << ((-s * x )%n + n)%n << endl;
+      ng=mid;
     }
-
   }
+  cout << ok << endl;
 }
 

@@ -34,54 +34,40 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n,d,a;
+  cin >> n >> d >> a;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
-    }
-
+  vector<P> xh;
+  REP(i,n){
+    int x, h;
+    cin >> x >> h;
+    xh.emplace_back(x,h);
   }
+  sort(ALL(xh));
+
+  int r = 0;
+  vector<ll> sum(n+1);
+  ll ans = 0;
+  REP(l,n){
+    int x = xh[l].first;
+    int h = xh[l].second;
+
+    if(l>0)sum[l] += sum[l-1]; 
+    if(h <= sum[l])continue;
+
+    while(r < n && xh[r].first <= x + 2 * d)r++;
+
+    ll cnt = (h - sum[l] + a - 1)/a;
+    sum[l] += cnt * a;
+    sum[r] -= cnt * a;
+
+    ans += cnt;
+//    cout << ans << endl;
+  }
+
+  cout << ans << endl;
+
+
 }
 

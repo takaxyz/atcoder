@@ -34,54 +34,41 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n,k;
+  cin >> n >> k;
+  vi p(n);
+  REP(i,n)cin >> p[i];
+  set<int> st;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
+  vi cnt(n+1);
+  vi bt(n+1);
+  vi t(n+1,-1);
+  REP(i,n){
+    //printf("%d::\n",p[i]);
+    auto it = st.upper_bound(p[i]);
+    if(it == st.end()){
+      st.insert(p[i]);
+      cnt[p[i]]=1;
     }else{
-      cout << ((-s * x )%n + n)%n << endl;
+      st.erase(it);
+      cnt[p[i]] = cnt[*it]+1;
+      bt[p[i]] = *it;
+      st.insert(p[i]);
     }
 
+    if(cnt[p[i]]==k){
+      int x = p[i];
+      while(x !=0){
+        t[x] = i+1;
+        x = bt[x];
+      }
+      st.erase(st.find(p[i]));
+    }
+  }
+
+  FOR(i,1,n+1){
+    cout << t[i] << endl;
   }
 }
 

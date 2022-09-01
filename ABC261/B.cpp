@@ -34,54 +34,29 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n;
+  cin >> n;
+  vector<string> a(n);
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  REP(i,n)cin >> a[i];
+
+  REP(i,n)REP(j,n){
+    if(i==j)continue;
+    if(a[i][j] == 'W' && a[j][i] != 'L'){
+      cout << "incorrect" << endl;
+      return 0;
     }
-
+    if(a[i][j] == 'L' && a[j][i] != 'W'){
+      cout << "incorrect" << endl;
+      return 0;
+    }
+    if(a[i][j] == 'D' && a[j][i] != 'D'){
+      cout << "incorrect" << endl;
+      return 0;      
+    }
   }
+  cout << "correct" << endl;
+
 }
 

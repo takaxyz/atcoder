@@ -34,54 +34,49 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
+ll dp[100001][5];
 
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
-
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
-    }
-
+  int n;
+  map<int, pair<int, ll>> mp;
+  cin >> n;
+  int tmx=0;
+  REP(i,n){
+    int t,x;
+    ll a;
+    cin >> t >> x >> a;
+    mp[t] = {x, a};
+    chmax(tmx,t);
   }
+
+  REP(i,100001)FOR(j,1,5)dp[i][j]=-LINF;
+  dp[0][0]=0;
+
+  REP(i,100001){
+    if(mp.count(i+1)){
+      int x = mp[i+1].first;
+      ll a = mp[i+1].second;
+      REP(j,5){
+        if(dp[i][j]==-LINF)continue;
+        chmax(dp[i+1][j], dp[i][j] + (x == j ? a : 0));
+        if(j+1<5)chmax(dp[i+1][j+1], dp[i][j] + (x == j+1 ? a : 0));
+        if(j-1>=0)chmax(dp[i+1][j-1], dp[i][j] + (x == j-1 ? a : 0));
+      }
+    }else{
+      REP(j,5){
+        if(dp[i][j]==-LINF)continue;
+        chmax(dp[i+1][j], dp[i][j]);
+        if(j+1<5)chmax(dp[i+1][j+1], dp[i][j]);
+        if(j-1>=0)chmax(dp[i+1][j-1], dp[i][j]);
+      }
+    }
+  }
+
+  ll ans=0;
+  REP(i,5){
+    chmax(ans, dp[tmx][i]);
+  }
+  cout << ans << endl;
+
 }
 

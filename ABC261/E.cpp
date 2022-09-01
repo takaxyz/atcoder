@@ -34,54 +34,47 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n;
+  ll c;
+  cin >> n >> c;
+  vi t(n);
+  vector<ll> a(n);
+  REP(i,n)cin >> t[i] >> a[i];
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  vector<ll> ans(n);
+  REP(i,30){
+    int cur = c>>i & 1;
+
+    array<int, 2> f = {0,1};
+
+    REP(j,n){
+      cur = f[cur];
+
+      int p = a[j]>>i & 1;
+      if(t[j]==1){
+        //and
+        cur &= p;
+        f[0] &= p;
+        f[1] &= p;
+      }else if(t[j]==2){
+        //or
+        cur |= p;
+        f[0] |= p;
+        f[1] |= p;
+      }else{
+        //xor
+        cur ^= p;
+        f[0] ^= p;
+        f[1] ^= p;
+      }
+      ans[j] += cur<<i;
     }
+  }
 
+  for(auto v: ans){
+    cout << v << endl;
   }
 }
+
 

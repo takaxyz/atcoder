@@ -34,54 +34,39 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
+void solve(){
+  int n,m;
+  cin >> n >> m;
 
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
+  ll a = 0, b = 0;
+  ll ans = -LINF;;
+  REP(_, n){
+    ll x, y;
+    cin >> x >> y;
 
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
+    chmax(ans,a+b+x);
+    if(b > 0 && x < 0){
+      ll ni = b / -x;
+      if(ni < y){
+        chmax(ans, a + b * ni + x * ni * (ni+1)/2);
+      }
+    }
+    a += b * y + x * y * (y+1) / 2;
+    b += x * y;
+    chmax(ans, a);
+
   }
-  return d;
+  cout << ans << endl;
 }
+
+
 
 
 int main(){
   int t;
   cin >> t;
   REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
-
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
-    }
-
+    solve();
   }
 }
 

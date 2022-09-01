@@ -34,52 +34,54 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
 template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
+vector<T> get_divisor(T n){
+  vector<T> ret;
+
+  for(T i = 1; i*i <= n; i++){
+    if(n%i==0){
+      ret.push_back(i);
+      if(i*i != n) ret.push_back(n/i);
+    }
   }
-  return d;
+  sort(ret.begin(), ret.end());
+  return ret;
 }
 
 
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n,k;
+  cin >> n >> k;
+  vi a(n);
+  REP(i,n)cin >> a[i];
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  int sum = 0;
+  REP(i,n)sum += a[i];
+
+  auto ds = get_divisor(sum);
+  reverse(ALL(ds));
+  for(auto d : ds){
+
+    vi ls(n+1), rs(n+1);
+
+    vi m(n);
+    REP(i,n)m[i] = a[i] % d;
+
+    sort(ALL(m));
+
+    REP(i,n){
+      ls[i+1] = ls[i] + m[i];
+    }
+
+    REP(i,n){
+      rs[n-i-1] = rs[n-i] + (d - m[n-1-i]);
+    }
+
+    FOR(i,1,n+1){
+      if(ls[i]==rs[i] && ls[i] <= k){
+        cout << d << endl;
+        return 0;
+      }
     }
 
   }

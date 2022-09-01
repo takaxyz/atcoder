@@ -34,54 +34,57 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
-
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
-    }
-
+  int r,c;
+  cin >> r >> c;
+  r--;c--;
+  int b;
+  switch (r)
+  {
+  case 0:
+  case 14:
+    b = 1;
+    /* code */
+    break;
+  case 1:
+  case 13:
+    if(c==0 || c == 14)b=1;
+    else b = 0;
+    /* code */
+    break;
+  case 2:
+  case 12:
+    if(c==1 || c == 13)b=0;
+    else b = 1;
+    /* code */
+    break;
+  case 3:
+  case 11:
+    if(c==0 || c == 2 || c == 14 || c == 12)b=1;
+    else b = 0;
+    /* code */
+    break;
+  case 4:
+  case 10:
+    if(c==1 || c == 13 || c == 3 || c == 11)b=0;
+    else b = 1;
+    /* code */
+    break;
+  case 5:
+  case 9:
+    if(c==0 || c == 2 || c == 4 || c == 14 || c == 12 || c == 10)b=1;
+    else b = 0;
+  case 6:
+  case 8:
+    if(c==1 || c == 13 || c == 3 || c == 11 || c == 5 || c == 9)b=0;
+    else b = 1;
+  case 7:
+    if(c%2)b = 0;
+    else b = 1;
+  
+  default:
+    break;
   }
+  cout << (b ? "black" : "white") << endl;
 }
 

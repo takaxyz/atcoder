@@ -34,54 +34,46 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
+vector<ll> a;
+vector<ll> s;
+int n;
+
+bool f(int x, int y, ll sum){
+  return s[y]-s[x] >= sum;
 }
 
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
+bool check(int x, ll sum){
+  ll ok=n, ng=x;
 
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
+  while(abs(ok-ng)>1){
+    ll mid = (ok+ng)/2;
+    //cout << l << " " << r << " " << mid << endl;
+    if(f(x,mid,sum)){
+      ok=mid;
+    }else{
+      ng=mid;
+    }
   }
-  return d;
+  return s[ok]-s[x]==sum;
 }
 
 
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  ll p,q,r;
+  cin >> n >> p >> q >> r;
+  a.resize(n);
+  s.resize(n+1);
+  REP(i,n)cin >> a[i];
+  s[0]=0;
+  REP(i,n)s[i+1] = s[i] + a[i];
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
+  REP(x,n){
+    if(check(x,p) && check(x,p+q) && check(x,p+q+r)){
+      cout << "Yes" << endl;
+      return 0;
     }
-
   }
+  cout << "No" << endl;
+
 }
 

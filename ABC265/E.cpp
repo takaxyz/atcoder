@@ -24,6 +24,8 @@ using vvi = vector<vi>;
 using vvvi = vector<vvi>;
 using pii = pair<int, int>;
 
+using mint = modint998244353;
+
 template <typename T> using PQ = priority_queue<T>;
 template <typename T> using minPQ = priority_queue<T, vector<T>, greater<T>>;
 
@@ -34,54 +36,42 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
+  int n,m;
+  cin >> n >> m;
 
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
-    }
+  vector<ll> xd(3), yd(3);
+  REP(i,3)cin >> xd[i] >> yd[i];
 
+  set<pair<ll,ll>> st;
+  REP(i,m){
+    ll x,y;
+    cin >> x >> y;
+    st.insert({x,y});
   }
+
+  map<pair<ll,ll>, mint> dp;
+  dp[{0,0}]=1;
+  REP(i,n){
+    map<pair<ll,ll>, mint> dp1;
+    swap(dp1,dp);
+
+    for(auto [k,v]: dp1){
+      auto [x,y] = k;
+      REP(i,3){
+        ll nx = x + xd[i];
+        ll ny = y + yd[i];
+        //cout << nx << " " << ny << endl;
+        if(st.count({nx,ny}))continue;
+        dp[{nx,ny}] += v;
+      }
+    }
+  }
+
+  mint ans=0;
+  for(auto [k,v]: dp){
+    ans += v;
+  }
+  cout << ans.val() << endl;
 }
 

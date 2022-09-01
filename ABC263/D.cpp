@@ -34,54 +34,46 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-ll gcd(ll a, ll b)
-{
-   if (a%b == 0)
-   {
-       return(b);
-   }
-   else
-   {
-       return(gcd(b, a%b));
-   }
-}
-
-ll lcm(ll a, ll b)
-{
-   return a / gcd(a, b) * b;
-}
-
-template< typename T >
-T extgcd(T a, T b, T &x, T &y) {
-  T d = a;
-  if(b != 0) {
-    d = extgcd(b, a % b, y, x);
-    y -= (a / b) * x;
-  } else {
-    x = 1;
-    y = 0;
-  }
-  return d;
-}
-
-
 int main(){
-  int t;
-  cin >> t;
-  REP(_,t){
-    ll n, s, k;
-    cin >> n >> s >> k;
-
-    ll g = gcd(n, gcd(k, s));
-    n /= g, k/=g, s/=g;
-    ll x, y, g2;
-    g2 = extgcd(k, n, x, y);
-    if(g2!=1){
-      cout << -1 << endl;
-    }else{
-      cout << ((-s * x )%n + n)%n << endl;
-    }
-
+  int n;
+  ll l, r;
+  cin >> n >> l >> r;
+  vector<ll> a(n);
+  ll sum=0;
+  REP(i,n){
+    cin >> a[i];
+    sum += a[i];
   }
+
+  vector<ll> L(n);
+  REP(i,n){
+    L[i] += l - a[i];
+    if(i>0)L[i] += L[i-1];
+  }
+  // for(auto x: L){
+  //   cout << x << endl;
+  // }
+  vector<ll> R(n);
+  vector<ll> Rmin(n);
+  ll mn = 0;
+  for(int i = n-1; i >=0; i--){
+    R[i] += r - a[i];
+    if(i<n-1)R[i] += R[i+1];
+    chmin(mn, R[i]);
+    Rmin[i]=mn;
+  }
+  // for(auto x: R){
+  //   cout << x << endl;
+  // }
+  // for(auto x: Rmin){
+  //   cout << x << endl;
+  // }
+
+  ll x = Rmin[0];
+  REP(i,n){
+    if(i < n - 1)chmin(x, L[i] + Rmin[i+1]);
+    else chmin(x, L[i]);
+  }
+  cout << min(sum + x,sum) << endl;
 }
 
