@@ -34,10 +34,37 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+using mint = modint1000000007;
 
+int main(){
+
+  string s;
+  cin >> s;
+
+  vector<mint> dp(13,0);
+  dp[0]=1;
+
+  reverse(ALL(s));
+  int m = 1;
+  REP(i,s.size()){
+    vector<mint> p(13,0);
+    swap(p,dp);
+    if(s[i]=='?'){
+      REP(n, 10){
+        REP(j,13){
+          dp[ (n * m + j) % 13] += p[j];
+        }
+      }
+    }else{
+      int n = s[i] - '0';
+      REP(j,13){
+        dp[ (n * m + j) % 13] += p[j];
+      }
+    }
+    m *= 10;
+    m %= 13;
+  }
+
+  cout << dp[5].val() << endl;
 }
 

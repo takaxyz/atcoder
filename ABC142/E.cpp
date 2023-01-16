@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -34,10 +34,37 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  int n,m;
+  cin >> n >> m;
+
+  vvi dp(m+1, vi(1<<n,INF));
+  dp[0][0]=0;
+
+  REP(i,m){
+    int a,b;
+    cin >> a >> b;
+
+    int bit=0;
+    REP(_,b){
+      int c;
+      cin >> c;
+      c--;
+      bit += 1<<c;
+    }
+
+    REP(j, 1<<n){
+      if(dp[i][j]==INF)continue;
+      chmin(dp[i+1][j], dp[i][j]);
+      chmin(dp[i+1][j | bit], dp[i][j] + a);
+    }
+  }
+  int ans = INF;
+  FOR(i,1,m+1)chmin(ans, dp[i][(1<<n)-1]);
+
+  if(ans==INF)cout << -1 << endl;
+  else cout << ans << endl;
 
 }
 

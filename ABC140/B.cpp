@@ -35,9 +35,19 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  vi a(n),b(n),c(n-1);
+  REP(i,n)cin >> a[i], a[i]--;
+  REP(i,n)cin >> b[i];
+  REP(i,n-1)cin >> c[i];
+  int ans=0;
+  REP(i,n){
+    ans += b[a[i]];
+    if(i > 0 && a[i] == a[i-1]+1){
+      ans += c[a[i-1]];
+    }
+  }
+  cout << ans << endl;
 }
 

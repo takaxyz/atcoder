@@ -35,9 +35,15 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  vector<double> v(n);
+  REP(i,n)cin >> v[i];
+  sort(ALL(v));
+  double ans = v[0];
+  FOR(i,1,n){
+    ans = (ans + v[i])/2;
+  }
+  printf("%0.7f\n",ans);
 }
 

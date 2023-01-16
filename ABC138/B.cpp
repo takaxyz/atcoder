@@ -35,9 +35,15 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  double x=0;
+  REP(i,n){
+    double a;
+    cin >> a;
+    x += 1.0/a;
+  }
+  printf("%.6f\n", 1.0/x);
+  
 }
 

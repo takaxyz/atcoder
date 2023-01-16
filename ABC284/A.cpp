@@ -35,9 +35,13 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
+  reverse(ALL(s));
+  for(auto x: s){
+    cout << x << endl;
+  }
 }
 

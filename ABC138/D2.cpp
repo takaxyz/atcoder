@@ -35,9 +35,42 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  int n,q;
+  cin >> n >> q;
 
+  vvi edge(n);
+  REP(_,n-1){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
+  }
+
+  vector<ll> c(n);
+  REP(_,q){
+    int p,x;
+    cin >> p >> x;
+    p--;
+    c[p] += x;
+  }
+
+  vector<ll> ans(n);
+
+  ll now=0;
+
+  function<void(int,int)> dfs = [&](int v, int p){
+    now += c[v];
+    ans[v] = now;
+    for(auto nx : edge[v]){
+      if(nx==p)continue;
+      dfs(nx,v);
+    }
+    now -= c[v];
+  };
+
+  dfs(0,-1);
+
+  REP(i,n)cout << ans[i] << endl;
 }
 

@@ -35,9 +35,19 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  map<string,ll> mp;
+  REP(i,n){
+    string s;
+    cin >> s;
+    sort(ALL(s));
+    mp[s]++;
+  }
+  ll ans=0;
+  for(auto [k,v]: mp){
+    ans += v * (v-1) / 2;
+  }
+  cout << ans << endl;
 }
 

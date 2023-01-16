@@ -35,9 +35,31 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  string s,t;
+  cin >> s >> t;
 
+  vvi cnt(26);
+  REP(i,s.size()){
+    cnt[s[i]-'a'].pb(i);
+  }
+
+  int pos = -1;
+  int cc = 0;
+  for(auto c: t){
+    int x = c - 'a';
+    if(cnt[x].size()==0){
+      cout << -1 << endl;
+      return 0;
+    }
+
+    auto it = upper_bound(ALL(cnt[x]), pos);
+    if(it == cnt[x].end()){
+      cc++;
+      pos = cnt[x][0];
+    }else{
+      pos = *it;
+    }
+  }
+  cout << (ll)s.size() * cc + pos + 1 << endl;
 }
 

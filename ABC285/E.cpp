@@ -3,10 +3,11 @@
 using namespace std;
 using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
+#define PRINTV(a)  REP(i,(int)a.size())cout << a[i] << (i == (int)a.size()-1 ? "\n" : " ")
 #define PRINT(a)   cout << (a) << endl
 
 #define pb push_back
@@ -35,9 +36,29 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  vector<ll> a(n);
+  REP(i,n)cin >> a[i];
+  vector<ll> b(n);
+  FOR(i,1,n)b[i] = b[i-1]+a[(i-1)/2];
+
+  vector<ll> dp(n+1);
+
+  // dp[i] : i日を休日とした場合の最大値(0-index)
+  
+  // PRINTV(a);
+  // PRINTV(b);
+
+  FOR(i,1,n+1){
+    REP(j,i){
+      chmax(dp[i], dp[j] + b[i-j-1]);
+    }
+  }
+
+  // PRINTV(dp);
+
+  cout << dp[n] << endl;
 
 }
 

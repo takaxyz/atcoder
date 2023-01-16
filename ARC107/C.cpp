@@ -34,10 +34,42 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+using mint = modint998244353;
 
+int n, k;
+mint solve(vvi a){
+  int n = a.size();
+
+  dsu uf(n);
+
+  REP(i,n)REP(j,i){
+    bool ok = true;
+    REP(l,n){
+      if(a[i][l] + a[j][l] > k)ok = false;
+    }
+    if(ok)uf.merge(i,j);
+  }
+
+  mint ret = 1;
+  for(auto g : uf.groups()){
+    FOR(i, 1, g.size()+1){
+      ret *= mint(i);
+    }
+
+  }
+  return ret;
+}
+
+int main(){
+  cin >> n >> k;
+  vvi a(n, vi(n));
+  vvi b(n, vi(n));
+
+  REP(i,n)REP(j,n){
+    cin >> a[i][j];
+    b[j][i] = a[i][j];
+  }
+
+  cout << (solve(a) * solve(b)).val() << endl;
 }
 

@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -35,9 +35,20 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  int n,k,q;
+  cin >> n >> k >> q;
+  vi s(n);
+  REP(i,q){
+    int a;
+    cin >> a;
+    s[--a]++;
+  }
+  REP(i,n){
+    if(q-s[i] >= k){
+      cout << "No" << endl;
+    }else{
+      cout << "Yes" << endl;
+    }
+  }
 }
 

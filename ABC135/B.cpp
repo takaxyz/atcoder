@@ -35,9 +35,18 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  vi p(n);
+  REP(i,n)cin >> p[i];
+  int cnt=0;
+  REP(i,n)if(p[i]!=i+1)cnt++;
 
+  if(cnt==0 || cnt==2){
+    cout << "YES" << endl;
+  }else{
+    cout << "NO" << endl;
+  }
+  
 }
 

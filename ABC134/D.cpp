@@ -35,9 +35,27 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  vi a(n+1);
+  REP(i,n)cin >> a[i+1];
+
+  vi ans(n+1);
+  for(int i=n; i>0; i--){
+    int cnt=0;
+    for(int j=i*2; j <=n; j+=i){
+      cnt += ans[j];
+    }
+    ans[i] = (cnt % 2) ^ a[i];
+  }
+
+  vi b;
+  FOR(i,1,n+1)if(ans[i]==1)b.push_back(i);
+
+  cout << b.size() << endl;
+  REP(i,b.size()){
+    cout << b[i] << (i==b.size()-1 ? "\n" : " ");
+  }
 
 }
 

@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -34,10 +34,27 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+map<ll, int > prime_factor(ll n) {
+  map<ll, int > ret;
+  for(ll i = 2; i * i <= n; i++) {
+    while(n % i == 0) {
+      ret[i]++;
+      n /= i;
+    }
+  }
+  if(n != 1) ret[n] = 1;
+  return ret;
+}
 
+int main(){
+  ll a,b;
+  cin >> a >> b;
+  auto pfa = prime_factor(a);
+  auto pfb = prime_factor(b);
+  set<ll> st;
+  int ans=0;
+  for(auto [k,v]: pfa)st.insert(k);
+  for(auto [k,v]: pfb)if(st.count(k))ans++;
+  cout << ans+1 << endl;
 }
 

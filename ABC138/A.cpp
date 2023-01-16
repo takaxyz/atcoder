@@ -35,9 +35,9 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  int a;
+  string s;
+  cin >> a >> s;
+  cout << (a>=3200 ? s : "red") << endl;
 }
 

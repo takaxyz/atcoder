@@ -35,9 +35,39 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  int n;
+  string t;
+  cin >> n >> t;
+  string a = t.substr(0,n);
+  string b = t.substr(n);
+  reverse(ALL(b));
 
+  vi az = z_algorithm(a+b);
+  vi bz = z_algorithm(b+a);
+  // REP(i,az.size()){
+  //   cout << az[i] << (i==az.size()-1 ? "\n" : " ");
+  // }
+  // REP(i,bz.size()){
+  //   cout << bz[i] << (i==bz.size()-1 ? "\n" : " ");    
+  // }
+
+  FOR(i,1,n+1){
+    if(az[2*n-i]!=i)continue;
+
+    int j = n-i;
+
+    if(bz[2*n-j]!=j)continue;
+
+    //cout << i << " " << j << endl;
+
+    string ans = a.substr(0,i);
+    reverse(ALL(a));
+    ans += a.substr(0,j);
+    cout << ans << endl;
+    cout << i << endl;
+    return 0;
+
+  }
+  cout << -1 << endl;
 }
 

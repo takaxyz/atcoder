@@ -35,9 +35,14 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  string s;
+  cin >> s;
+  if(s=="Sunny"){
+    cout << "Cloudy" << endl;
+  }else if(s=="Cloudy"){
+    cout << "Rainy" << endl;
+  }else{
+    cout << "Sunny" << endl;
+  }
 }
 

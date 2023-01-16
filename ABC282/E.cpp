@@ -34,10 +34,38 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+using mint = modint;
 
+
+using Edge = pair<int, pair<int, int>>;
+
+int f(int x, int y){
+  return (modint(x).pow(y) + modint(y).pow(x)).val();
+}
+
+int main(){
+  int n,m;
+  cin >> n >> m;
+  mint::set_mod(m);
+
+  vi a(n);
+  REP(i,n)cin >> a[i];
+
+  vector<Edge> e;
+  REP(i,n)REP(j,i){
+    e.emplace_back(f(a[i], a[j]),make_pair(i, j));
+  }
+  sort(ALL(e));
+  reverse(ALL(e));
+
+  dsu uf(n);
+  ll ans=0;
+  for(auto [w, ee]: e){
+    auto [a,b] = ee;
+    if(uf.same(a,b))continue;
+    ans += w;
+    uf.merge(a,b);
+  }
+  cout << ans << endl;
 }
 

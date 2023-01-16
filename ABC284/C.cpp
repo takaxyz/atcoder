@@ -35,9 +35,15 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  int n,m;
+  cin >> n >> m;
+  dsu uf(n);
+  REP(_,m){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    uf.merge(u,v);
+  }
+  cout << uf.groups().size() << endl;
 }
 

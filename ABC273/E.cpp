@@ -34,10 +34,40 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+struct Node{
+  int x;
+  int parent;
+  Node(int p, int x) : parent(p), x(x) {};
+};
 
+int main(){
+  int q;
+  cin >> q;
+  vector<Node> vec;
+
+  vec.emplace_back(-1,-1);
+  int v = 0;
+  map<int,int> mp;
+  REP(_,q){
+    string s;
+    int x;
+    cin >> s;
+    if(s == "ADD"){
+      cin >> x;
+      vec.emplace_back(v, x);
+      v = vec.size()-1;
+    }else if(s=="DELETE"){
+      if(v!=0){
+        v = vec[v].parent;
+      }
+    }else if(s=="LOAD"){
+      cin >> x;
+      v = mp[x];
+    }else{
+      cin >> x;
+      mp[x] = v;
+    }
+    cout << vec[v].x << endl;
+  }
 }
 

@@ -35,9 +35,32 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  string s;
+  cin >> s;
+  vi p(26,-1);
+  stack<int> st;
+
+  REP(i, s.size()){
+    char x = s[i];
+    if(x=='('){
+      st.push(i);
+    }else if(x==')'){
+      int j = st.top(); st.pop();
+      for(auto &k : p){
+        if(k > j)k = -1;
+      }
+    }else{
+      int v=x-'a';
+      if(p[v]!=-1){
+        cout << "No" << endl;
+        return 0;
+      }else{
+        p[v]=i;
+      }
+    }
+
+  }
+  cout << "Yes" << endl;
 
 }
 

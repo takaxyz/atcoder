@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -35,9 +35,50 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
 
+  map<string, int> mp1,mp2;
+  vvi edge(n);
+  
+  vi ind(n);
+  REP(i,n){
+    string s,t;
+    cin >> s >> t;
+    if(mp1.count(t)){
+      edge[i].pb(mp1[t]);
+      ind[mp1[t]]++;
+    }
+    if(mp2.count(s)){
+      edge[mp2[s]].pb(i);
+      ind[i]++;
+    }
+    mp1[s] = i;
+    mp2[t] = i; 
+  }
+
+  // REP(i,n){
+  //   cout << i << " : ";
+  //   REP(j,edge[i].size()){
+  //     cout << edge[i][j] << (j==edge[i].size()-1 ? "\n" : " ");
+  //   } 
+  //   cout << endl;
+  // }
+
+  queue<int> q;
+  REP(i,ind.size())if(ind[i]==0)q.push(i);
+
+  vi ans;
+  while(q.size()){
+    int v = q.front();
+    q.pop();
+
+    for(auto nx : edge[v]){
+      ind[nx]--;
+      if(ind[nx]==0)q.push(nx);
+    }
+    ans.pb(v);
+  }
+  cout << (ans.size() == n ? "Yes" : "No") << endl;
 }
 

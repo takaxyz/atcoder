@@ -35,9 +35,19 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+    int n,m;
+    cin >> n >> m;
+    vector<string> s(n);
+    REP(i,n)cin >> s[i];
 
+    int ans=0;
+    REP(i,n)FOR(j,i+1,n){
+        bool ok=true;
+        REP(k,m){
+            if(s[i][k] == 'x' && s[j][k] == 'x')ok=false;
+        }
+        if(ok)ans++;
+    }
+    cout << ans << endl;
 }
 

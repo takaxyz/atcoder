@@ -35,9 +35,20 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  vi a(n),b(n);
+  REP(i,n){
+    cin >> a[i];
+    b[i]=a[i];
+  }
+  sort(ALL(b));
+  REP(i,n){
+    if(a[i]==b[n-1]){
+      cout << b[n-2] << endl;
+    }else{
+      cout << b[n-1] << endl;
+    }
+  }
 }
 

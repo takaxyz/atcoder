@@ -35,9 +35,12 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  vi b(n);
+  REP(i,n-1)cin >> b[i];
+  int ans=b[0]+b[n-2];
+  REP(i,n-2)ans += min(b[i],b[i+1]);
+  cout << ans << endl;
 }
 

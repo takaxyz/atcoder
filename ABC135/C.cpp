@@ -35,9 +35,33 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  vector<ll> a(n+1), b(n);
+  REP(i,n+1)cin >> a[i];
+  REP(i,n)cin >> b[i];
 
+  ll ans=0;
+  for(int i = n-1; i >=0 ; i--){
+    if(a[i+1] >= b[i]){
+      ans += b[i];
+      a[i+1] -= b[i];
+      b[i]=0;
+    }else{
+      ans += a[i+1];
+      b[i]-= a[i+1];
+      a[i+1]=0;
+    }
+    if(a[i] >= b[i]){
+      ans += b[i];
+      a[i] -= b[i];
+      b[i]=0;
+    }else{
+      ans += a[i];
+      b[i]-= a[i];
+      a[i]=0;
+    }
+  }
+  cout << ans << endl;
 }
 

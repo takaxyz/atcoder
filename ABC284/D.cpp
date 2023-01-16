@@ -34,10 +34,44 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  ll n;
-  cin >> n;
-  cout << n * (n-1) / 2 << endl;
+vector< ll > prime_list(ll n) {
+  vector< bool > prime(n + 1, true);
+  if(n >= 0) prime[0] = false;
+  if(n >= 1) prime[1] = false;
+  for(int i = 2; i * i <= n; i++) {
+    if(!prime[i]) continue;
+    for(int j = i + i; j <= n; j += i) {
+      prime[j] = false;
+    }
+  }
+  vector<ll> ret;
+  FOR(i,2,n+1){
+    if(prime[i])ret.emplace_back(i);
+  }
+  return ret;
+}
 
+int main(){
+  ll n = 3000000;
+  vector<ll> l = prime_list(n);
+
+
+  int t;
+  cin >> t;
+  REP(_,t){
+    ll n;
+    cin >> n;
+    for(auto x: l){
+      if(n%(x*x)==0){
+        cout << x << " " << n / x / x << endl;
+        break;
+      }else if(n%x==0){
+        cout << (ll)sqrt(n / x) << " " << x << endl;
+        break;
+      }
+    }
+
+
+  }
 }
 

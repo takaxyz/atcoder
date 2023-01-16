@@ -35,9 +35,18 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
-
+  int ans=0;
+  FOR(i,1,n+1){
+    int m=i;
+    int cnt=0;
+    while(m>0){
+      m/=10;
+      cnt++;
+    }
+    if(cnt%2==1)ans++;
+  }
+  cout << ans << endl;
 }
 

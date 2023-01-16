@@ -35,9 +35,22 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  ll n;
+  int n;
   cin >> n;
-  cout << n * (n-1) / 2 << endl;
+  vi h(n);
+  REP(i,n)cin >> h[i];
+  int ans=-1;
+  int cnt=0;
+  REP(i,n-1){
+    if(h[i]>=h[i+1])cnt++;
+    else{
+      chmax(ans,cnt);
+      cnt=0;
+    }
+  }
+  chmax(ans,cnt);
+
+  PRINT(ans);
 
 }
 
