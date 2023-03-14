@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+#include <atcoder/all>
+using namespace std;
+using namespace atcoder;
+
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
+#define REP(i,n)   FOR(i,0,n)
+#define ALL(a)     (a).begin(),(a).end()
+#define RALL(a)     (a).rbegin(),(a).rend()
+#define PRINT(a)   cout << (a) << endl
+
+#define pb push_back
+#define eb emplace_back
+#define mp make_pair
+#define Fi first
+#define Se second
+
+#define debug(x) cerr << x << " " << "(L:" << __LINE__ << ")" << '\n';
+
+using ll = long long int;
+using P = pair<int,int>;
+using vi = vector<int>;
+using vvi = vector<vi>;
+using vvvi = vector<vvi>;
+using pii = pair<int, int>;
+
+template <typename T> using PQ = priority_queue<T>;
+template <typename T> using minPQ = priority_queue<T, vector<T>, greater<T>>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+const int INF = 1001001001;
+const ll LINF = 1001001001001001001ll;
+const int MOD = 1e9 + 7;
+
+int main(){
+  int n,k;
+  ll p;
+  cin >> n >> k >> p;
+  int n1,n2;
+  n1 = n/2;
+  n2 = n - n1;
+
+  vector<ll> a1(n1),a2(n2);
+  REP(i,n1)cin >> a1[i];
+  REP(i,n2)cin >> a2[i];
+
+  vector<vector<ll>> s1(n1+1), s2(n2+1);
+
+  REP(i, 1<<n1){
+    int cnt = __builtin_popcount(i);
+    ll sum = 0;
+    REP(j, n1){
+      if((i>>j)&1)sum += a1[j];
+    }
+    s1[cnt].pb(sum);
+  }
+
+  REP(i, 1<<n2){
+    int cnt = __builtin_popcount(i);
+    ll sum = 0;
+    REP(j, n2){
+      if((i>>j)&1)sum += a2[j];
+    }
+    s2[cnt].pb(sum);
+  }
+
+  // REP(i,s1.size()){
+  //   REP(j,s1[i].size()){
+  //     printf("%d %d : %lld\n",i,j,s1[i][j]);
+  //   }
+  // }
+
+  REP(i,n1)sort(ALL(s1[i]));
+  REP(i,n2)sort(ALL(s2[i]));
+
+  ll ans=0;
+  REP(i,n1+1){
+    int j = k-i;
+    if(j > n2 || j < 0)continue;
+
+    for(auto x : s1[i]){
+      //if(x >= p)continue;
+      ans += upper_bound(ALL(s2[j]) , p - x) - s2[j].begin();
+    }
+  }
+  cout << ans << endl;
+}
+
