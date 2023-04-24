@@ -18,7 +18,7 @@ using namespace atcoder;
 #define debug(x) cerr << x << " " << "(L:" << __LINE__ << ")" << '\n';
 
 using ll = long long int;
-using P = pair<int,int>;
+using P = pair<int,ll>;
 using vi = vector<int>;
 using vvi = vector<vi>;
 using vvvi = vector<vvi>;
@@ -34,30 +34,33 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint1000000007;
-
 int main(){
-  int n;
+  ll n;
   cin >> n;
-  vvi a(n,vi(n));
-  REP(i,n)REP(j,n)cin >> a[i][j];
-
-  map<int, mint> memo;
-  vector<vector<mint>> dp(n+1,vector<mint>(1<<n));
-  dp[0][0]=1;
-  REP(i,n){
-    REP(j, 1<<n){
-      int c = __builtin_popcount(j);
-      if(i != c)continue;
-      REP(k,n){
-        if(a[i][k] == 0)continue;
-        if((j >> k) & 1)continue;
-
-        dp[i+1][j | 1<<k] += dp[i][j];
-      }
-    }
+  vector<vector<P>> edge(n);
+  REP(i,n-1){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[u].emplace_back(v,i);
+    edge[v].emplace_back(u,i);
   }
 
-  cout << dp[n][(1<<n)-1].val() << endl;
+  ll ans=n*(n-1)/2;
+  auto dfs = [&](int v, ll mi, ll mx, int p, auto dfs) -> void{
+    //cout << v << " " << mi << " " << mx << " " << (mi + 1) * (n - mx - 1) << endl;
+    ans += (mi + 1) * (n - mx - 1);
+    for(auto [nv, i]: edge[v]){
+      if(nv==p)continue;
+      ll mi2 = min(mi, i);
+      ll mx2 = max(mx, i);
+      dfs(nv,mi2,mx2,v,dfs);
+    }
+  };
+
+  for(auto [v, i]: edge[0]){
+    dfs(v,i,i,0,dfs);
+  }
+  cout << ans << endl;
 }
 

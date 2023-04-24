@@ -34,30 +34,46 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint1000000007;
-
 int main(){
-  int n;
-  cin >> n;
-  vvi a(n,vi(n));
-  REP(i,n)REP(j,n)cin >> a[i][j];
+  ll l;
+  int n1,n2;
+  cin >> l >> n1 >> n2;
+  vi v1(n1), v2(n2);
+  vector<ll> l1(n1), l2(n2);
 
-  map<int, mint> memo;
-  vector<vector<mint>> dp(n+1,vector<mint>(1<<n));
-  dp[0][0]=1;
-  REP(i,n){
-    REP(j, 1<<n){
-      int c = __builtin_popcount(j);
-      if(i != c)continue;
-      REP(k,n){
-        if(a[i][k] == 0)continue;
-        if((j >> k) & 1)continue;
+  REP(i,n1)cin >> v1[i] >> l1[i];
+  REP(i,n2)cin >> v2[i] >> l2[i];
+  REP(i,n1-1)l1[i+1] += l1[i];
+  REP(i,n2-1)l2[i+1] += l2[i];
 
-        dp[i+1][j | 1<<k] += dp[i][j];
-      }
+  ll p = 0;
+  vector<tuple<int, int, ll>> v;
+  int i1=0;
+  int i2=0;
+  while(true){
+    v.emplace_back(v1[i1], v2[i2], p);
+    if(l1[i1] > l2[i2]){
+      p = l2[i2];
+      i2++;
+    }else if(l1[i1] == l2[i2]){
+      p = l2[i2];
+      i1++;i2++;
+    }else{
+      p = l1[i1];
+      i1++;
+    }
+    if(p==l)break;
+  }
+  v.emplace_back(0,1,l);
+
+  ll ans=0;
+  REP(i, v.size()-1){
+    auto [a1,b1,p1] = v[i];
+    auto [a2,b2,p2] = v[i+1];
+    if(a1==b1){
+      ans += p2-p1;
     }
   }
-
-  cout << dp[n][(1<<n)-1].val() << endl;
+  cout << ans << endl;
 }
 

@@ -34,30 +34,17 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint1000000007;
-
 int main(){
   int n;
   cin >> n;
-  vvi a(n,vi(n));
-  REP(i,n)REP(j,n)cin >> a[i][j];
 
-  map<int, mint> memo;
-  vector<vector<mint>> dp(n+1,vector<mint>(1<<n));
-  dp[0][0]=1;
-  REP(i,n){
-    REP(j, 1<<n){
-      int c = __builtin_popcount(j);
-      if(i != c)continue;
-      REP(k,n){
-        if(a[i][k] == 0)continue;
-        if((j >> k) & 1)continue;
+  vi a(n);
+  REP(i,n)cin >> a[i];
 
-        dp[i+1][j | 1<<k] += dp[i][j];
-      }
-    }
+  set<int> st;
+  REP(i,n)FOR(j,i+1,n)FOR(k,j+1,n){
+    st.insert(a[i] * a[j] * a[k]);
   }
-
-  cout << dp[n][(1<<n)-1].val() << endl;
+  cout << st.size() << endl;
 }
 

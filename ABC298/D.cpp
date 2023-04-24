@@ -34,30 +34,33 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint1000000007;
+
+using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vvi a(n,vi(n));
-  REP(i,n)REP(j,n)cin >> a[i][j];
-
-  map<int, mint> memo;
-  vector<vector<mint>> dp(n+1,vector<mint>(1<<n));
-  dp[0][0]=1;
-  REP(i,n){
-    REP(j, 1<<n){
-      int c = __builtin_popcount(j);
-      if(i != c)continue;
-      REP(k,n){
-        if(a[i][k] == 0)continue;
-        if((j >> k) & 1)continue;
-
-        dp[i+1][j | 1<<k] += dp[i][j];
-      }
+  int q;
+  cin >> q;
+  deque<int> que;
+  que.push_back(1);
+  mint ans=1;
+  mint d=1;
+  REP(_,q){
+    int t,i;
+    cin >> t;
+    if(t==1){
+      cin >> i;
+      ans *= 10;
+      ans += i;
+      que.push_back(i);
+      d *= 10;
+    }else if(t==2){
+      int x = que.front();
+      que.pop_front();
+      ans -= d * x;
+      d /= 10;
+    }else{
+      cout << ans.val() << endl;
     }
   }
-
-  cout << dp[n][(1<<n)-1].val() << endl;
 }
 
