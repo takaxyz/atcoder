@@ -35,33 +35,40 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,m;
+  cin >> n >> m;
+  vvi edge(n);
+  REP(i,n-1){
+    int p;
+    cin >> p;
+    p--;
+    edge[p].pb(i+1);
+  }
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
+  vi yy(n,-1); 
+  REP(i,m){
+    int x,y;
+    cin >> x >> y;
+    x--;
+    chmax(yy[x],y);
+  }
+
+  int ans=0;
+
+  auto dfs = [&](int x, int p, int d, auto dfs) -> void{
+    if(d < yy[x])d=yy[x];
+
+    if(d >= 0)ans++;
+
+    for(auto nv : edge[x]){
+      if(nv==p)continue;
+      dfs(nv, x, d-1, dfs);
+    }
+
   };
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
+  dfs(0,-1,yy[0],dfs);
 
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
-    }
-  }
+  cout << ans << endl;
 }
+

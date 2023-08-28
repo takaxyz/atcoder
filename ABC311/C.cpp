@@ -37,31 +37,33 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  int l = 0, r =n;
+  vi edge(n);
+  REP(i,n){
+    int a;
+    cin >> a;
+    edge[i] = --a;
+  }
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+  vi visited(n);
+  int now=0;
+  visited[now]=1;
+  while(true){
+    now = edge[now];
+    if(visited[now]){
+      break;
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      visited[now]=1;
     }
   }
+
+  int ed = now;
+  vi ans;
+  do {
+    ans.pb(now+1);
+    now = edge[now];
+  }while(now != ed);
+
+  cout << ans.size() << endl;
+  for(auto v: ans)cout << v << endl;
 }
+

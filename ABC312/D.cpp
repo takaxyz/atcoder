@@ -33,35 +33,29 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
+using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  string s;
+  cin >> s;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
+  vector<mint> dp(s.size()+1);
+  vector<mint> dp2(s.size()+1);
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+  dp[0]=1;
+  for(auto c: s){
+    REP(i,dp2.size())dp2[i]=0;
+    swap(dp,dp2);
+    if(c=='('){
+      REP(i,s.size())dp[i+1] += dp2[i];
+    }else if(c==')'){
+      REP(i,s.size())dp[i] += dp2[i+1];
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      REP(i,s.size())dp[i+1] += dp2[i];
+      REP(i,s.size())dp[i] += dp2[i+1];
     }
   }
+
+  cout << dp[0].val() << endl;
 }
+

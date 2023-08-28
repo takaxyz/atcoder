@@ -35,33 +35,32 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,m;
+  cin >> n >> m;
+  vi a(n), b(m);
+  REP(i,n)cin >> a[i];
+  REP(i,m)cin >> b[i];
+  sort(ALL(a));
+  sort(ALL(b));
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
+  auto f = [&](int x){
+    int ac = upper_bound(ALL(a), x) - a.begin();
+    int bc = b.end() - lower_bound(ALL(b),x);
+    return ac >= bc;
   };
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
+  ll ok=INF, ng=0;
 
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+  while(abs(ok-ng)>1){
+    ll mid = (ok+ng)/2;
+    //cout << l << " " << r << " " << mid << endl;
+    if(f(mid)){
+      ok=mid;
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      ng=mid;
     }
   }
+
+  cout << ok << endl;
 }
+

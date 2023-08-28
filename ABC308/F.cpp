@@ -35,33 +35,35 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,m;
+  cin >> n >> m;
+  vi p(n);
+  ll sum=0;
+  multiset<int> st;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
+  REP(i,n){
+    cin >> p[i];
+    sum += p[i];
+    st.insert(p[i]);  
+  }
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
+  vi d(m),l(m);
+  REP(i,m)cin >> l[i];
+  REP(i,m)cin >> d[i];
+  vector<P> dl;
+  REP(i,m){
+    dl.emplace_back(d[i],l[i]);
+  }
+  sort(ALL(dl));
+  reverse(ALL(dl));
 
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+  for(auto [d,l] : dl){
+    auto it = st.lower_bound(l);
+    if(it != st.end()){
+      st.erase(st.find(*it));
+      sum -= d;
     }
   }
+  cout << sum << endl;
 }
+

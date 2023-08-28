@@ -35,33 +35,40 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
-
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+  int n,m,k;
+  cin >> n >> m >> k;
+  vvi edge(n);
+  REP(i,m){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
+  }
+  vvi hs(n+1);
+  vi d(n,-1);
+  REP(i,k){
+    int p, h;
+    cin >> p >> h;
+    p--;
+    hs[h].pb(p);
+    d[p] = h;
+  }
+  for(int i = n; i>0; i--){
+    for(auto v: hs[i]){
+      //cout << i << " " << v << endl;
+      for(auto nv : edge[v]){
+        if(d[nv] < i-1){
+          d[nv]=i-1;
+          hs[i-1].pb(nv);
+        }
+      }
     }
   }
+  vi ans;
+  REP(i,n)if(d[i]>=0)ans.pb(i);
+  sort(ALL(ans));
+  cout << ans.size() << endl;
+  REP(i,ans.size())cout << ans[i]+1 << endl;
 }
+

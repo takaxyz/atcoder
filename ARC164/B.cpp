@@ -35,33 +35,30 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,m;
+  cin >> n >> m;
+  vector<P> e;
+  dsu tree(n);
+  REP(_,m){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    e.emplace_back(a,b);
+  }
+  vi col(n);
+  REP(i,n)cin >> col[i];
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+  for(auto [x,y]: e){
+    if(col[x]!=col[y]){
+      tree.merge(x,y);
     }
   }
+  for(auto [x,y]: e){
+    if(col[x]==col[y] && tree.same(x,y)){
+      cout << "Yes" << endl;
+      return 0;
+    }
+  }
+  cout << "No" << endl; 
 }
+

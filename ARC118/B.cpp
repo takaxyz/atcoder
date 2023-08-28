@@ -35,33 +35,53 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  ll k,n,m;
+  cin >> k >> n >> m;
+  vector<ll> a(k);
+  REP(i,k)cin >> a[i];
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
+
+  auto f = [&](ll x) -> bool {
+    ll l=0, r=0;
+    REP(i,k){
+      l += (m*a[i]-x+n-1)/n;
+      r += (m*a[i]+x)/n;
+    }
+    return l <= m && m <= r;
   };
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
+  ll ok=LINF, ng=-1;
 
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+  while(abs(ok-ng)>1){
+    ll mid = (ok+ng)/2;
+    //cout << l << " " << r << " " << mid << endl;
+    if(f(mid)){
+      ok=mid;
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      ng=mid;
     }
   }
+
+  vector<ll> l(k),r(k);
+  ll res=m;
+  REP(i,k){
+    l[i] = (m*a[i]-ok+n-1)/n;
+    r[i] = (m*a[i]+ok)/n;
+    res -= l[i];
+//    cout << l[i] << " " << r[i] << endl;
+  }
+
+  REP(i,k){
+    if(res == 0)break;
+    if(r[i] - l[i] <= res){
+      res -= (r[i]-l[i]);
+      l[i]=r[i];
+    }else{
+      l[i]+=res;
+      res=0;
+    }
+  }
+  REP(i,k)cout << l[i] << endl;
+
 }
+

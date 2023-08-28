@@ -37,31 +37,57 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  int l = 0, r =n;
-
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+  vvi edge(n);
+  vi ins(n);
+  REP(i,n){
+    int c;
+    cin >> c;
+    REP(j,c){
+      int p;
+      cin >> p;
+      p--;
+      edge[i].pb(p);
     }
   }
+
+  queue<int> q;
+  q.push(0);
+  set<int> bk;
+  vi visited(n);
+  visited[0]=1;
+  while(!q.empty()){
+    int v = q.front();
+    q.pop();
+    bk.insert(v);
+    for(auto nv: edge[v]){
+      if(visited[nv])continue;
+      visited[nv]=1;
+      q.push(nv);
+    }
+  }
+
+  q = queue<int>();
+
+  q.push(0);
+
+  REP(i,n){
+    if(bk.count(i)==0)continue;
+    for(auto nv: edge[i])ins[nv]++;
+  }
+
+  vi ans;
+  while(!q.empty()){
+    int v = q.front();
+    q.pop();
+
+    for(auto nv: edge[v]){
+      ins[nv]--;
+      if(ins[nv]==0)q.push(nv);
+    }
+
+    if(v!=0)ans.pb(v);
+  }
+  reverse(ALL(ans));
+  for(auto v: ans)cout << v+1 << endl;
 }
+

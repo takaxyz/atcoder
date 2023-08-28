@@ -35,33 +35,49 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,t,m;
+  cin >> n >> t >> m;
+  vvi bad(n,vi(n,0));
+  REP(i,m){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    bad[a][b]=1;
+    bad[b][a]=1;
+  }
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
+  vi teams;
+  int ans=0;
+
+  auto dfs = [&](int x, auto dfs)-> void{
+    if(x == n){
+      if(teams.size()==t)ans++;
+      return;
+    }
+
+    REP(i,teams.size()){
+      bool ok=true;
+      REP(y,n){
+        if(bad[x][y]==0)continue;
+        if(teams[i] & (1<<y))ok=false;
+      }
+      if(ok){
+        teams[i] ^= (1<<x);
+        dfs(x+1, dfs);
+        teams[i] ^= (1<<x);
+      }
+    }
+    if(teams.size()<t){
+      teams.emplace_back(1<<x);
+      dfs(x+1,dfs);
+      teams.pop_back();
+    }
+
+
   };
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
-    }
-  }
+  //teams.reserve(t);
+  dfs(0, dfs);
+  cout << ans << endl;
 }
+

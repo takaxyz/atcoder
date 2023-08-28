@@ -35,33 +35,52 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,q;
+  string s;
+  cin >> n >> s >> q;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
+  vi chenged(n,-1);
+  int last = -1;
+  int up_low = -1;
+  REP(i,q){
+    int t,x;
+    char c;
+    cin >> t >> x >> c;
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+    if(t==1){
+      chenged[x-1] = i;
+      s[x-1] = c;
+    }else if(t==2){
+      last = i;
+      up_low = 0;
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      last = i;
+      up_low = 1;
     }
   }
+
+  if(up_low == -1){
+    cout << s << endl;
+  }else if(up_low==1){
+    REP(i,n){
+      if(chenged[i] > last){
+        cout << s[i];
+      }else{
+        cout << (char)toupper(s[i]);
+      }
+    }
+  }else{
+    REP(i,n){
+      if(chenged[i] > last){
+        cout << s[i];
+      }else{
+        cout << (char)tolower(s[i]);
+      }
+    }
+
+  }
+  cout << endl;
+
+
 }
+

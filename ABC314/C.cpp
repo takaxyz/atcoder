@@ -35,33 +35,30 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
-
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
-    }
+  int n,m;
+  string s;
+  cin >> n >> m >> s;
+  vi c(n);
+  REP(i,n){
+    cin >> c[i];
+    c[i]--;
   }
+
+  vector<vector<char>> col(m);
+  REP(i,n){
+    col[c[i]].pb(s[i]);
+  }
+
+
+  vi cnt(m,0);
+  REP(i,n){
+    if(cnt[c[i]]==0){
+      cout << col[c[i]].back();
+    }else{
+      cout << col[c[i]][cnt[c[i]]-1];
+    }
+    cnt[c[i]]++;
+  }
+  cout << endl;
 }
+

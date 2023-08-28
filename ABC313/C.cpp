@@ -37,31 +37,22 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  int l = 0, r =n;
+  vi a(n);
+  ll sum=0;
+  REP(i,n){
+    cin >> a[i];
+    sum += a[i];
+  }
+  sort(ALL(a));
+  ll ans=0;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+  REP(i,n){
+    if(n - sum%n>i){
+      ans += abs(sum/n-a[i]);
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      ans += abs(sum/n+1-a[i]);
     }
   }
+  cout << ans/2 << endl;
 }
+

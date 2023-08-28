@@ -37,31 +37,30 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  int l = 0, r =n;
+  vvi ice(n,vi());
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
-    }
+  REP(i,n){
+    int f, s;
+    cin >> f >> s;
+    f--;
+    ice[f].pb(s);
   }
+  REP(i,n)sort(ALL(ice[i]));
+  int ans=-1;
+  REP(i,n){
+    if(ice[i].size()<2)continue;
+    int sz = ice[i].size();
+    chmax(ans,ice[i][sz-1] + ice[i][sz-2]/2);
+  }
+
+  vi s;
+  REP(i,n){
+    if(ice[i].size()==0)continue;
+    int sz = ice[i].size();
+    s.pb(ice[i][sz-1]);
+  }
+  sort(ALL(s));
+  chmax(ans, s[s.size()-1] + s[s.size()-2]);
+  cout << ans << endl;
 }
+

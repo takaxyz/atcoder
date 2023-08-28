@@ -37,31 +37,23 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  int l = 0, r =n;
+  string s;
+  cin >> s;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
-  };
-
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
+  vector<ll> dp(n+1);
+  REP(i,s.size()){
+    if(s[i]=='0'){
+      dp[i+1] = i;
     }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+      dp[i+1] = i + 1 - dp[i];
     }
   }
+
+  ll ans = 0;
+  REP(i,n+1){
+    ans += dp[i];
+    //cout << dp[i] << endl;
+  }
+  cout << ans << endl;
 }
+

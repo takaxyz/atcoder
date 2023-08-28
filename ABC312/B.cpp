@@ -34,34 +34,39 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
+int main(){
+  int n,m;
+  cin >> n >> m;
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
+
+
+  auto ck = [&](int x, int y) -> bool {
+    bool ok = true;
+    REP(i,3)REP(j,3){
+      if(s[x+i][y+j]!='#')ok=false;
+    }
+    FOR(i,6,9)FOR(j,6,9){
+      if(s[x+i][y+j]!='#')ok=false;
+    }
+
+    REP(i,4)if(s[x+3][y+i]!='.')ok=false;
+    REP(i,4)if(s[x+5][y+5+i]!='.')ok=false;
+    REP(i,4)if(s[x+i][y+3]!='.')ok=false;
+    REP(i,4)if(s[x+5+i][y+5]!='.')ok=false;
+
+    return ok;
   };
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
 
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
-    }
+  vector<P> ans;
+  REP(i, n-8)REP(j,m-8){
+    if(ck(i,j))ans.emplace_back(i+1,j+1);
   }
+  for(auto [x,y]: ans){
+    cout << x << " " << y << endl;
+  }
+
 }
+

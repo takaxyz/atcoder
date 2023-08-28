@@ -35,33 +35,48 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  int l = 0, r =n;
+  int n,k;
+  cin >> n >> k;
 
-  auto output = [&](int x) -> int{
-    cout << x << endl;
-    string y;
-    cin >> y;
-    if(y=="Vacant"){
-      return -1;
-    }else if(y=="Male")return 0;
-    else return 1;
+  auto output =[&](vi arr) -> int {
+    cout << "? ";
+    for(auto v: arr)cout << " " << v+1;
+    cout << endl;
+
+    int t;    
+    cin >> t;
+    return t; 
   };
 
-  int last = output(0);
-  if(last==-1)return 0;
-  while(1){
-    int mid = (l+r)/2;
-
-    int now = output(mid);
-    if(now==-1)return 0;
-    if(abs(mid - l) % 2){
-      if(now == last)r = mid;
-      else {l = mid; last = now;}
-    }else{
-      if(now == last){l = mid; last=now;}
-      else r = mid;
+  int s = 0;
+  vi ts(k+1);
+  REP(i,k+1){
+    vi arr;
+    REP(j,k+1){
+      if(i==j)continue;
+      arr.pb(j);
     }
+    int t = output(arr);
+    s ^= t;
+    ts[i] = t;
   }
+
+  vi ans(n);
+  REP(i,k+1)ans[i] = s ^ ts[i];
+
+  s = 0;
+  REP(i,k-1)s ^= ans[i];
+
+  FOR(i,k+1,n){
+    vi arr;
+    REP(j,k-1)arr.pb(j);
+    arr.pb(i);
+    int t = output(arr);
+    ans[i] = t ^ s;
+  }  
+
+  cout << "! ";
+  REP(i,n)cout << " " << ans[i];
+  cout << endl;
 }
+
