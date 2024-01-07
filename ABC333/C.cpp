@@ -37,38 +37,29 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
-  }
 
-  sort(ALL(p));
+  vector<ll> ans;
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
+  auto dfs = [&](auto dfs, int n, int res, ll x) -> void{
+    if(res == 0){
+      ans.pb(x);
+      return;
     }
 
+    if(n == 0)return ;
 
-    while(it < n && p[it].first == now)q.push(p[it++].second);
+    ll y = 0;
+    REP(_,n)y = y * 10 + 1;
 
-    while(!q.empty() && q.top()<now)q.pop();
+    dfs(dfs, n - 1, res, x);
+    if(res >= 1)dfs(dfs, n - 1, res - 1, x + y*1);
+    if(res >= 2)dfs(dfs, n - 1, res - 2, x + y*2);
+    if(res >= 3)dfs(dfs, n - 1, res - 3, x + y*3);
+  };
 
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
+  dfs(dfs,12,3,0);
 
-  cout << ans << endl;
-
+  sort(ALL(ans));
+  cout << ans[n-1] << endl; 
 }
 

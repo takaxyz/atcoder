@@ -37,36 +37,20 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  string s,t;
+  cin >> s >> t;
+
+  vi ss,tt;
+  REP(i,n)if(s[i]=='0')ss.pb(i);
+  REP(i,n)if(t[i]=='0')tt.pb(i);
+
+  if(ss.size()!=tt.size()){
+    cout << -1 << endl;
+    return 0;
   }
 
-  sort(ALL(p));
-
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
   int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
-    }
-
-
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
+  REP(i,ss.size())if(ss[i]!=tt[i])ans++;
 
   cout << ans << endl;
 

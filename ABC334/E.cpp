@@ -34,41 +34,60 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
+using mint = modint998244353;
+
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  int h,w;
+  cin >> h >> w;
+
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
+
+  dsu uf(h*w);
+
+  auto ton = [&](int i, int j) -> int{
+    return i * w + j;
+  };
+
+  int cnt_r = 0;
+  REP(i,h)REP(j,w){
+    if(s[i][j]=='#'){
+      REP(k,4){
+        int ni = i + dx[k];
+        int nj = j + dy[k];
+        if(ni < 0 || ni >= h || nj <0 || nj >=w)continue;
+        if(s[ni][nj]=='#'){
+          uf.merge(ton(i,j), ton(ni,nj));
+        }
+      }
+    }else cnt_r++;
   }
 
-  sort(ALL(p));
+  mint cnt = uf.groups().size() - cnt_r;
+  cnt *= cnt_r;
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
+  REP(i,h)REP(j,w){
+    if(s[i][j]=='.'){
+      set<int> st;
+      REP(k,4){
+        int ni = i + dx[k];
+        int nj = j + dy[k];
+        if(ni < 0 || ni >= h || nj <0 || nj >=w)continue;
+        if(s[ni][nj]=='#'){
+          st.insert(uf.leader(ton(ni, nj)));
+        }
+      }
+
+      if(st.size() > 0)cnt -= st.size()-1;
+      if(st.size() == 0)cnt += 1;
     }
+  }
 
+  cnt /= cnt_r;
 
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
-
+  cout << cnt.val() << endl;
 }
 

@@ -35,40 +35,16 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  char s1,s2,t1,t2;
+  cin >> s1 >> s2 >> t1 >> t2;
+  if(s1>s2)swap(s1,s2);
+  if(t1>t2)swap(t1,t2);
+  if(((s2-s1) == 2 || (s2-s1) == 3) && ((t2-t1) == 2 || (t2-t1) == 3)){
+    cout << "Yes" << endl;
+  }else if(((s2-s1) == 1 || (s2-s1) == 4) && ((t2-t1) == 1 || (t2-t1) == 4)){
+    cout << "Yes" << endl;
+  }else{
+    cout << "No" << endl;
   }
-
-  sort(ALL(p));
-
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
-    }
-
-
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
-
 }
 

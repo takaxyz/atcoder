@@ -35,40 +35,35 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  int n,k;
+  cin >> n >> k;
+  vi a(k);
+  REP(i,k)cin >> a[i];
+
+  if(k==1){
+    cout << 0 << endl;
+    return 0;
   }
 
-  sort(ALL(p));
+  if(k%2==0){
+    ll ans=0;
+    REP(i,k/2)ans += a[2*i+1] - a[2*i];
+    cout << ans << endl;
+  }else{
+    vector<ll> b(k-1);
+    REP(i,k-1)b[i] = a[i+1]-a[i];
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
-    }
+    // REP(i,k-1)cout << i << " -  " << b[i] << endl;
 
+    vector<ll> x(k/2+1), y(k/2+1);
+    REP(i,k/2)x[i+1] = x[i]+b[i*2];
+    REP(i,k/2)y[i+1] = y[i]+b[k-i*2-2];
+    // REP(i,k/2+1)cout << i << " : " << x[i] << endl;
+    // REP(i,k/2+1)cout << i << " :: " << y[i] << endl;
 
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
-
+    ll ans=LINF;
+    REP(i,k/2+1)chmin(ans, x[i]+y[k/2-i]);
+    cout << ans << endl;
+  }
 }
 

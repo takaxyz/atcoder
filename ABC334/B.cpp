@@ -35,40 +35,24 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  ll a,m,l,r;
+  cin >> a >> m >> l >> r;
+  l -= a;
+  r -= a;
+
+  auto f = [&](ll x) -> ll {
+    //cout << x  << " " << x / m + 1 << endl;
+    return x / m + 1;
+  };
+
+  if(l==0)cout << f(r) << endl;
+  else if(r==0)cout << f(-l) << endl;
+  else if(l > 0){
+    cout << f(r) - f(l-1) << endl;
+  }else if(r < 0){
+    cout << f(-l) - f(-r-1) << endl;
+  }else{
+    cout << f(r) + f(-l) - 1 << endl;
   }
-
-  sort(ALL(p));
-
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
-    }
-
-
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
-
 }
 

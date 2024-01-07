@@ -23,6 +23,7 @@ using vi = vector<int>;
 using vvi = vector<vi>;
 using vvvi = vector<vvi>;
 using pii = pair<int, int>;
+using mint = modint1000000007;
 
 template <typename T> using PQ = priority_queue<T>;
 template <typename T> using minPQ = priority_queue<T, vector<T>, greater<T>>;
@@ -34,41 +35,55 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+vector<int> eratosthenes(const int n){
+  vector<bool> is_prime(n+1,true);
+
+  vector<int> p;
+
+  for(int i = 2; i <= n; i++){
+    if(is_prime[i]){
+      for(int j=2; j*i<=n; j++){
+        is_prime[i*j]=false;
+      }
+      p.emplace_back(i);
+    }
+  }
+
+  return p;
+}
+
 int main(){
   int n;
   cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  vi a(n);
+  REP(i,n)cin >> a[i];
+
+  vi ps = eratosthenes(1000000);
+
+  map<int, int> mp;
+  for(auto x: a){
+    for(auto p: ps){
+      int cnt = 0;
+      while(x % p == 0){
+        x /= p;
+        cnt++;
+      }
+      if(cnt>0){
+        chmax(mp[p],cnt);
+      }
+      if(x==1)break;
+    }
   }
 
-  sort(ALL(p));
+  mint lcm = 1;
+  for(auto [k,v]: mp){
+    REP(_,v)lcm *= k;
+  }
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
-    }
+  mint ans = 0;
+  REP(i,n)ans += lcm / mint(a[i]);
 
-
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
+  cout << ans.val() << endl;
 
 }
 

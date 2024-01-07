@@ -35,40 +35,42 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
+  int n,m;
+  ll k;
+  cin >> n >> m  >> k;
+  vector<ll> a(n);
+  REP(i,n)cin >> a[i];
+
+  vector<vector<ll>> cost(n, vector<ll>(m+1));
   REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+    ll mx = 0;
+    ll mi = LINF;
+    REP(j,m){
+      chmin(mi, a[i+j]);
+      chmax(mx, a[i+j]);
+      cost[i][j+1] = k + (mx-mi)*(j+1);
+    }
   }
 
-  sort(ALL(p));
+  // REP(i,n)REP(j,m){
+  //   cout << i << " " << j+1 << " " << cost[i][j+1] << endl;
+  // }
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
+  vector<ll> dp(n+1,LINF);
+  dp[0] = 0;
+  REP(i,n){
+    FOR(j, max(i-m+1,0), i+1){
+      //printf("dp[%d]: dp[%d](%lld) + cost[%d][%d](%lld)\n", i+1,j,dp[j], j,i-j+1,cost[j][i-j+1]);
+      chmin(dp[i+1],dp[j] + cost[j][i-j+1]);
     }
+  }
 
 
-    while(it < n && p[it].first == now)q.push(p[it++].second);
+  // REP(i,n+1){
+  //   cout << i << " " << dp[i] << endl;
+  // }
+  cout << dp[n] << endl;
 
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
 
 }
 

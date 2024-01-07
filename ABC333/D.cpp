@@ -37,37 +37,36 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  vvi edge(n);
+  REP(_,n-1){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[v].pb(u);
+    edge[u].pb(v);
   }
 
-  sort(ALL(p));
+  auto dfs = [&](auto dfs, int v, int p = -1) -> int{
+    //if(edge[v].size()==1)return 1;
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
+    int ret=1;
+    for(auto nv: edge[v]){
+      if(nv==p)continue;
+      ret += dfs(dfs,nv,v);
     }
+    return ret;
+  };
 
+  vi dsz;
+  for(auto nv: edge[0]){
+    dsz.pb(dfs(dfs, nv, 0));
+  }
 
-    while(it < n && p[it].first == now)q.push(p[it++].second);
+  sort(ALL(dsz));
+  dsz.pop_back();
 
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
+  int ans=1;
+  for(auto x: dsz)ans+=x;
   cout << ans << endl;
 
 }

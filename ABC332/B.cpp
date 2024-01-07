@@ -35,40 +35,26 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  int k,g,m;
+  cin >> k >> g >> m;
+  int gw = 0;
+  int mw = 0;
+  REP(_,k){
+    if(gw == g){
+      gw = 0;
+    } else if(mw == 0){
+      mw = m;
+    }else{
+      if(mw > g - gw){
+        mw -= (g-gw);
+        gw = g;
+      }else{
+        gw += mw;
+        mw = 0;
+      }
+    }
+  //cout << gw << " " << mw << endl;
   }
-
-  sort(ALL(p));
-
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
-    }
-
-
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
-
+  cout << gw << " " << mw << endl;
 }
 

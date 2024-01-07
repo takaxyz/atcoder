@@ -35,40 +35,36 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<pair<ll,ll>> p(n); 
-  REP(i,n){
-    ll t,d;
-    cin >> t >> d;
-    p[i] = {t, t+d};
+  int n,m;
+  cin >> n >> m;
+  vi mod(n);
+  mod[0]=1%m;
+  FOR(i,1,n){
+    mod[i] = mod[i-1]*10%m;
+  }
+  vvi dp(n, vi(10));
+
+  for(int i = 0; i < n; i++){
+    for(int j = 1; j < 10; j++){
+      if(i==0)dp[i][j] = mod[i] * j % m;
+      else dp[i][j] = (dp[i-1][j] + mod[i] * j) % m;
+    }
   }
 
-  sort(ALL(p));
+  // REP(i,n)FOR(j,1,10){
+  //   cout << i << " " << j << " " << dp[i][j] << endl;
+  // }
 
-  ll now=0;
-  int it = 0;
-  priority_queue<ll, vector<ll>, greater<ll>> q;
-  int ans=0;
-  while(true){
-    if(q.empty()){
-      if(it==n)break;
-      now = p[it].first;
+  for(int i = n-1; i>= 0; i--){
+    for(int j = 9; j > 0; j--){
+      if(dp[i][j]==0){
+        REP(_,i+1)cout << j;
+        cout << endl;
+        return 0;
+      }
     }
-
-
-    while(it < n && p[it].first == now)q.push(p[it++].second);
-
-    while(!q.empty() && q.top()<now)q.pop();
-
-    if(!q.empty()){
-      ans++;
-      q.pop();
-    }
-    now++;
-  } 
-
-  cout << ans << endl;
+  }
+  cout << -1 << endl;
 
 }
 
