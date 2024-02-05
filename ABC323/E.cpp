@@ -33,30 +33,34 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
+using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n, x;
+  cin >> n >> x;
+  vi t(n);
+  REP(i,n)cin >> t[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  // i秒のときに曲の再生が完了している確率
+  vector<mint> dp(x+1, 0);
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  mint r = mint(1)/n;
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  dp[0]=1;
+  REP(i,x){
+    REP(j,n){
+      if(i + t[j] > x)continue;
+      dp[i + t[j]] += dp[i] * r;
     }
-    return dp[l][r]=ret;
-  };
+  }
+  mint ans=0;
 
-  cout << f(0, n, f) << endl;
+  //REP(i,x+1)cout << i << " " << dp[i].val() << endl;
+
+
+  REP(i, t[0]){
+    if(x-i>=0)ans += dp[x-i] * r;
+  }
+  cout << ans.val() << endl;
 }
 

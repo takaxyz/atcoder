@@ -35,28 +35,37 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int h,w;
+  cin >> h >> w;
+  vvi a(h,vi(w));
+  vvi b(h,vi(w));
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  REP(i,h)REP(j,w)cin >> a[i][j];
+  REP(i,h)REP(j,w)cin >> b[i][j];
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  vi hh(h), ww(w);
+  REP(i,h)hh[i]=i;  
+  REP(i,w)ww[i]=i;  
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  int ans=INF;
+  do{
+    do{
+      bool ok=true;
+      REP(i,h)REP(j,w){
+        if(a[i][j] != b[hh[i]][ww[j]]){
+          ok=false;
+        }
+      }
 
-    if(l + 1 == r)return dp[l][r]=0;
+      if(ok){
+        int cnt=0;
+        REP(i,h)FOR(j,i+1,h)if(hh[i]>hh[j])cnt++;
+        REP(i,w)FOR(j,i+1,w)if(ww[i]>ww[j])cnt++;
+        chmin(ans,cnt);
+      }
+    }while(next_permutation(ALL(ww)));
+  }while(next_permutation(ALL(hh)));
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
-    }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+  cout << (ans==INF ? -1 : ans) << endl;
 }
 

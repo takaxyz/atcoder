@@ -35,28 +35,42 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n,q;
+  cin >> n >> q;
+  vector<P> pos(n);
+  REP(i,n)pos[i] = {n - i, 0};
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  REP(_,q){
+    int t;
+    cin >> t;
+    if(t==1){
+      int x = pos.back().first;
+      int y = pos.back().second;
+      char c;
+      cin >> c;
+      switch(c){
+        case 'R':
+        x++;
+        break;
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+        case 'L':
+        x--;
+        break;
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+        case 'U':
+        y++;
+        break;
+        
+        case 'D':
+        y--;
+        break;
+      }
+      pos.emplace_back(x,y);
+    }else{
+      int p;
+      cin >> p;
+      cout << pos[pos.size()-p].first << " " << pos[pos.size()-p].second << endl;
     }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+  }
 }
 

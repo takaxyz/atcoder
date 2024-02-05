@@ -35,28 +35,49 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n, m;
+  cin >> n >> m;
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  vi a(n);
+  vi cnt(m);
+  vvi sum(m, vi(n+1));
+  REP(i,n){
+    cin >> a[i];
+    a[i]--;
+    cnt[a[i]]++;
+    sum[a[i]][i+1] = 1;
+  }
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  REP(i,m)REP(j,n)sum[i][j+1] += sum[i][j];
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  // REP(i,m)REP(j,n+1){
+  //   cout << i << " " << j << " " << sum[i][j] << endl;
+  // }
+  
 
-    if(l + 1 == r)return dp[l][r]=0;
+  vector<int> dp(1<<m, INF);
+  dp[0]=0;
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  REP(s, 1<<m ){
+    int p=0;
+    REP(i,m){
+      if((s>>i) & 1)p += cnt[i];
     }
-    return dp[l][r]=ret;
-  };
 
-  cout << f(0, n, f) << endl;
+    REP(i,m){
+      if((s>>i) & 1)continue;
+      // [sum, sum+cnt[i]) に i がいくつあるか = x
+
+      int x = sum[i][p+cnt[i]] - sum[i][p];
+
+      //cout << x << endl;
+      chmin(dp[s | (1<<i)], dp[s]+cnt[i]-x);
+
+    }
+  }
+  // REP(i, 1<<m){
+  //   cout << i << " " << dp[i] << endl;
+  // }
+  cout << dp[(1<<m)-1] << endl;
 }
 

@@ -34,29 +34,56 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
   int n;
   cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  int d = 0;
+  vvi g(n,vi(n));
+  g[0][0]=1;
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  int x = 0;
+  int y = 0;
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  int pn = 2;
 
-    if(l + 1 == r)return dp[l][r]=0;
+  while(true){
+    int nx = x + dx[d];
+    int ny = y + dy[d];
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+    if(nx == n/2 && ny == n/2)break;
+
+    if(nx < 0 || nx >= n || ny < 0 || ny >= n){
+      d++;
+      d %= 4;
+      continue;
     }
-    return dp[l][r]=ret;
-  };
 
-  cout << f(0, n, f) << endl;
+    if(g[nx][ny]!=0){
+      d++;
+      d %= 4;
+      continue;
+    }
+
+    x = nx;
+    y = ny;
+    g[x][y] = pn;
+    pn++;
+  }
+
+
+
+  REP(i,n){
+    REP(j,n){
+      if(i == n/2 && j == n/2){
+        cout << "T ";
+      }else{
+        cout << g[i][j] << (j==n-1 ? "\n" : " ");
+      }
+    }
+  }
 }
 

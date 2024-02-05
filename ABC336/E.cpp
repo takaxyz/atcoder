@@ -34,29 +34,39 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+ll dp[16][2][130][130];
+
 int main(){
-  int n;
+  string n;
   cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  int sz = n.size();
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  ll ans=0;
+  FOR(k,1,127){
+    REP(i,sz+1)REP(j,2)REP(s,k+1)REP(r,k)dp[i][j][s][r]=0;
+    dp[0][0][0][0]=1;
+    REP(i,sz)REP(j,2)REP(s,k+1)REP(r,k){
+      int x = n[i] - '0';
+      REP(d,10){
+        int ni = i+1;
+        int nj = j;
+        int ns = s + d;
+        int nr = (r*10 + d)%k;
+        if(ns > k)continue;
+        // 未定
+        if(j==0){
+          if(x < d)continue;
+          if(x > d)nj = 1;
+        }
+        dp[ni][nj][ns][nr] += dp[i][j][s][r];
+      }
     }
-    return dp[l][r]=ret;
-  };
 
-  cout << f(0, n, f) << endl;
+    ans += dp[sz][1][k][0];
+    ans += dp[sz][0][k][0];
+  }
+
+  cout << ans << endl;
 }
 

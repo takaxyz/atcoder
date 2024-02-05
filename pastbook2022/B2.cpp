@@ -35,28 +35,28 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n,m;
+  cin >> n >> m;
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  string s,t;
+  cin >> s >> t;
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  vvi dp(n+1, vi(m+1,INF));
+  dp[0][0]=0;
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  REP(i,n+1)REP(j,m+1){
+    // 変更
+    if(i>0 && j >0)chmin(dp[i][j], dp[i-1][j-1] + (s[i-1]!=t[j-1]));
+    // 削除
+    if(i>0)chmin(dp[i][j], dp[i-1][j]+1);
 
-    if(l + 1 == r)return dp[l][r]=0;
+    // 挿入
+    if(j>0)chmin(dp[i][j], dp[i][j-1]+1);
+  }
+  cout << dp[n][m] << endl;
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
-    }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+  REP(i,n+1)REP(j,m+1){
+    cout << i << " " << j << " " << dp[i][j] << endl;
+  }
 }
 

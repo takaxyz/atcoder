@@ -34,29 +34,26 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int op(int a, int b) { return max(a, b); }
+
+int e() { return -1; }
+
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
+  int n,d;
+  cin >> n >> d;
+  vi a(n);
   REP(i,n)cin >> a[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  segtree<int, op, e> seg(500001);
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  vi dp(n);
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  REP(i,n){
+    int mx = seg.prod(max(1,a[i]-d), min(a[i]+d+1,500001));
+    if(mx==-1)seg.set(a[i],1);
+    else seg.set(a[i],mx+1);
+  }
 
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
-    }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+  cout << seg.prod(1,500001) << endl;
 }
 

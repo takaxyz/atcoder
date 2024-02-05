@@ -35,28 +35,42 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  string s;
+  cin >> s;
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  int n = s.size();
+  vvi dp(n, vi(n+1,-1));
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  auto f = [&](int l, int r, auto f) -> int {
+    if(dp[l][r]!=-1)return dp[l][r];
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+    if(r-l < 3)return dp[l][r]=0;
 
-    if(l + 1 == r)return dp[l][r]=0;
+    if(r-l ==3)return dp[l][r] = (s.substr(l,3) == "iwi");
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+    int ret=-1;
+    FOR(i,l+1,r){
+      chmax(ret, f(l,i,f)+f(i,r,f));
+    }
+
+    if(s[l]=='i' && s[r-1]=='i'){
+      FOR(i,l+1,r-1){
+        if(s[i]=='w'){
+          int a = f(l+1,i,f);
+          int b = f(i+1,r-1,f);
+          if(a*3 == i - l - 1 && b*3 == r-2-i)chmax(ret, a+b+1);
+        }
+      }
     }
     return dp[l][r]=ret;
   };
 
-  cout << f(0, n, f) << endl;
+  f(0, s.size(), f);
+
+  // REP(i,n)REP(j,n+1){
+  //   cout << i << " " << j << " " << dp[i][j] << endl;
+  // }
+
+  cout << (dp[0][n] == -1 ? 0 : dp[0][n]) << endl;
 }
 

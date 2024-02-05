@@ -35,28 +35,52 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
+  int n,m;
+  cin >> n >> m;
+  vi a(n);
   REP(i,n)cin >> a[i];
+  vi u(m),v(m);
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  dsu uf(n);
+  
+  REP(i,m){
+    cin >> u[i] >> v[i];
+    u[i]--; v[i]--;
+    if(a[u[i]] > a[v[i]])swap(u[i],v[i]);
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+    if(a[u[i]] == a[v[i]])uf.merge(u[i],v[i]);
+  }
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  vector<set<int>> edge(n);
+  REP(i,m){
+    if(a[u[i]] < a[v[i]]){
+      edge[uf.leader(u[i])].insert(uf.leader(v[i]));
     }
-    return dp[l][r]=ret;
-  };
+  }
 
-  cout << f(0, n, f) << endl;
+  vi vs;
+  REP(i,n)if(uf.leader(i)==i)vs.pb(i);
+  sort(ALL(vs), [&](int u,int v){
+    return a[u] < a[v];
+  });
+
+  vi dp(n,-INF);
+  int s = uf.leader(0);
+  int g = uf.leader(n-1);
+
+  dp[s]=1;
+  for(auto v: vs){
+    for(auto nv: edge[v]){
+      chmax(dp[nv], dp[v]+1);
+    }
+  }
+
+  if(dp[g]<0){
+    cout << 0 << endl;
+  }else{
+    cout << dp[g] << endl;
+  }
+
+
 }
 

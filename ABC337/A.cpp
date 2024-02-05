@@ -37,26 +37,19 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
-
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
-    }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+  int xsum = 0, ysum = 0;
+  REP(_,n){
+    int x,y;
+    cin >> x >> y;
+    xsum += x;
+    ysum += y;
+  }
+  if(xsum > ysum){
+    cout << "Takahashi" << endl;
+  }else if(xsum < ysum){
+    cout << "Aoki" << endl;
+  }else{
+    cout << "Draw" << endl;
+  }
 }
 

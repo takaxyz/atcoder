@@ -35,28 +35,59 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int h,w,k;
+  cin >> h >> w >> k;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  int ans=INF;
+  REP(i,h){
+    int c0=0;
+    int c1=0;
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+    if(k > w)break;
 
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+    REP(j,k){
+      if(s[i][j]=='o')c0++;
+      else if(s[i][j]=='.')c1++;
     }
-    return dp[l][r]=ret;
-  };
+    if(c0+c1==k)chmin(ans,c1);
 
-  cout << f(0, n, f) << endl;
+    REP(j,w-k){
+      if(s[i][j]=='o')c0--;
+      else if(s[i][j]=='.')c1--;
+
+      if(s[i][k+j]=='o')c0++;
+      else if(s[i][k+j]=='.')c1++;
+  
+      if(c0+c1==k)chmin(ans,c1);
+    }
+  }
+
+  REP(i,w){
+    int c0=0;
+    int c1=0;
+
+    if(k > h)break;
+
+    REP(j,k){
+      if(s[j][i]=='o')c0++;
+      else if(s[j][i]=='.')c1++;
+    }
+    if(c0+c1==k)chmin(ans,c1);
+
+    REP(j,h-k){
+      if(s[j][i]=='o')c0--;
+      else if(s[j][i]=='.')c1--;
+
+      if(s[k+j][i]=='o')c0++;
+      else if(s[k+j][i]=='.')c1++;
+  
+      if(c0+c1==k)chmin(ans,c1);
+    }
+  }
+
+  cout << (ans == INF ? -1 : ans) << endl;
 }
 

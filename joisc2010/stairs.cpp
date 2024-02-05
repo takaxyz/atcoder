@@ -35,28 +35,42 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n, p;
+  cin >> n >> p;
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  vi h(n);
+  REP(i,n)cin >> h[i];
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  vi dp(n+1);
+  vi dp2(n+2);
+  dp[0] = 1;
+  dp2[1] = 1;
+  int l = 0;
+  int sum = 0;
+  REP(i,n){
+    sum += h[i];
+    if(sum > p){
+      while(sum > p){
+        sum -= h[l];
+        l++;
+      }
     }
-    return dp[l][r]=ret;
-  };
+    // [l, i)
+//    printf("%d %d %d\n", i+1,i,l);
+    dp[i+1] += dp2[i+1] - dp2[l] + 1234567;
+    dp[i+1] %= 1234567;
 
-  cout << f(0, n, f) << endl;
+    dp2[i+2] += dp2[i+1] + dp[i+1];
+    dp2[i+2] %= 1234567;
+  }
+  // REP(i,n+1){
+  //   cout << i << " " << dp[i] << endl;
+  // }
+  // cout << endl;
+  // REP(i,n+2){
+  //   cout << i << " " << dp2[i] << endl;
+  // }
+  cout << dp[n] << endl;
+
 }
 

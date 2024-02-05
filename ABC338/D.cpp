@@ -35,28 +35,46 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n,m;
+  cin >> n >> m;
+  vi x(m);
+  REP(i,m){
+    cin >> x[i];
+    x[i]--;
+  }
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
-
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
-    }
-    return dp[l][r]=ret;
+  // 時計回り
+  auto dist1 = [&](int x, int y){
+    return abs(x-y);
   };
 
-  cout << f(0, n, f) << endl;
+  // 反時計回り
+  auto dist2 = [&](int x, int y){
+    return n - abs(x-y);
+  };
+
+  ll ans=0;
+  REP(i,m-1){
+    ans += dist1(x[i+1], x[i]);
+  }
+
+  vector<ll> v(n+1);
+  REP(i,m-1){
+    ll s = dist2(x[i+1], x[i]) - dist1(x[i+1], x[i]);
+    int mi = min(x[i+1], x[i]);
+    int mx = max(x[i+1], x[i]);
+    v[mi] += s;
+    v[mx] -= s;
+  }
+
+  ll tmp=ans;
+  REP(i,n){
+    tmp += v[i];
+    chmin(ans, tmp);
+    //cout << ans << endl;
+  }
+
+
+  cout << ans << endl;
 }
 

@@ -37,26 +37,65 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  int m = 0;
+  int nn=n-1;
+  while(nn){
+    m++;
+    nn/=2;
+  }
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  vi f(m);
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  int n2=1;
+  REP(_,m)n2*=2;
 
-    if(l + 1 == r)return dp[l][r]=0;
+  vector<bitset<128>> bs(m);
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  REP(i,m){
+    int c=0;
+    REP(j,1<<i){
+      REP(k, n2>>(i+1)){
+        bs[i].set(c);
+        c++;
+      }
+      REP(k, n2>>(i+1))c++;
     }
-    return dp[l][r]=ret;
-  };
+  }
 
-  cout << f(0, n, f) << endl;
+  cout << m << endl;
+  REP(i,m){
+    vi x;
+    REP(j,n){
+      if(bs[i][j])x.pb(j+1);
+    }
+    cout << x.size() << " ";
+    REP(j,x.size()){
+      cout << x[j] << (j < x.size() - 1 ? " " : "");
+    }
+    cout << endl;
+  }
+
+  string s;
+  cin >> s;
+  bitset<128> one;
+  REP(i,128)one.set(i);
+
+  //REP(i,m)cout << bs[i] << endl;
+
+  REP(i,m){
+    if(s[i]=='0')bs[i] ^= one;
+  }
+
+//  REP(i,m)cout << bs[i] << endl;
+
+  REP(i,m){
+    one &= bs[i];
+  }
+
+//  cout << one << endl;
+  REP(i,n2){
+    if(one[i])cout << i + 1 << endl;
+  }
 }
 

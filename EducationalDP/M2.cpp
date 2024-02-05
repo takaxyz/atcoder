@@ -34,29 +34,39 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+using mint = modint1000000007;
+
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
+  int n,k;
+  cin >> n >> k;
+
+  vi a(n);
   REP(i,n)cin >> a[i];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  vector<mint> dp(k+1);
+  dp[0]=1;
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  REP(i,n){
+    vector<mint> dp2(k+1);
+    vector<mint> dpsum(k+2);
+    REP(i,k+1)dpsum[i+1] = dpsum[i] + dp[i];
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+    REP(j,k+1){
+      // [j-a[i], j+1)
+      // FOR(s, j-a[i], j+1){
+      //   if(s>=0)dp2[j] += dp[s];
+      // }
+      dp2[j] = dpsum[j+1] - dpsum[max(0,j-a[i])];
 
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
     }
-    return dp[l][r]=ret;
-  };
+    swap(dp,dp2);
+    // cout << "- " << i << endl;
+    // REP(j,k+1){
+    //   cout << j << " " << dp[j].val() << endl;
+    // }
+  }
 
-  cout << f(0, n, f) << endl;
+  cout << dp[k].val() << endl;
+
 }
 

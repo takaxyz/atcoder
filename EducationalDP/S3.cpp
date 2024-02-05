@@ -34,29 +34,36 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+using mint = modint1000000007;
+
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  string k;
+  cin >> k;
+  int d;
+  cin >> d;
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  int sz = k.size();
+  vector<vector<vector<mint>>> dp(sz+1, vector<vector<mint>>(2, vector<mint>(d, 0)));
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  dp[0][0][0]=1;
+  REP(i,sz)REP(j,2)REP(l,d){
+    int x = k[i] - '0';
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+    REP(m,10){
 
-    if(l + 1 == r)return dp[l][r]=0;
+      int ni = i+1;
+      int nj = j;
+      int nl = (l + m) % d;
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+      if(j == 0){
+        if(x < m)continue;
+        if(x > m)nj=1;
+      }
+
+      dp[ni][nj][nl] += dp[i][j][l];
     }
-    return dp[l][r]=ret;
-  };
+  }
 
-  cout << f(0, n, f) << endl;
+  cout << (dp[sz][0][0] + dp[sz][1][0] - 1).val() << endl;
 }
 

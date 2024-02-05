@@ -35,28 +35,20 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
-
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  string s;
+  cin >> s;
+  vi c(26);
+  for(auto x: s){
+    c[x-'a']++;
+  }
+  int mx=0;
+  char ans;
+  REP(i,26){
+    if(c[i]>mx){
+      mx=c[i];
+      ans=(char)('a'+i);
     }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+  }
+  cout << ans << endl;
 }
 

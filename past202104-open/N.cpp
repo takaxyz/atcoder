@@ -35,28 +35,35 @@ const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n,h;
+  cin >> n >> h;
+  vector<pair<ll,ll>> ab(n);
+  REP(i,n){
+    cin >> ab[i].first >> ab[i].second;
+  }
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  sort(ALL(ab), [](auto const x,auto const y){
+    return x.first * y.second > x.second * y.first;
+  });
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  vector dp(n+1,vector<ll>(h+1,-LINF));
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  dp[0][h]=0;
+  REP(i,n){
+    REP(j,h+1){
+      if(dp[i][j]==-LINF)continue;
 
-    if(l + 1 == r)return dp[l][r]=0;
+      chmax(dp[i+1][j], dp[i][j]);
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+      int nj = max(0LL, j-ab[i].second);
+      chmax(dp[i+1][nj], dp[i][j] + (ll)j * ab[i].first);
     }
-    return dp[l][r]=ret;
-  };
+  }
 
-  cout << f(0, n, f) << endl;
+  ll ans=-LINF;
+  REP(i,h+1)chmax(ans, dp[n][i]);
+
+  cout << ans << endl;
+
 }
 

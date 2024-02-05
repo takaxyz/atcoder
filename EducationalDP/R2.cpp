@@ -34,29 +34,41 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+using mint = modint1000000007;
+using mtx = vector<vector<mint>>;
+
 int main(){
   int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  ll k;
+  cin >> n >> k;
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  vvi a(n,vi(n));
+  REP(i,n)REP(j,n)cin >> a[i][j];
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  auto mul = [&](mtx& s, mtx& t) -> mtx {
+    vector<vector<mint>> ret(n,vector<mint>(n,0));
+    int sz = s.size();
+    REP(i,sz)REP(j,sz)REP(k,sz){
+      ret[i][j] += s[i][k] * t[k][j]; 
     }
-    return dp[l][r]=ret;
+  return ret;
   };
 
-  cout << f(0, n, f) << endl;
+  vector<vector<mint>> y(n,vector<mint>(n,0));
+  REP(i,n)y[i][i]=1;
+
+  vector<vector<mint>> x(n,vector<mint>(n,0));
+  REP(i,n)REP(j,n)x[i][j]=a[i][j];
+  while(k>0){
+    if(k & 1)y = mul(y,x);
+    x = mul(x,x);
+    k /= 2;
+  }
+
+  mint ans=0;
+  REP(i,n)REP(j,n){
+    ans += y[i][j];
+  }
+  cout << ans.val() << endl;
 }
 

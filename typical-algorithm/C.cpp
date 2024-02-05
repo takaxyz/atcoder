@@ -37,26 +37,24 @@ const int MOD = 1e9 + 7;
 int main(){
   int n;
   cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  vvi a(n,vi(n));
+  REP(i,n)REP(j,n)cin >> a[i][j];
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
+  vector<vector<ll>> dp(1<<n, vector<ll>(n, LINF));
 
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
+  dp[0][0]=0;
 
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
+  REP(s, 1<<n){
+    REP(i, n)REP(j,n){
+      if( ((s>>i) & 1) == 0 && s !=0  )continue;
 
-    if(l + 1 == r)return dp[l][r]=0;
+      if( ((s>>j) & 1) == 1)continue;
 
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+      chmin(dp[s | (1<<j)][j], dp[s][i] + a[i][j]);
     }
-    return dp[l][r]=ret;
-  };
+  }
 
-  cout << f(0, n, f) << endl;
+  cout << dp[(1<<n)-1][0] << endl;
+
 }
 

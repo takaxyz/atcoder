@@ -34,29 +34,32 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
+int dx[] = {-1,0,1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int n;
-  cin >> n;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int h,w,n;
+  cin >> h >> w >> n;
+  vector<vector<char>> s(h,vector<char>(w, '.'));
 
-  vector<ll> sum(n+1);
-  REP(i,n)sum[i+1] = sum[i] + a[i];
-
-  vector<vector<ll>> dp(n+1,vector<ll>(n+1,LINF));
-
-  auto f = [&](int l, int r, auto f) -> ll {
-    if(dp[l][r]!=LINF)return dp[l][r];
-
-    if(l + 1 == r)return dp[l][r]=0;
-
-    ll ret = LINF;
-    for(int i = l+1; i < r; i++){
-      chmin(ret, f(l,i, f) + f(i,r, f) + sum[r]-sum[l]);
+  int x=0,y=0,d=0;
+  REP(_,n){
+    if(s[x][y]=='.'){
+      s[x][y]='#';
+      d++;
+      d%=4;
+    }else{
+      s[x][y]='.';
+      d+=3;
+      d%=4;
     }
-    return dp[l][r]=ret;
-  };
-
-  cout << f(0, n, f) << endl;
+    x += dx[d] + h;
+    x %= h;
+    y += dy[d] + w;
+    y %= w;
+  }
+  REP(i,h)REP(j,w){
+    cout << s[i][j] << (j == w-1 ? "\n" : "");
+  }
 }
 
