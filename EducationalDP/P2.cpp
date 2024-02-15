@@ -32,38 +32,38 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
+const int MOD = 1e9 + 7;\
 
-using mint = modint998244353;
+using mint = modint1000000007;
 
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  cin >> n;
+  vvi edge(n);
+  REP(_,n-1){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
+  }
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  // 0: white 1: black
+  vector dp(n, vector<mint>(2));
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
+  auto dfs = [&](int v, int p, auto dfs) -> void {
+    dp[v][0]=1;
+    dp[v][1]=1;
+    for(auto nv : edge[v]){
+      if(nv==p)continue;
 
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
-
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+      dfs(nv, v, dfs);
+      dp[v][0] *= (dp[nv][0] + dp[nv][1]);
+      dp[v][1] *= dp[nv][0];
     }
-    return dp[x][y][t] = ret;
   };
+  dfs(0, -1, dfs);
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+  cout << (dp[0][0] + dp[0][1]).val() << endl;
 }
 

@@ -34,36 +34,32 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
-
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  cin >> n;
+  vvi edge(n);
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  REP(_, n-1){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
+  }
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
+  vi sz(n, -1);
 
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
-
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+  auto dfs = [&](int v, int p, auto dfs) -> int{
+    int ret=1;
+    for(auto nv : edge[v]){
+      if(nv == p)continue;
+      ret += dfs(nv, v, dfs);
     }
-    return dp[x][y][t] = ret;
+    return sz[v] = ret;
   };
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+  dfs(0,-1,dfs);
+
+  REP(i,n)cout << sz[i] << endl;
 }
 

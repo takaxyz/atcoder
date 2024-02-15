@@ -32,38 +32,52 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
+using mint = modint1000000007;
+// using mint = modint998244353;
 
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  cin >> n;
+  vector<ll> dp(n,LINF);
+  dp[0]=0;
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  vector<ll> a(n-1),b(n-1);
+  vi x(n-1);
+  REP(i,n-1){
+    cin >> a[i] >> b[i] >> x[i];
+    x[i]--;
+  }
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
+  priority_queue< pair<ll,int>, vector< pair<ll,int> >, greater< pair<ll,int> > > que;
 
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
+  vector<ll> dist(n,LINF);
 
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+  dist[0]=0;
+
+  que.emplace(0, 0);
+  while(!que.empty()) {
+    auto [cost, idx] = que.top();
+    que.pop();
+    if(idx == n-1)continue;
+    if(dist[idx] < cost) continue;
+
+    // idx + 1
+    int nx = idx+1;
+    ll next_cost = cost + a[idx];
+    if(dist[nx] > next_cost){
+      dist[nx] = next_cost;
+      que.emplace(dist[nx], nx);
     }
-    return dp[x][y][t] = ret;
-  };
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+    nx = x[idx];
+    next_cost = cost + b[idx];
+    if(dist[nx] > next_cost){
+      dist[nx] = next_cost;
+      que.emplace(dist[nx], nx);
+    }
+  }
+
+  cout << dist[n-1] << endl;
 }
 

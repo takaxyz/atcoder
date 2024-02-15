@@ -37,5 +37,56 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
+  int n;
+  cin >> n;
+  deque<int> q;
+  REP(i,n){
+    char c;
+    cin >> c;
+    if(c=='L')q.push_front(i+1);
+    else if(c=='R')q.push_back(i+1);
+    else if(c=='A'){
+      if(q.size()<1)cout << "ERROR" << endl;
+      else{
+        cout << q[0] << endl;
+        q.pop_front();
+      }
+    }
+    else if(c=='B'){
+      if(q.size()<2)cout << "ERROR" << endl;
+      else{
+        cout << q[1] << endl;
+        q.erase(q.begin()+1);
+      }
+    }
+    else if(c=='C'){
+      if(q.size()<3)cout << "ERROR" << endl;
+      else{
+        cout << q[2] << endl;
+        q.erase(q.begin()+2);
+      }
+    }
+    else if(c=='D'){
+      if(q.size()<1)cout << "ERROR" << endl;
+      else{
+        cout << q[q.size()-1] << endl;
+        q.erase(q.end()-1);
+      }
+    }
+    else if(c=='E'){
+      if(q.size()<2)cout << "ERROR" << endl;
+      else{
+        cout << q[q.size()-2] << endl;
+        q.erase(q.end()-2);
+      }
+    }
+    else if(c=='F'){
+      if(q.size()<3)cout << "ERROR" << endl;
+      else{
+        cout << q[q.size()-3] << endl;
+        q.erase(q.end()-3);
+      }
+    }
+  }
 }
 

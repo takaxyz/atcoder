@@ -32,38 +32,22 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
+using mint = modint1000000007;
+// using mint = modint998244353;
 
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
-
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
-
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
-
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
-
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
+  int q;
+  cin >> q;
+  vi a;
+  REP(_,q){
+    int t,x;
+    cin >> t >> x;
+    if(t==1){
+      a.pb(x);
     }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+      cout << a[a.size()-x] << endl;
     }
-    return dp[x][y][t] = ret;
-  };
-
-  cout << dfs(a,b,0,dfs).val() << endl;
+  }
 }
 

@@ -34,36 +34,55 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
+ll gcd(ll a, ll b)
+{
+   if (a%b == 0)
+   {
+       return(b);
+   }
+   else
+   {
+       return(gcd(b, a%b));
+   }
+}
+
+ll lcm(ll a, ll b)
+{
+   return a / gcd(a, b) * b;
+}
 
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  ll x,y;
+  cin >> n >> x >> y;
+  n--;
+  vi p(n);
+  vector<ll> t(n);
+  REP(i,n)cin >> p[i] >> t[i];
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  int l = 1;
+  REP(i,n)l = lcm(l,p[i]);
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
-
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
-
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+  vector<ll> d(l);
+  REP(i, l){
+    ll now=i;
+    now += x;
+    REP(j, n){
+      now = ((now + p[j] - 1) / p[j]) * p[j] + t[j];
     }
-    return dp[x][y][t] = ret;
-  };
+    now += y;
+    d[i] = now - i;
+  }
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+  int q;
+  cin >> q;
+  REP(_,q){
+    int qq;
+    cin >> qq;
+
+    cout << qq + d[qq%l] << endl;
+
+
+  }
 }
 

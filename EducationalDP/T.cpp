@@ -34,36 +34,43 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
+using mint = modint1000000007;
+// using mint = modint998244353;
 
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  string s;
+  cin >> n >> s;
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  // dp[i][j]: i文字目まででpiより大きい未使用の数がj個の個数
+  vector dp(n, vector<mint>(n));
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
+  REP(i,n)dp[0][i] = 1;
+  
+  REP(i,n-1){
+    vector<mint> sum(n+1);
+    REP(j,n)sum[j+1] = sum[j]+dp[i][j];
 
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
+    if(s[i] == '<'){
 
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
+      // dp[i+1][0] = dp[i][1] + ... + dp[i][n-1-i];
+      // dp[i+1][1] = dp[i][2] + ... + dp[i][n-1-i];
+      REP(j,n){
+        dp[i+1][j] = sum[n-i] - sum[j+1];
       }
-      ret /= p;
     }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
+      // dp[i+1][3] = dp[i][3] + ... + dp[i][0];
+      REP(j,n){
+        dp[i+1][j] = sum[j+1];
       }
-      ret /= q;
     }
-    return dp[x][y][t] = ret;
-  };
+  }
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+  // REP(i,n)REP(j,n){
+  //   printf("%d %d %d\n",i,j,dp[i][j].val());
+  // }
+
+  cout << dp[n-1][0].val() << endl;
+
 }
 

@@ -34,36 +34,32 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
-
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  cin >> n;
+  vvi a(n, vi(n));
+  REP(i,n)REP(j,n)cin >> a[i][j];
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
-
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
-
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
-
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
+  vector<ll> f(1<<n);
+  REP(s,1<<n){
+    REP(i,n)FOR(j,i+1,n){
+      if(((s>>i) & 1) && ((s>>j) & 1)){
+        f[s] += a[i][j];
       }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
     }
-    return dp[x][y][t] = ret;
-  };
+  }
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+  vector<ll> dp(1<<n);
+
+  REP(s, 1<<n){
+    int t = s;
+    while(t>=0){
+      t &= s;
+      chmax(dp[s], dp[t] + f[s - t]);
+      t--;
+    }
+  }
+
+  cout << dp[(1<<n)-1] << endl;
 }
 

@@ -34,36 +34,48 @@ const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
-
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n;
+  cin >> n;
+  vector<tuple<int,int,int>> b(n);
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  REP(i,n){
+    int w,s,v;
+    cin >> w >> s >> v;
+    b[i] = {w,s,v};
+  }
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
+  sort(ALL(b), [](const tuple<int,int,int> &x, const tuple<int,int,int> &y){
+    auto [w1,s1,v1] = x;
+    auto [w2,s2,v2] = y;
 
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
+    return min(s1, s2-w1) > min(s2, s1-w2);
+  });
 
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+  const int MAXW = 20000;
+  vector dp(n+1, vector<ll>(MAXW+1, -INF));
+
+  dp[0][0] = 0;
+  REP(i,n){
+    auto [w,s,v] = b[i];
+
+    REP(j,MAXW+1){
+      if(dp[i][j]==-INF)continue;
+      chmax(dp[i+1][j], dp[i][j]);
+
+      int nj = j + w;
+      if(j + w > MAXW)continue;
+      if(j > s)continue;
+      chmax(dp[i+1][nj], dp[i][j] + v);
     }
-    return dp[x][y][t] = ret;
-  };
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+  }
+
+  ll ans=0;
+  REP(i,MAXW+1)chmax(ans,dp[n][i]);
+
+  cout << ans << endl;
+
+
 }
 

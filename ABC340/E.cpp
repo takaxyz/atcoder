@@ -32,38 +32,65 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
 
-using mint = modint998244353;
+using mint = modint1000000007;
+// using mint = modint998244353;
+
+struct S{
+    long long value;
+    int size;
+};
+using F = long long;
+
+S op(S a, S b){ return {a.value+b.value, a.size+b.size}; }
+S e(){ return {0, 0}; }
+S mapping(F f, S x){ return {x.value + f*x.size, x.size}; }
+F composition(F f, F g){ return f+g; }
+F id(){ return 0; }
 
 int main(){
-  int n, a, b, p, q;
-  cin >> n >> a >> b >> p >> q;
+  int n,m;
+  cin >> n >> m;
 
-  vector dp(n+1, vector(n+1, vector<mint>(2, -1)));
+  vector<S> v(n, {0, 1});
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(v);
 
-  auto dfs = [&](int x, int y, int t, auto dfs) -> mint{
-    //cout << x << " " << y << " " << t << endl;
-    if(dp[x][y][t]!=-1)return dp[x][y][t];
+  REP(i,n){
+    ll a;
+    cin >> a;
+    seg.set(i,{a,1});
+  }
+  vi b(m);
+  REP(i,m)cin >> b[i];
 
-    if(x==n && y != n)return dp[x][y][t]=1;
-    if(x!=n && y == n)return dp[x][y][t]=0;
 
-    mint ret=0;
-    if(t==0){
-      FOR(i,1,p+1){
-        ret += dfs(min(x + i,n), y, 1, dfs);
-      }
-      ret /= p;
-    }else{
-      FOR(i,1,q+1){
-        ret += dfs(x, min(y+i,n), 0, dfs);
-      }
-      ret /= q;
+  REP(i,m){
+    int p = b[i];
+
+    ll x = seg.prod(p,p+1).value;
+
+    ll c = x / n;
+
+    seg.apply(p, -x);
+
+    seg.apply(0,n,c);
+
+    int m = x % n;
+    // p+1 から p+m まで
+
+    if(p+1<n){
+      seg.apply(p+1, min(n,p+m+1), 1);
     }
-    return dp[x][y][t] = ret;
-  };
 
-  cout << dfs(a,b,0,dfs).val() << endl;
+    if(p+m >= n){
+      seg.apply(0, p+m+1-n, 1);
+    }
+
+
+  }
+
+  REP(i,n){
+    cout << seg.prod(i,i+1).value << endl;
+  }
+
 }
-
