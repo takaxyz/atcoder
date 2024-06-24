@@ -36,30 +36,22 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  ll sx,sy,tx,ty;
+  cin >> sx >> sy >> tx >> ty;
 
-  vector<pair<ll,ll>> ans;
+  if(sy % 2 == 0 && sx %2 == 1)sx--;
+  if(sy % 2 == 1 && sx %2 == 0)sx--;
 
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
-      return;
-    }
+  if(ty % 2 == 0 && tx %2 == 1)tx--;
+  if(ty % 2 == 1 && tx %2 == 0)tx--;
 
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
-  };
 
-  f(0,1LL<<61,f);
+  ll ans = abs(ty - sy);
 
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
-  }
+  if(abs(ty - sy) < abs(sx - tx))ans += (abs(sx - tx) - abs(ty -sy)) / 2;
+
+  cout << ans << endl;
 
 }
 

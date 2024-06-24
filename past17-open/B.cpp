@@ -36,30 +36,26 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  int n;
+  cin >> n;
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
 
-  vector<pair<ll,ll>> ans;
-
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
-      return;
-    }
-
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
-  };
-
-  f(0,1LL<<61,f);
-
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
+  bool ok=true;
+  for(auto x : s)if(x != "Perfect")ok=false;
+  if(ok){
+    cout << "All Perfect" << endl;
+    return 0;
   }
 
+  ok=true;
+  for(auto x : s)if(x != "Perfect" && x != "Great")ok=false;
+  if(ok){
+    cout << "Full Combo" << endl;
+  }else{
+    cout << "Failed" << endl;
+  }
+  
 }
 

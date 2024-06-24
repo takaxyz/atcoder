@@ -36,30 +36,46 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  int n;
+  cin >> n;
+  int sz=1;
+  REP(_,n)sz*=3;
 
-  vector<pair<ll,ll>> ans;
+  vector<string> ans(sz, string(sz, '#'));
 
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
+  auto f = [&](int k, int x, int y, auto f) -> void{
+    if(k == 1){
+      ans[x+1][y+1]='.';
       return;
     }
 
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
+    int m = 1;
+    REP(_, k-1)m *= 3;
+
+    REP(i,3){
+      f(k-1,x, y + m * i, f);
+    }
+    f(k-1,x + m, y, f);
+    REP(i,m)REP(j,m)ans[x+m+i][y+m+j]='.';
+    f(k-1,x + m, y + m * 2, f);
+
+    REP(i,3){
+      f(k-1,x + m * 2, y + m * i, f);
+    }
+
+
   };
 
-  f(0,1LL<<61,f);
-
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
+  if(n==0){
+    cout << '#' << endl;
+    return 0;
   }
+
+  f(n, 0, 0, f);
+
+  for(auto s: ans)cout << s << endl;
+
 
 }
 

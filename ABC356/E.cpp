@@ -48,29 +48,26 @@ int main(){
     cnt[a[i]]++;
   }
 
-  REP(i,MAX)sum[i+1] += sum[i] + cnt[i];
+  REP(i,MAX)sum[i+1] = sum[i] + cnt[i];
 
 
   ll ans=0;
-  REP(i,n){
-    for(int j = 1; (j+1) * a[i] < MAX; j++){
-      int l = j * a[i];
-      int r = min((j+1) * a[i], MAX);
+  REP(i,MAX){
+    if(cnt[i]==0)continue;
 
-      if(j==1){
-        ans += (ll)j * (sum[r]-sum[l] - 1);
-      }else{
-        ans += (ll)j * (sum[r]-sum[l]);
-      }
-      // if(sum[r]-sum[l]){
-      //   cout << a[i] << " " << l << " " << r << " " << sum[r]-sum[l] << endl;
-      //   cout << ans << endl;
-      // }
+    for(int j = 1; j * i <= MAX; j++){
+      int l = j * i;
+      int r = min((j+1) * i, MAX);
 
+
+      ans += (ll)j * (sum[r]-sum[l]) * cnt[i];
+
+
+      //  cout << i << ":" << l << " " << r << endl;
+      //  cout << ans << endl;
     }
+    ans -= (ll)cnt[i] * (cnt[i]+1)/2;
   }
-  REP(i,MAX)ans -= (ll)cnt[i] * (cnt[i] - 1) / 2;
-
   cout << ans << endl;
 
 

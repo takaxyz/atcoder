@@ -33,33 +33,26 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
-
+// using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  ll n;
+  cin >> n;
 
-  vector<pair<ll,ll>> ans;
-
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
-      return;
-    }
-
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
-  };
-
-  f(0,1LL<<61,f);
-
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
+  int sz = 0;
+  ll x = n;
+  while(x > 0){
+    x /= 10;
+    sz++;
   }
+
+  mint r = mint(10).pow(sz);
+
+  mint ans =  (r.pow(n) - 1 )/ (r-1) * n;
+
+  cout << ans.val() << endl;
+
 
 }
 

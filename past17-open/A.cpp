@@ -36,30 +36,17 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  int h,w;
+  cin >> h >> w;
 
-  vector<pair<ll,ll>> ans;
-
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
-      return;
-    }
-
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
-  };
-
-  f(0,1LL<<61,f);
-
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
+  if(20 * h * h > w * 10000){
+    cout << "A" << endl;
+  }else if(25 * h * h <=  w * 10000){
+    cout << "C" << endl;
+  }else{
+    cout << "B" << endl;
   }
-
+  
 }
 

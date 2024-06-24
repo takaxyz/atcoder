@@ -36,30 +36,36 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  int n;
+  cin >> n;
 
-  vector<pair<ll,ll>> ans;
+  scc_graph g(n);
+  vi a(n);
 
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
-      return;
-    }
-
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
-  };
-
-  f(0,1LL<<61,f);
-
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
+  REP(i,n){
+    cin >> a[i];
+    a[i]--;
+    g.add_edge(i,a[i]); 
   }
+
+  vvi vs = g.scc();
+  reverse(ALL(vs));
+
+  vi cnt(n);
+  for(auto vv: vs){
+    if(vv.size()!=1){
+      for(auto x: vv)cnt[x] = vv.size();
+    }else{
+      cnt[vv[0]] = cnt[a[vv[0]]] + 1;
+    }
+  }
+
+  ll ans=0;
+  for(auto x: cnt)ans+=x;
+
+  cout << ans << endl;
+
 
 }
 

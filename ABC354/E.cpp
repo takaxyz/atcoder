@@ -36,30 +36,34 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
 int main(){
-  ll L,R;
-  cin >> L >> R;
+  int n;
+  cin >> n;
+  vi a(n),b(n);
 
-  vector<pair<ll,ll>> ans;
+  REP(i,n)cin >> a[i] >> b[i];
 
-  auto f = [&](ll l, ll r, auto f) -> void {
-    if(L <= l && r <= R){
-      ans.pb({l,r});
-      return;
+  map<int,bool> memo;
+
+  auto f = [&](int s, auto f) -> bool {
+    if(memo.count(s))return memo[s];
+
+    bool win = false;
+    REP(i,n)FOR(j,i+1,n){
+      if(((s>>i)&1) && ((s>>j)&1) && (a[i] == a[j] || b[i] == b[j])){
+        int ns = s;
+        ns ^= (1<<i);
+        ns ^= (1<<j);
+        if(f(ns, f)==false)win = true;
+      }
     }
 
-    ll m = (l+r)/2;
-    if(L < m)f(l,m,f);
-    if(m < R)f(m,r,f);
+    return memo[s]=win;
   };
 
-  f(0,1LL<<61,f);
+  cout << (f((1<<n) - 1, f) ? "Takahashi" : "Aoki") << endl;
 
-  cout << ans.size() << endl;
-  for(auto [l,r]: ans){
-    cout << l << " " << r << endl;
-  }
+
 
 }
 
