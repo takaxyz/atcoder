@@ -39,39 +39,44 @@ using mint = modint1000000007;
 int main(){
   int n;
   cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  vvi edge(n);
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  REP(i,n-1){
+    int p;
+    cin >> p;
+    edge[p-1].pb(i+1);
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
+  vvi ds(n);
+  int c = 0;
+  vi id1(n), id2(n);
+  auto dfs = [&](int v, int dep, auto dfs) -> void{
+    ds[dep].pb(c);
+    id1[v] = c++;
+    for(auto nv: edge[v]){
+      dfs(nv, dep+1, dfs);
     }
+    id2[v] = c;
   };
 
-  dfs(0,-1,0,dfs);
+  dfs(0, 0, dfs);
+
+  // REP(i,ds.size()){
+  //   cout << i << endl;
+  //   for(auto x: ds[i])cout << " " << x << endl;
+  // }
 
 
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
+  int q;
+  cin >> q;
+  REP(_,q){
+    int u, d;
+    cin >> u >> d;
+    u--;
+    //cout << ":: " << id1[u] << " " << id2[u] << endl;
+    auto it1 = ds[d].end() - lower_bound(ALL(ds[d]), id1[u]);
+    auto it2 = ds[d].end() - lower_bound(ALL(ds[d]), id2[u]);
+    cout << it1  -  it2 << endl;
 
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
   }
-  cout << ans.val() << endl;
 }
-

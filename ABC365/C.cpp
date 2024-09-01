@@ -38,40 +38,36 @@ using mint = modint1000000007;
 
 int main(){
   int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  ll m;
+  cin >> n >> m;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  vector<ll> a(n);
+  ll sum = 0;
+  REP(i,n){
+    cin >> a[i];
+    sum += a[i];
+  }
+  if(sum <= m){
+    cout << "infinite" << endl;
+    return 0;
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
-    }
+  auto f = [&](ll x) {
+    ll sum = 0;
+    REP(i,n)sum += min(a[i], x);
+    return sum <= m;
   };
 
-  dfs(0,-1,0,dfs);
+  ll ok=0, ng=LINF;
 
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
+  while(abs(ok-ng)>1){
+    ll mid = (ok+ng)/2;
+    if(f(mid)){
+      ok=mid;
+    }else{
+      ng=mid;
     }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
   }
-  cout << ans.val() << endl;
+  cout << ok << endl;
 }
 

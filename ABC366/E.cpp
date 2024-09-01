@@ -37,41 +37,49 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  int n, d;
+  cin >> n >> d;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
-  }
+  vi x(n), y(n);
+  REP(i,n)cin >> x[i] >> y[i];
+  sort(ALL(x));
+  sort(ALL(y));
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
+  const int MAX = 1000000;
+
+  auto f = [&](vi& v){
+    vector<ll> ret;
+
+    ll dist = 0;
+    REP(i,n)dist += abs(v[i]+MAX*2);
+    ret.pb(dist);
+    //printf("%d: %lld %d\n", -MAX*2, dist, 0);
+
+    int k = 0;
+    for(int i = -MAX*2+1; i <= MAX*2; i++){
+      dist += (2*k-n);
+      //printf("%d: %lld %d\n", i, dist, k);
+      ret.pb(dist);
+      while(k < n && v[k] <= i)k++;
     }
+    return ret;
   };
 
-  dfs(0,-1,0,dfs);
+  vector<ll> a = f(x);
+  vector<ll> b = f(y);
+  sort(ALL(a));
+  sort(ALL(b));
 
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
+  int j = b.size()-1;
+  ll ans = 0;
+  REP(i,a.size()){
+    while(j >= 0 && a[i]+b[j] > d)j--;
+    ans += j + 1;
+    //printf("%d : %lld\n", i, ans);
   }
-  cout << ans.val() << endl;
+
+  cout << ans << endl;
+
+
 }
 

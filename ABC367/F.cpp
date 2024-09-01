@@ -36,42 +36,36 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+const ll MOD =  (1LL << 61) - 1;
+
 int main(){
-  int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  int n,q;
+  cin >> n >> q;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  vi a(n),b(n);
+  REP(i,n)cin >> a[i];
+  REP(i,n)cin >> b[i];
+
+  int const MAX = 200005; 
+  vector<ll> t(MAX), sa(n+1),sb(n+1);
+
+  random_device seed_gen;
+  mt19937_64 rnd(seed_gen());
+
+  uniform_int_distribution<ll> d(1, (1LL<<62));
+
+  REP(i,MAX)t[i] =  d(rnd);
+
+  REP(i,n)sa[i+1] = (sa[i] + t[a[i]]) % MOD;
+  REP(i,n)sb[i+1] = (sb[i] + t[b[i]]) % MOD;
+
+  while(q--){
+    int l1,r1,l2,r2;
+    cin >> l1 >> r1 >> l2 >> r2;
+    l1--; l2--;
+
+    cout << ((sa[r1]-sa[l1] + MOD) % MOD == (sb[r2] - sb[l2] + MOD) % MOD ? "Yes" : "No") << endl;
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
-    }
-  };
-
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
-  }
-  cout << ans.val() << endl;
 }
 

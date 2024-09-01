@@ -36,42 +36,57 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0};
+int dy[] = {0,1};
+ 
 int main(){
-  int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  int h,w;
+  cin >> h >> w;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
-  }
+  vector<string> a(h);
+  REP(i,h)cin >> a[i];
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
+  vvi dp(h,vi(w, -INF));
+  dp[h-1][w-1]=0;
+
+  auto f = [&](int x, int y, auto f) -> int{
+    if(dp[x][y]!=-INF)return dp[x][y];
+
+    // Takahashi
+    if((x+y)%2==0){
+      int ret = -INF;
+      REP(i,2){
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if(nx < h && ny < w){
+          chmax(ret, f(nx,ny,f) + (a[nx][ny] == '-' ? -1 : 1));
+        }
+      }
+      return dp[x][y] = ret;
+    // Aoki
+    }else{
+      int ret = INF;
+      REP(i,2){
+        int nx = x + dx[i];
+        int ny = y + dy[i];
+        if(nx < h && ny < w){
+          chmin(ret, f(nx,ny,f) - (a[nx][ny] == '-' ? -1 : 1));
+        }
+      }       
+      return dp[x][y] = ret;
     }
+
   };
 
-  dfs(0,-1,0,dfs);
+  int score = f(0,0,f);
 
+  if(score > 0){
+    cout << "Takahashi" << endl;
+  }else if(score == 0){
+    cout << "Draw" << endl;
 
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
+  }else{
+    cout << "Aoki" << endl;
   }
-  cout << ans.val() << endl;
 }
 

@@ -37,41 +37,31 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  int n,m;
+  cin >> n >> m;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  map<int,set<int>> mp;  
+  REP(_,m){
+    int x, y;
+    cin >> x >> y;
+    mp[x].insert(y);
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
+  set<int> st;
+  st.insert(n);
+
+  vi a, b;
+  for(auto [x, ys]: mp){
+    a.clear();
+    b.clear();
+    for(auto y: ys){
+      if((st.count(y-1) || st.count(y+1)) && st.count(y) == 0)a.pb(y);
+      if(st.count(y-1) == 0 && st.count(y+1) == 0 && st.count(y))b.pb(y);
     }
-  };
-
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
+    for(auto x: a)st.insert(x);
+    for(auto x: b)st.erase(x);
   }
-  cout << ans.val() << endl;
+
+  cout << st.size() << endl;
 }
 

@@ -39,39 +39,62 @@ using mint = modint1000000007;
 int main(){
   int n;
   cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  vector<ll> a(n),b(n);
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  fenwick_tree<ll> seg(n);
+  REP(i,n){
+    cin >> a[i];
+    seg.add(i, a[i]);
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
-    }
-  };
-
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
+  set<int> st;
+  REP(i,n){
+    cin >> b[i];
+    if(b[i]>1)st.insert(i);
   }
-  cout << ans.val() << endl;
+
+  int q;
+  cin >> q;
+  while(q--){
+    int t;
+    cin >> t;
+
+    int i,l,r;
+    ll x;
+    if(t==1){
+      cin >> i >> x;
+      i--;
+      seg.add(i, x - a[i]);
+      a[i]=x;
+    }else if(t==2){
+      cin >> i >> x;
+      i--;
+      if(b[i]>1)st.erase(i);
+      if(x>1)st.insert(i);
+      b[i]=x;
+    }else{
+      cin >> l >> r;
+      l--;
+
+      ll v = 0;
+      while(l < r){
+        auto it = st.lower_bound(l);
+
+        if(it != st.end() && *it <= r){
+          i = *it;
+          v += seg.sum(l,i);
+          l = i+1;
+          if(i < r)v = max(v + a[i], v * b[i]);
+        }else{
+          v += seg.sum(l,r);
+          l = r;
+        }
+      }
+      cout << v << endl;
+    }
+
+
+
+  }
 }
 

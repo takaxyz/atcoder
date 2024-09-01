@@ -37,41 +37,14 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  int n, k;
+  cin >> n >> k;
+  vi a(n);
+  REP(i,n)cin >> a[i];
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
-  }
-
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
-    }
-  };
-
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
-  }
-  cout << ans.val() << endl;
+  vi ans;
+  FOR(i,n-k,n)ans.pb(a[i]);
+  FOR(i,0,n-k)ans.pb(a[i]);
+  for(auto x: ans)cout << x << endl;
 }
 

@@ -36,42 +36,39 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+
 int main(){
   int n;
   cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  string str;
+  cin >> str;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  int p = 0, r = 0, s = 0;
+
+  for(auto c : str){
+    int old_p = 0, old_r = 0, old_s = 0;
+    swap(old_p, p); swap(old_r, r); swap(old_s, s);
+
+    if(c == 'R'){
+      chmax(p, old_r + 1);
+      chmax(p, old_s + 1);
+      chmax(r, old_s);
+      chmax(r, old_p);
+    }else if(c == 'S'){
+      chmax(s, old_r);
+      chmax(s, old_p);
+      chmax(r, old_s + 1);
+      chmax(r, old_p + 1);
+    }else{
+      chmax(s, old_p + 1);
+      chmax(s, old_r + 1);
+      chmax(p, old_s);
+      chmax(p, old_r);
+    }
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
-    }
-  };
+  cout << max({p,s,r}) << endl;
 
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
-  }
-  cout << ans.val() << endl;
 }
+
 

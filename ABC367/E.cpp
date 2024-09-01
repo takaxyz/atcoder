@@ -38,40 +38,36 @@ using mint = modint1000000007;
 
 int main(){
   int n;
-  cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  ll k;
+  cin >> n >> k;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
+  int logK = 1;
+  while((1ll << logK) <= k)logK++;
+
+  vvi dp(logK+1, vi(n));
+
+  REP(i,n){
+    int x;
+    cin >> x;
+    x--;
+    dp[0][i]=x;
   }
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
+  vi a(n);
+  REP(i,n)cin >> a[i];
+
+  REP(i,logK)REP(j,n)dp[i+1][j] = dp[i][dp[i][j]];
+
+  // REP(i,logK+1)REP(j,n){
+  //   printf("%d %d: %d\n", i, j, dp[i][j]);
+  // }
+
+  REP(j, n){
+    int now = j;
+    for(int i = logK; i >= 0; i--){
+      if((k >> i) & 1)now = dp[i][now];
     }
-  };
-
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
+    cout << a[now] << endl;
   }
-  cout << ans.val() << endl;
 }
 

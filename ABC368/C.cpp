@@ -39,39 +39,31 @@ using mint = modint1000000007;
 int main(){
   int n;
   cin >> n;
-  vector edge(n,vector<pair<int,ll>>());
+  vi h(n);
+  REP(i,n)cin >> h[i];
+  
+  ll t = 0;
+  REP(i,n){
+    ll t2 = h[i]/5*3;
 
-  REP(_,n-1){
-    int u,v;
-    ll w;
-    cin >> u >> v >> w;
-    u--; v--;
-    edge[u].emplace_back(v,w);
-    edge[v].emplace_back(u,w);
-  }
+    int m = h[i]%5;
 
-  vector<ll> dist(n);
-  auto dfs = [&](int v, int p, ll d, auto dfs) -> void{
-    dist[v] = d;
-    for(auto [nv, w]: edge[v]){
-      if(nv==p)continue;
-      dfs(nv, v, d^w, dfs);
+    if(m > 0){
+      if(t % 3 == 0){
+        if(m==1)t2+=1;
+        else if(m==2)t2+=2;
+        else t2+=3;
+      }else if(t % 3 == 1){
+        if(m==1)t2+=1;
+        else t2+=2;
+      }else{
+        if(m<=3)t2+=1;
+        else t2+=2;
+      }
     }
-  };
 
-  dfs(0,-1,0,dfs);
-
-
-  mint ans = 0;
-  REP(i,n)ans += dist[i];
-
-  REP(i,60){
-    vi cnt(2);
-    FOR(j,1,n){
-      cnt[dist[j] >> i & 1]++;
-    }
-    ans += mint((1LL << i)) * cnt[0] * cnt[1];
+    t += t2;
   }
-  cout << ans.val() << endl;
+  cout << t << endl;
 }
 
