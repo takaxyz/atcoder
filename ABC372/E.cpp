@@ -37,49 +37,44 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
+  int n,q;
+  cin >> n >> q;
+  dsu uf(n);
+  vvi vs(n, vi());
+  REP(i,n)vs[i].pb(i);
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
-  }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
+  REP(_,q){
+    int t;
+    cin >> t;
+    if(t==1){
+      int u,v;
+      cin >> u >> v;
+      u--;v--;
+      int ul = uf.leader(u);
+      int vl = uf.leader(v);
+      if(ul != vl){
+        int nl = uf.merge(u,v);
+        vi nv;
+        merge(ALL(vs[ul]), ALL(vs[vl]), back_inserter(nv));
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
-    }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
+        sort(ALL(nv));
+        reverse(ALL(nv));
+        while(nv.size()>10)nv.pop_back();
+        
+        vs[nl] = nv;
+      }
+    }else{
+      int u,k;
+      cin >> u >> k;
+      u--;
+      int ul = uf.leader(u);
+      if(vs[ul].size()>=k){
+        cout << vs[ul][k-1] + 1 << endl;
+      }else{
+        cout << -1 << endl;
+      }
     }
 
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
-
 }
 

@@ -33,53 +33,40 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+// using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
-
-  vector edge(n, vector<tuple<int,ll,ll>>());
+  int n,m,k;
+  cin >> n >> m >> k;
+  vector<P> e(m);
   REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+    int x,y;
+    cin >> x >> y;
+    x--; y--;
+    e[i].first = x;
+    e[i].second = y;
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
+  vector<mint> dp(n);
+  dp[0]=1;
 
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
+  REP(i,k){
+    vector<pair<int,mint>> add;
+    for(auto [x,y]: e){
+      int xi = (x + n) - (i%n);
+      int yi = (y + n) - ((i+1)%n);
+      xi %= n;
+      yi %= n;
+      add.emplace_back(yi, dp[xi]);
     }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
+    for(auto [yi, val]: add){
+      dp[yi] += val;
     }
-
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
+  mint ans = 0;
+  for(auto x: dp)ans+=x;
+  cout << ans.val() << endl;
 
 }
 

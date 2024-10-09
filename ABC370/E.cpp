@@ -33,53 +33,32 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+//using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
+  int n;
+  ll k;
+  cin >> n >> k;
+  vi a(n);
+  REP(i,n)cin >> a[i];
+  vector<ll> s(n+1);
+  REP(i,n)s[i+1] = s[i] + a[i];
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+  vector<mint> dp(n+1);
+  dp[0]=1;
+
+  mint all = dp[0];
+
+  map<ll, mint> mp;
+  mp[s[0]] = dp[0];
+
+  REP(i,n){
+    dp[i+1] = all;
+    if(mp.count(s[i] - k + a[i]))dp[i+1] -= mp[s[i] - k + a[i]];  
+    mp[s[i+1]] += dp[i+1];
+    all += dp[i+1];
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
-
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
-    }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
-    }
-
-  }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
-
+  cout << dp[n].val() << endl;
 }
 

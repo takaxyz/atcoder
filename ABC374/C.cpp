@@ -37,49 +37,21 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
-
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+  int n;
+  cin >> n;
+  vector<ll> k(n);
+  ll sum = 0;
+  REP(i,n){
+    cin >> k[i];
+    sum += k[i];
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
-    }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
-    }
-
+  ll ans = LINF;
+  REP(i, (1<<n)){
+    ll x = 0;
+    REP(j,n)if((i>>j)&1)x += k[j];
+    chmin(ans, max(sum-x, x));
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
-
+  cout << ans << endl;
 }
 

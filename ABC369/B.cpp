@@ -37,49 +37,30 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
+  int n;
+  cin >> n;
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
-  }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
+  int ans = 0;
+  int l = INF, r = INF;
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
+  REP(_,n){
+    int a;
+    string s;
+    cin >> a >> s;
+    if(s=="L"){
+      if(l == INF)l = a;
+      else{
+        ans += abs(l-a);
+        l = a;
+      }
+    }else{
+      if(r == INF)r = a;
+      else{
+        ans += abs(r-a);
+        r = a;
     }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
     }
-
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
-
+  cout << ans << endl;
 }
 

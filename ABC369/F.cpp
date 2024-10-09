@@ -37,49 +37,29 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
-
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+  int h,w,n;
+  cin >> h >> w >> n;
+  
+  vector<P> cs(n);
+  REP(i,n){
+    cin >> cs[i].first >> cs[i].second;
+    cs[i].first--;
+    cs[i].second--;
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
+  sort(ALL(cs));
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
-    }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
-    }
-
+  vi hs(h), ws(w);
+  for(auto [r,c]: cs){
+    int mx = max(hs[r]+1, ws[c]+1);
+    hs[r] = mx;
+    ws[c] = mx;
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
+
+  int ans = 0;
+  REP(i,h)chmax(ans,hs[i]);
+  REP(i,w)chmax(ans,ws[i]);
+
+  cout << ans << endl;
 
 }
 

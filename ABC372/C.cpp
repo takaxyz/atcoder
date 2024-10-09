@@ -37,49 +37,58 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
+  int n,q;
+  cin >> n >> q;
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
-  }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
-
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
+  string s;
+  cin >> s;
+  int ans=0;
+  vi c(n);
+  REP(i,n-2){
+    if(s.substr(i,3) == "ABC"){
+      ans++;
+      c[i]=1; c[i+1]=2; c[i+2]=3;
     }
-  };
+  }
 
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
+  REP(_,q){
+    int x;
+    char C;
+    cin >> x >> C;
+    x--;
+    if(s[x]==C){
+      cout << ans << endl;
+    }else{
+      s[x]=C;
+      int cc = c[x];
+      if(cc==1){
+        c[x]=0; c[x+1]=0; c[x+2]=0;
+        ans--;
+      }else if(cc==2){
+        c[x-1]=0; c[x]=0; c[x+1]=0;
+        ans--;
+      }else if(cc==3){
+        c[x-2]=0; c[x-1]=0; c[x]=0;
+        ans--;
+      }
+      if(x>=2 && s.substr(x-2,3) == "ABC"){
+          c[x-2]=1; c[x-1]=2; c[x]=3;
+          ans++;
+      }
+      if(x>=1 && x < n-1 && s.substr(x-1,3) == "ABC"){
+        c[x-1]=1; c[x]=2; c[x+1]=3;          
+        ans++;
+      }
+      if(x < n-2 && s.substr(x,3) == "ABC"){
+        c[x]=1; c[x+1]=2; c[x+2]=3;                    
+        ans++;
+      }
+      // REP(i,n){
+      //   cout << c[i] << (i==n-1 ? "\n" : " ");
+      // }
+      cout << ans << endl;
     }
 
-  }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
-
+  } 
 }
 

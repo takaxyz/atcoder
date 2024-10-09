@@ -38,48 +38,61 @@ using mint = modint1000000007;
 
 int main(){
   int n,m;
-  cin >> n >> m;
+  ll k;
+  cin >> n >> m >> k;
+  vector<ll> a(n);
+  REP(i,n)cin >> a[i];
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+  if(n==m){
+    REP(i,n)cout << 0 << (i==n-1 ? "\n" : " ");
+    return 0;
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
 
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
+  vector<ll> b = a;
+  sort(ALL(b));
+
+  vector<ll> s(n+1);
+  REP(i,n)s[i+1] = s[i] + b[i];
+
+  ll rem = k - s[n];
+
+  map<int,ll> ans;
+
+  auto f = [&](int i, ll x){
+    int l = n - m;
+    int r = upper_bound(ALL(b), b[i]+x+1) - b.begin();
+
+    if(r<l)return false;
+    ll need = (b[i]+x+1)*(r-l) - (s[r] - s[l]);
+
+    if(l <= i && i < r){
+      need += b[i];
+      need -= b[l-1];
     }
+
+    //printf("%lld %lld %lld %lld\n", b[i], x, need, rem);
+
+    return need > rem - x;
   };
 
 
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
+  REP(i,n){
+    ll ok=rem+1, ng=-1;
 
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
+    while(abs(ok-ng)>1){
+      ll mid = (ok+ng)/2;
+      if(f(i,mid)){
+        ok=mid;
+      }else{
+        ng=mid;
+      }
     }
 
+    if(ok == rem+1)ans[b[i]]=-1;
+    else ans[b[i]]=ok;
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
 
+  REP(i,n)cout << ans[a[i]] << (i==n-1 ? "\n" : " ");
 }
 

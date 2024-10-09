@@ -37,49 +37,50 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
-
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
+  int n;
+  cin >> n;
+  int mg;
+  cin >> mg;
+  vvi eg(n,vi(n));;
+  REP(i,mg){
     int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
+    cin >> a >> b;
     a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+    eg[a][b]=1;
+    eg[b][a]=1;
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
-    }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
-    }
-
+  int mh;
+  cin >> mh;
+  vvi eh(n,vi(n));;
+  REP(i,mh){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    eh[a][b]=1;
+    eh[b][a]=1;
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
 
+  vvi a(n,vi(n));
+  REP(i,n)FOR(j,i+1,n){
+    cin >> a[i][j];
+    a[j][i] = a[i][j];
+  }
+
+  vi p(n);
+  REP(i,n)p[i] = i;
+
+  int ans = INF;
+  do{
+    int cost = 0;
+    REP(i,n)FOR(j,i+1,n){
+      if(eg[i][j] + eh[p[i]][p[j]] == 1){
+        cost += a[p[i]][p[j]];
+      }
+    }
+    chmin(ans,cost);
+  }while(next_permutation(ALL(p)));
+
+  cout << ans << endl;
 }
 

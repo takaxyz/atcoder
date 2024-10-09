@@ -36,50 +36,50 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+double calc(int x1, int y1, int x2, int y2){
+  return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)); 
+}
+
 int main(){
-  int n,m;
-  cin >> n >> m;
+  int n;
+  double s,t;
+  cin >> n >> s >> t;
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
+  vi a(n),b(n),c(n),d(n);
+  double lsum = 0;
+  REP(i,n){
+    cin >> a[i] >> b[i] >> c[i] >> d[i];
+    lsum += calc(a[i],b[i],c[i],d[i])/ t;
   }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
+  vi ord(n);
+  REP(i,n)ord[i]=i;
 
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
+  vi aa(n),bb(n),cc(n),dd(n);
+  double ans = 1e10;
+  do{
+    REP(k, (1<<n)){
+      REP(j,n){
+        if(k>>j & 1){
+          aa[j]=a[ord[j]];
+          bb[j]=b[ord[j]];
+          cc[j]=c[ord[j]];
+          dd[j]=d[ord[j]];
+        }else{
+          aa[j]=c[ord[j]];
+          bb[j]=d[ord[j]];
+          cc[j]=a[ord[j]];
+          dd[j]=b[ord[j]];
+        }
+      }
+      double msum = calc(0,0,aa[0],bb[0]) / s;
+
+      REP(i,n-1){
+        msum +=  calc(cc[i],dd[i],aa[i+1],bb[i+1]) / s;
+      }
+      chmin(ans, msum+lsum);
     }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
-    }
-
-  }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
-
+  }while(next_permutation(ALL(ord)));
+  printf("%.10f\n",ans);
 }
 

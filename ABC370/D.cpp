@@ -37,49 +37,45 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m;
-  cin >> n >> m;
+  int h,w,q;
+  cin >> h >> w >> q;
 
-  vector edge(n, vector<tuple<int,ll,ll>>());
-  REP(i,m){
-    int a,b;
-    ll c,d;
-    cin >> a >> b >> c >> d;
-    a--; b--;
-    edge[a].emplace_back(b,c,d);
-    edge[b].emplace_back(a,c,d);
-  }
-  vector<ll> dist(n, LINF);
-  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> que;
-  que.push({0,0});
-  dist[0]=0;
+  vector<set<int>> x(h), y(w);
+  REP(i,h)REP(j,w)x[i].insert(j);
+  REP(i,w)REP(j,h)y[i].insert(j);
 
-  auto calc = [&](ll t, ll c, ll d) {
-    ll tt = round(sqrt(d)) - 1;
-
-    if(t <= tt){
-      return tt + c + d/(tt+1);
-    } else {
-      return t + c + d/(t+1);
+  int ans = h * w;
+  while(q--){
+    int r,c;
+    cin >> r >> c;
+    r--; c--;
+    vector<P> v;
+    if(x[r].count(c)){
+      v.pb({r,c});
+    }else{
+      REP(i,2){
+        auto it = x[r].upper_bound(c);
+        if(it != x[r].end()){
+          if(i==0)v.pb({r, *it});
+          else v.pb({*it,r});
+        }
+        if(it != x[r].begin()){
+          it--;
+          if(i==0)v.pb({r, *it});
+          else v.pb({*it,r});
+        }
+        swap(x,y);
+        swap(r,c);
+      }
     }
-  };
-
-
-  while(!que.empty()){
-    auto [cost, v] = que.top();
-    que.pop();
-    if(dist[v] < cost)continue;
-
-    for(auto [nv, c, d]: edge[v]){
-      ll next_cost = calc(dist[v], c, d);
-      if(dist[nv] <= next_cost)continue;
-
-      dist[nv] = next_cost;
-      que.emplace(next_cost, nv);
+    ans -= v.size();
+    for(auto [ri,ci]: v){
+      x[ri].erase(ci);
+      y[ci].erase(ri);
     }
 
   }
-  cout << (dist[n-1] == LINF ? -1 : dist[n-1]) << endl;
+  cout << ans << endl;
 
 }
 
