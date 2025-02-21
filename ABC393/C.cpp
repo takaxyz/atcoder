@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
+#include <atcoder/all>
 using namespace std;
+using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -30,30 +32,27 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
+
+using mint = modint1000000007;
+// using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<string> s(n);
-  int mx = 0;
-  REP(i,n){
-    cin >> s[i];
-    chmax(mx,(int)s[i].size());
-  }
-  vector<pair<string,int>> t(n);
+  int n,m;
+  cin >> n >> m;
+  int ans=0;
+  set<P> st;
+  REP(_,m){
+    int u,v;
+    cin >> u >> v;
+    if(u==v){
+      ans++;
+      continue;
+    }
+    if(u > v)swap(u,v);
 
-  REP(i,n){
-    string v;
-    REP(_,mx-s[i].size())v += "0";
-    v += s[i];
-    t[i] = {v, mx-s[i].size()};
+    if(st.count({u,v})>0)ans++;
+    else st.insert({u,v});
   }
-  sort(ALL(t));
-  for(auto [x, y]: t){
-    cout << x.substr(y) << endl;
-  }
-
-
+  cout << ans << endl;
 }
 

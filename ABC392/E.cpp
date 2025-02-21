@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
+#include <atcoder/all>
 using namespace std;
+using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -30,28 +32,55 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
+
+using mint = modint1000000007;
+// using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<string> s(n);
-  int mx = 0;
-  REP(i,n){
-    cin >> s[i];
-    chmax(mx,(int)s[i].size());
+  int n,m;
+  cin >> n >> m;
+
+  dsu uf(n);
+  vector vs(n,vector<tuple<int,int,int>>());
+  REP(i,m){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    if(uf.same(a,b)){
+      int l = uf.leader(a);
+      vs[l].pb({i,a,b});
+    }else{
+      uf.merge(a,b);
+    }
   }
-  vector<pair<string,int>> t(n);
 
   REP(i,n){
-    string v;
-    REP(_,mx-s[i].size())v += "0";
-    v += s[i];
-    t[i] = {v, mx-s[i].size()};
+    if(uf.leader(i)!=i && vs[i].size()>0){
+      int l = uf.leader(i);
+      while(vs[i].size() > 0){
+        vs[l].push_back(vs[i].back());
+        vs[i].pop_back();
+      }
+    }
   }
-  sort(ALL(t));
-  for(auto [x, y]: t){
-    cout << x.substr(y) << endl;
+
+  vector<P> g;
+  REP(i,n){
+    if(uf.leader(i)==i){
+      g.pb({vs[i].size(), i});
+    }
+  }
+  sort(RALL(g));
+
+  int now=1;
+  cout << g.size() - 1 << endl;
+  //cout << g.size() << endl;
+  for(auto [_, l]: g){
+    for(auto [i,x,y]: vs[l]){
+      if(now < g.size()){
+        cout << i+1 << " " << x+1 << " " << g[now++].second + 1 << endl;
+      }
+    }
   }
 
 
