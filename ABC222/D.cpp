@@ -33,37 +33,33 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
-
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
+//using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
   int n;
   cin >> n;
-
-  vi a(n);
+  vi a(n),b(n);
   REP(i,n)cin >> a[i];
+  REP(i,n)cin >> b[i];
+  vector<mint> dp(3005,0);
+  dp[0] = 1;
+  REP(i,n){
+    vector<mint> old(3005,0);
+    swap(dp, old);
 
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
+    vector<mint> s(3006,0);
+    REP(i,3005)s[i+1] = s[i] + old[i];
 
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+    FOR(j, a[i], b[i]+1){
+      dp[j] += s[j+1];
+    }
+    //REP(j,100)printf("%d %d: %d\n",i,j,dp[j].val());
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+  mint ans=0;
+  REP(i,3005)ans += dp[i];
+  cout << ans.val() << endl;
+
+}
 

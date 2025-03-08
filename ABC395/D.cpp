@@ -36,34 +36,40 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
-  int n;
-  cin >> n;
+  int n,q;
+  cin >> n >> q;
+  // 鳩の入ってる箱の番号
+  vi x(n);
+  // 箱のラベル
+  vi y(n);
+  // ラベルの貼られてる箱の番号
+  vi z(n);
+  REP(i,n)x[i]=i;
+  REP(i,n)y[i]=i;
+  REP(i,n)z[i]=i;
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  REP(_,q){
+    int t,a,b;
+    cin >> t;
+    if(t == 1){
+      cin >> a >> b;
+      a--; b--;
+      x[a]=z[b];
+    }else if(t==2){
+      cin >> a >> b;
+      a--; b--;
+      y[z[a]] = b;
+      y[z[b]] = a;
+      swap(z[a],z[b]);
+    }else{
+      cin >> a;
+      a--;
+      cout << y[x[a]] + 1 << endl;
+    }
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+
+
+}
 

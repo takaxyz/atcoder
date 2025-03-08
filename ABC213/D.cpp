@@ -36,34 +36,28 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
   int n;
   cin >> n;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  vvi edge(n);
+  REP(_,n-1){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
   }
-  for(auto x: ans)cout << x << endl;
-}
+  REP(i,n)sort(ALL(edge[i]));
 
+  auto dfs = [&](int v, int p, auto dfs)-> void{
+    cout << v+1 << endl;
+    for(auto nv: edge[v]){
+      if(nv == p)continue;
+      dfs(nv,v,dfs);
+      cout << v+1 << endl;
+    }
+  };
+
+  dfs(0,-1,dfs);
+}
 

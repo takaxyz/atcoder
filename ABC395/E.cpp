@@ -36,34 +36,42 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
-  int n;
-  cin >> n;
+  int n,m;
+  ll x;
+  cin >> n >> m >> x;
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  vector edge(n*2, vector<pair<int,ll>>());
+  REP(i,n)edge[i].emplace_back(i+n,x);
+  REP(i,n)edge[i+n].emplace_back(i,x);
+  REP(_,m){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[u].emplace_back(v,1);
+    edge[v+n].emplace_back(u+n,1);
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+  vector<ll> dist(n*2, LINF);
+  dist[0] = 0;
+
+  minPQ<pair<ll,int>> q;
+  q.push({0,0});
+  while(!q.empty()){
+    auto [d,v] = q.top();
+    q.pop();
+    if(d > dist[v])continue;
+
+    for(auto [nv, cost]: edge[v]){
+      ll nc = d + cost;
+      if(nc < dist[nv]){
+        dist[nv] = nc;
+        q.push({nc, nv});
+      }
+    }
+  }
+
+  cout << min(dist[n-1], dist[2*n-1]) << endl;
+
+}
 

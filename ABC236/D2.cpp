@@ -36,34 +36,39 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
   int n;
   cin >> n;
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
+  vector a(2*n, vector<ll>(2*n));
+  REP(i,2*n)FOR(j,i+1,2*n)cin >> a[i][j];
 
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
+  ll ans=0;
 
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
+  auto dfs = [&](ll now, int s, auto dfs) -> void {
+    if(s == (1 << 2*n) - 1){
+      //cout << now << endl;
+      chmax(ans, now);
+    }
 
-    auto f = [&](int x){
-      return x < a[i];
-    };
+    int i = 0;
+    while(i < 2*n && ((s>>i) & 1))i++;
+    
+    FOR(j, i+1, 2*n){
+      if(((s>>j)&1))continue;
 
-    int p = seg.max_right(0, f);
+      ll nx = now ^ a[i][j];
+      int ns = s;
+      ns |= (1<<i);
+      ns |= (1<<j);
+      dfs(nx, ns, dfs);
+    }
 
-    ans[p]=i+1;
-    seg.set(p,0);
-  }
-  for(auto x: ans)cout << x << endl;
+  };
+
+  dfs(0LL, 0, dfs);
+
+  cout << ans << endl;
+
 }
-
 

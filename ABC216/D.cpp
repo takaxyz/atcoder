@@ -36,34 +36,50 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
-  int n;
-  cin >> n;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  int n,m;
+  cin >> n >> m;
+  vvi a(m);
+  vvi p(n);
+  queue<P> q;
+  REP(i,m){
+    int k;
+    cin >> k;
+    a[i] = vi(k);
+    REP(j,k){
+      cin >> a[i][k-j-1];
+      a[i][k-j-1]--;
+    }
+    p[a[i].back()].pb(i);
+    if(p[a[i].back()].size()==2){
+      q.emplace(p[a[i].back()][0], p[a[i].back()][1]);
+    }
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+  int cnt=0;
+  while(!q.empty()){
+    auto [i,j] = q.front();
+    q.pop();
+    cnt++;
+
+    //printf("%d %d\n",i,j);
+    a[i].pop_back();
+    a[j].pop_back();
+
+    if(a[i].size()){
+      p[a[i].back()].pb(i);
+      if(p[a[i].back()].size()==2){
+        q.emplace(p[a[i].back()][0], p[a[i].back()][1]);
+      }
+    }
+
+    if(a[j].size()){
+      p[a[j].back()].pb(j);
+      if(p[a[j].back()].size()==2){
+        q.emplace(p[a[j].back()][0], p[a[j].back()][1]);
+      }  
+    }
+  }
+  cout << (cnt==n ? "Yes" : "No") << endl;
+}
 

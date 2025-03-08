@@ -36,34 +36,44 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
-  int n;
-  cin >> n;
+  int n,q;
+  cin >> n >> q;
+  vi a(n,-1), b(n,-1);
+  REP(_,q){
+    int t,x,y;
+    cin >> t;
+    if(t==1){
+      cin >> x >> y;
+      x--; y--;
+      b[x] = y;
+      a[y] = x;
+    }else if(t==2){
+      cin >> x >> y;
+      x--; y--;
+      b[x]=-1;
+      a[y]=-1;
+    }else{
+      cin >> x;
+      x--;
+      deque<int> q;
+      q.push_back(x+1);
+      int v = a[x];
+      while(v != -1){
+        q.push_front(v+1);
+        v = a[v];
+      }
+      v = b[x];
+      while(v != -1){
+        q.push_back(v+1);
+        v = b[v];
+      }
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+      cout << q.size() << " ";
+      REP(i, q.size()){
+        cout << q[i] << (i == q.size()-1 ? "\n" : " ");
+      }
+    }
   }
-  for(auto x: ans)cout << x << endl;
 }
-
 

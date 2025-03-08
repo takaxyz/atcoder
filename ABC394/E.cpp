@@ -36,34 +36,43 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
   int n;
   cin >> n;
+  vector<string> c(n);
+  REP(i,n)cin >> c[i];
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
+  queue<P> q;
+  vvi d(n,vi(n,INF));
 
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  REP(i,n){
+    d[i][i]=0;
+    q.emplace(i,i);
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+  REP(i,n)REP(j,n){
+    if(i!=j && c[i][j] != '-'){
+      d[i][j]=1;
+      q.emplace(i,j);
+    }
+  }
+
+  while(!q.empty()){
+    auto [i,j] = q.front();
+    q.pop();
+
+    REP(k,n)REP(l,n){
+      if(d[k][l]!=INF)continue;
+
+      if(c[k][i] != '-' && c[k][i] == c[j][l]){
+        d[k][l] = d[i][j]+2;
+        q.emplace(k,l);
+      }
+    }
+  }
+
+  REP(i,n)REP(j,n){
+    cout << (d[i][j] == INF ? -1 : d[i][j]) << (j==n-1 ? "\n" : " ");
+  }
+}
 

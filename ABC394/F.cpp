@@ -36,34 +36,47 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
   int n;
   cin >> n;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  vvi edge(n);
+  REP(_,n-1){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+  vi dp(n);
+
+  auto dfs = [&](int v, int p, auto dfs) -> int {
+    printf("%d - %d\n",v,p);
+    int ret=1;
+
+    vi vs;
+    for(auto nv: edge[v]){
+      if(nv == p)continue;
+      vs.pb(dfs(nv, v, dfs));
+    }
+    sort(RALL(vs));
+
+    if(vs.size() >= 3){
+      REP(i,3)ret += vs[i];
+      if(p!=-1)ret += dp[p];
+    }
+    //printf("%d %d\n",v,dp[v]);
+    return dp[v] = ret;
+  };
+
+  dfs(0,-1,dfs);
+
+  int ans = -1;
+  REP(i,n){
+    cout << dp[i] << endl;
+    chmax(ans,dp[i]);
+  }
+  cout << ans << endl;
+
+}
 

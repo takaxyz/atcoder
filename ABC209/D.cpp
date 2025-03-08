@@ -36,34 +36,34 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-
-int op(int a, int b){ return a+b; }
-int e() { return 0; }
-
-
 int main(){
-  int n;
-  cin >> n;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  vi v(n,1);
-  segtree<int, op, e> seg(v);
-
-  vi ans(n);
-  for(int i = n-1; i >=0; i--){
-
-    auto f = [&](int x){
-      return x < a[i];
-    };
-
-    int p = seg.max_right(0, f);
-
-    ans[p]=i+1;
-    seg.set(p,0);
+  int n,q;
+  cin >> n >> q;
+  vvi edge(n,vi());
+  REP(_,n-1){
+    int a,b;
+    cin >> a >> b;
+    a--;b--;
+    edge[a].pb(b);
+    edge[b].pb(a);
   }
-  for(auto x: ans)cout << x << endl;
-}
 
+  vi col(n);
+  auto dfs = [&](int v, int p, int c, auto dfs) -> void {
+    col[v]=c;
+    for(auto nv: edge[v]){
+      if(nv==p)continue;
+      dfs(nv,v,c^1,dfs);
+    }
+  };
+
+  dfs(0,-1,0,dfs);
+
+  REP(_,q){
+    int c,d;
+    cin >> c >> d;
+    c--; d--;
+    cout << (col[c]==col[d] ? "Town" : "Road") << endl;
+  }
+}
 
