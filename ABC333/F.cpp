@@ -33,52 +33,34 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+// using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
   int n;
   cin >> n;
-  vector<char> c(n);
-  REP(i,n)cin >> c[i];
-  vvi edge(n);
-  REP(_,n-1){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+
+  vector dp(n,vector<mint>(n));
+
+  dp[0][0]=1;
+
+  vector<mint> inv2(n+1);
+  inv2[0]=1;
+  REP(i,n)inv2[i+1] = inv2[i]/2;
+
+
+  FOR(i,1,n){
+    dp[i][i] = 0;
+    REP(j,i)dp[i][i] += dp[i-1][j] * inv2[i-j];
+    dp[i][i] /= (1-inv2[i+1]);
+    dp[i][0] = dp[i][i]/2;
+
+    FOR(j,1,i){
+      dp[i][j] = dp[i][j-1]/2 + dp[i-1][j-1]/2;
+    }
   }
 
-  vector dp(n,vector<mint>(3));
+  REP(i,n)cout << dp[n-1][i].val() << endl;
 
-  auto dfs = [&](int v, int p, auto dfs) -> void{
-    mint val1 = 1, val2 = 1;
-    for(auto nv: edge[v]){
-      if(nv == p)continue;
-
-      dfs(nv, v, dfs);
-
-      if(c[v] == 'a'){
-        val1 *= (dp[nv][0] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }else{
-        val1 *= (dp[nv][1] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }
-    }
-
-    if(c[v]=='a'){
-      dp[v][0]=val1;
-      dp[v][2]=val2-val1;
-    }else{
-      dp[v][1]=val1;
-      dp[v][2]=val2-val1;
-    }
-  };
-
-  dfs(0,-1,dfs);
-
-  cout << dp[0][2].val() << endl;
 }
 

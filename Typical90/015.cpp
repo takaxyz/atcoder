@@ -36,49 +36,32 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+struct combination {
+  vector<mint> fact, ifact;
+  combination(int n):fact(n+1),ifact(n+1) {
+    fact[0] = 1;
+    for (int i = 1; i <= n; ++i) fact[i] = fact[i-1]*i;
+    ifact[n] = fact[n].inv();
+    for (int i = n; i >= 1; --i) ifact[i-1] = ifact[i]*i;
+  }
+  mint operator()(int n, int k) {
+    if (k < 0 || k > n) return 0;
+    return fact[n]*ifact[k]*ifact[n-k];
+  }
+};
+
 int main(){
   int n;
   cin >> n;
-  vector<char> c(n);
-  REP(i,n)cin >> c[i];
-  vvi edge(n);
-  REP(_,n-1){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  combination comb(n);
+  FOR(k,1,n+1){
+    mint ans=0;
+    FOR(j,1,n/k+2){
+//      printf("%d %d\n",k,j);
+      int x = n - (k - 1)*(j - 1);
+      ans += comb(x,j);
+    }
+    cout << ans.val() << endl;
   }
-
-  vector dp(n,vector<mint>(3));
-
-  auto dfs = [&](int v, int p, auto dfs) -> void{
-    mint val1 = 1, val2 = 1;
-    for(auto nv: edge[v]){
-      if(nv == p)continue;
-
-      dfs(nv, v, dfs);
-
-      if(c[v] == 'a'){
-        val1 *= (dp[nv][0] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }else{
-        val1 *= (dp[nv][1] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }
-    }
-
-    if(c[v]=='a'){
-      dp[v][0]=val1;
-      dp[v][2]=val2-val1;
-    }else{
-      dp[v][1]=val1;
-      dp[v][2]=val2-val1;
-    }
-  };
-
-  dfs(0,-1,dfs);
-
-  cout << dp[0][2].val() << endl;
 }
 

@@ -37,48 +37,35 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<char> c(n);
-  REP(i,n)cin >> c[i];
-  vvi edge(n);
-  REP(_,n-1){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  int n,x;
+  cin >> n >> x;
+
+  vi s(n),c(n),p(n);
+  REP(i,n)cin >> s[i] >> c[i] >> p[i];
+
+  vector dp((1<<n), vector<double>(x+1,0));
+
+  dp[0][0]=0;
+
+  for(int i = 0; i < (1<<n); i++){
+    REP(j,x){
+      REP(k,n){
+        if((i>>k)&1)continue;
+
+        if(j + c[k] > x)continue;
+
+        int ni = i | (1<<k);
+        // ok
+        chmax(dp[ni][j + c[k]], (dp[i][j] + s[k]) * p[k] / 100);
+        // ng
+        chmax(dp[i][j + c[k]], dp[i][j] * (100-p[k]) / 100);
+      }
+    }    
   }
 
-  vector dp(n,vector<mint>(3));
 
-  auto dfs = [&](int v, int p, auto dfs) -> void{
-    mint val1 = 1, val2 = 1;
-    for(auto nv: edge[v]){
-      if(nv == p)continue;
-
-      dfs(nv, v, dfs);
-
-      if(c[v] == 'a'){
-        val1 *= (dp[nv][0] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }else{
-        val1 *= (dp[nv][1] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }
-    }
-
-    if(c[v]=='a'){
-      dp[v][0]=val1;
-      dp[v][2]=val2-val1;
-    }else{
-      dp[v][1]=val1;
-      dp[v][2]=val2-val1;
-    }
-  };
-
-  dfs(0,-1,dfs);
-
-  cout << dp[0][2].val() << endl;
+  REP(i,(1<<n))REP(j,x+1){
+    printf("%d %d %f\n",i,j,dp[i][j]);
+  }
 }
 

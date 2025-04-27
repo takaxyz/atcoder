@@ -37,48 +37,69 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<char> c(n);
-  REP(i,n)cin >> c[i];
-  vvi edge(n);
-  REP(_,n-1){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  int n,k;
+  cin >> n >> k;
+  string s;
+  cin >> s;
+
+  REP(i,n){
+    if(s[i]=='?'){
+      if(i > 0 && s[i-1]=='o')s[i]='.';
+      if(i < n-1 && s[i+1]=='o')s[i]='.';
+    }
   }
 
-  vector dp(n,vector<mint>(3));
+  int cnt=0;
 
-  auto dfs = [&](int v, int p, auto dfs) -> void{
-    mint val1 = 1, val2 = 1;
-    for(auto nv: edge[v]){
-      if(nv == p)continue;
+  REP(i,n)if(s[i]=='o')cnt++;
+  if(cnt == k){
+    REP(i,n)if(s[i]=='?')s[i]='.';
+    cout << s << endl;
+    return 0;
+  }
+  
+  string t = s;
 
-      dfs(nv, v, dfs);
-
-      if(c[v] == 'a'){
-        val1 *= (dp[nv][0] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }else{
-        val1 *= (dp[nv][1] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }
+  REP(i,n){
+    if(t[i] == '?'){
+      bool ok = true;
+      if(i > 0 && t[i-1] == 'o')ok=false;
+      if(i > 0 && t[i+1] == 'o')ok=false;
+      if(ok)t[i]='o';
     }
+  }
+  cnt=0;
+  REP(i,n)if(t[i]=='o')cnt++;
 
-    if(c[v]=='a'){
-      dp[v][0]=val1;
-      dp[v][2]=val2-val1;
-    }else{
-      dp[v][1]=val1;
-      dp[v][2]=val2-val1;
+  
+  if(cnt > k){
+    cout << s << endl;
+    return 0;
+  }
+  //cout << t << endl;
+  t = s;
+  int l = 0, r = 0;
+  while(true){
+    while(l < n && t[l]!='?')l++;
+    if(l==n)break;
+    r = l;
+    while(r < n && t[r]=='?')r++;
+    //printf("%d %d\n",l,r);
+    int len = r - l;
+    if(len % 2 == 1){
+      for(int i = 0; i < len; i++){
+        if(i%2==0){
+          t[l+i]='o';
+        }else{
+          t[l+i]='.';
+        }
+      } 
     }
-  };
+    l = r;
+  }
 
-  dfs(0,-1,dfs);
+  cout  << t << endl;
 
-  cout << dp[0][2].val() << endl;
+
 }
 

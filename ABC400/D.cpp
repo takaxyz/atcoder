@@ -36,49 +36,54 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] ={1,0,-1,0};
+int dy[] ={0,1,0,-1};
+
 int main(){
-  int n;
-  cin >> n;
-  vector<char> c(n);
-  REP(i,n)cin >> c[i];
-  vvi edge(n);
-  REP(_,n-1){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
+  int h,w;
+  cin >> h >> w;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
+  int a,b,c,d;
+  cin >> a >> b >> c >> d;
+  a--; b--; c--; d--;
+  vvi dist(h,vi(w,INF));
+  
+  dist[a][b]=0;
+  deque<P> q;
+  q.push_front({a,b});
 
-  vector dp(n,vector<mint>(3));
-
-  auto dfs = [&](int v, int p, auto dfs) -> void{
-    mint val1 = 1, val2 = 1;
-    for(auto nv: edge[v]){
-      if(nv == p)continue;
-
-      dfs(nv, v, dfs);
-
-      if(c[v] == 'a'){
-        val1 *= (dp[nv][0] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
+  while(!q.empty()){
+    auto [x,y] = q.front();
+    q.pop_front();
+  
+    REP(i,4){
+      int nx = x + dx[i];
+      int ny = y + dy[i];
+      if(nx < 0 || nx >= h || ny < 0 || ny >= w)continue;
+      if(s[nx][ny]=='.'){
+        if(dist[nx][ny] > dist[x][y]){
+          dist[nx][ny]=dist[x][y];
+          q.push_front({nx,ny});
+        }
       }else{
-        val1 *= (dp[nv][1] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
+        if(dist[nx][ny] > dist[x][y]){
+          dist[nx][ny]=dist[x][y] + 1;
+          q.push_back({nx,ny});
+        }
+        int nx2 = nx + dx[i];
+        int ny2 = ny + dy[i];
+        if(nx2 < 0 || nx2 >= h || ny2 < 0 || ny2 >= w)continue;
+        if(dist[nx2][ny2] > dist[x][y]+1){
+          dist[nx2][ny2]=dist[x][y]+1;
+          q.push_back({nx2,ny2});
+        }
       }
     }
+  }
 
-    if(c[v]=='a'){
-      dp[v][0]=val1;
-      dp[v][2]=val2-val1;
-    }else{
-      dp[v][1]=val1;
-      dp[v][2]=val2-val1;
-    }
-  };
 
-  dfs(0,-1,dfs);
+  cout << dist[c][d] << endl;
 
-  cout << dp[0][2].val() << endl;
 }
 

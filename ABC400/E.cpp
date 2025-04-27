@@ -37,48 +37,25 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n;
-  cin >> n;
-  vector<char> c(n);
-  REP(i,n)cin >> c[i];
-  vvi edge(n);
-  REP(_,n-1){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  int q;
+  cin >> q;
+
+  int MAX=1000000;
+  vi x(MAX+1);
+  for(int i = 2; i <= MAX; i++){
+    if(x[i]==0){
+      for(int j = i; j <= MAX; j += i)x[j]++;
+    }
+  }
+  
+  vector<ll> vs;
+  for(ll i = 2; i < MAX+1; i++)if(x[i]==2)vs.pb(i*i);
+  REP(_,q){
+    ll a;
+    cin >> a;
+
+    cout << *prev(upper_bound(ALL(vs), a)) << endl;
   }
 
-  vector dp(n,vector<mint>(3));
-
-  auto dfs = [&](int v, int p, auto dfs) -> void{
-    mint val1 = 1, val2 = 1;
-    for(auto nv: edge[v]){
-      if(nv == p)continue;
-
-      dfs(nv, v, dfs);
-
-      if(c[v] == 'a'){
-        val1 *= (dp[nv][0] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }else{
-        val1 *= (dp[nv][1] + dp[nv][2]);
-        val2 *= (dp[nv][0] + dp[nv][1] + dp[nv][2]*2);
-      }
-    }
-
-    if(c[v]=='a'){
-      dp[v][0]=val1;
-      dp[v][2]=val2-val1;
-    }else{
-      dp[v][1]=val1;
-      dp[v][2]=val2-val1;
-    }
-  };
-
-  dfs(0,-1,dfs);
-
-  cout << dp[0][2].val() << endl;
 }
 
