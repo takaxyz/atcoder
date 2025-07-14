@@ -36,43 +36,38 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
-    }
-  }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
-
 int main(){
-  int n,k;
-  cin >> n >> k;
+  int t;
+  cin >> t;
+  REP(_,t){
+    int n;
+    string s;
+    cin >> n >> s;
+    vvi dp(n+1, vi(3,INF));
+    dp[0][0] = 0;
+    REP(i,n){
+      if(s[i]=='0'){
+        chmin(dp[i+1][0],dp[i][0]);
+        chmin(dp[i+1][1],dp[i][0]+1);
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
+        chmin(dp[i+1][2],dp[i][1]);
+        chmin(dp[i+1][1],dp[i][1]+1);
 
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
+        chmin(dp[i+1][2],dp[i][2]);
+      }else{
+        chmin(dp[i+1][1],dp[i][0]);
+        chmin(dp[i+1][0],dp[i][0]+1);
+
+        chmin(dp[i+1][1],dp[i][1]);
+        chmin(dp[i+1][2],dp[i][1]+1);
+
+        chmin(dp[i+1][2],dp[i][2]+1);
+      }
+    }
+    int ans=INF;
+    for(auto x: dp[n])chmin(ans,x);
+    cout << ans << endl;
+
   }
-
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
-  }
-
-  REP(i,n)cout << ans[a[i]] << endl;
-  
-
-
 }
 

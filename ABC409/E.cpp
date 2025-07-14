@@ -36,43 +36,34 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
-    }
-  }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
-
 int main(){
-  int n,k;
-  cin >> n >> k;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
+  int n;
+  cin >> n;
+  vi x(n);
+  REP(i,n)cin >> x[i];
+  vector edge(n, vector<P>());
+  REP(_,n-1){
+    int u,v,w;
+    cin >> u >> v >> w;
+    u--;v--;
+    edge[u].emplace_back(v,w);
+    edge[v].emplace_back(u,w);
   }
+  ll ans=0;
+  auto dfs = [&](int v, int p, auto dfs) -> ll {
+    ll ret = x[v];
 
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
-  }
+    for(auto [x,w]: edge[v]){
+      if(x==p)continue;
+      ll val = dfs(x,v,dfs);
+      ans +=  abs(val) * w;
+      ret += val;
+    }
 
-  REP(i,n)cout << ans[a[i]] << endl;
-  
+    return ret;
+  };
 
-
+  dfs(0,-1,dfs);
+  cout << ans << endl;
 }
 

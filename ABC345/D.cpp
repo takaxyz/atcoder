@@ -41,44 +41,65 @@ int main(){
   cin >> n >> h >> w;
 
   vi a(n),b(n);
-//  REP(i,n)cin >> a[i] >> b[i];
+  REP(i,n)cin >> a[i] >> b[i];
 
-  vi v(n);
-  REP(i,n)v[i] = i;
+  vi ord(n);
+  REP(i,n)ord[i]=i;
 
-  set<vi> st;
-  int cnt=0;
-  do {
-    FOR(i, 1, (1<<n)){
-      vi v2;
-      REP(j,n){
-        if((i >> j ) & 1){
-          v2.pb(v[j]);
+  auto topos = [&](int x, int y) { return x * w + y; };
+  auto tox = [&](int pos) { return pos / w; };
+  auto toy = [&](int pos) { return pos % w; };
+
+  do{
+    vi used(h*w);
+
+    auto check = [&](int p, int a, int b){
+      int x = tox(p);
+      int y = toy(p);
+      if(x + a > h || y + b > w)return false;
+      bool ok = true;
+      REP(i,a)REP(j,b)if(used[topos(x+i,y+j)])ok=false;
+      return ok;
+    };
+
+
+    REP(f,(1<<n)){
+      int p = 0;
+      REP(j,h*w)used[j]=0;
+
+      REP(i, ord.size()){
+        int aa = a[ord[i]];
+        int bb = b[ord[i]];
+        if((f >> i) & 1)swap(aa,bb);
+
+        while(p < h*w && used[p]==1)p++;
+        if(p == h*w){
+//          REP(i,ord.size())cout << ord[i] << (i == ord.size()-1 ? "\n" : " ");
+          cout << "Yes" << endl;
+          return 0;
+        }
+
+        if(check(p, aa, bb)){
+//          printf("%d - %d : %d %d %d\n", i, ord[i], p , aa, bb);
+          int x = tox(p);
+          int y = toy(p);
+          REP(i,aa)REP(j,bb)used[topos(x+i,y+j)]=1;
         }
       }
-      cnt++;
-      st.insert(v2);
-    }
-  }while(next_permutation(ALL(v)));
-
-  for(auto v2 : st){
-    vector<string> tile(h, string('.',w));
-
-    int si=-1;
-    int sj=-1;
-    for(auto p: v2){
-      int ai = a[p];
-      int bi = b[p];
-
-      REP(_,2){
-        swap(ai,bi);
-
-
-
+      
+      bool ok = true;
+      REP(j,h*w)if(used[j]==0)ok = false;
+      if(ok){
+//          REP(i,ord.size())cout << ord[i] << (i == ord.size()-1 ? "\n" : " ");
+        cout << "Yes" << endl;
+        return 0;
       }
-
     }
-  }
+
+
+  }while(next_permutation(ALL(ord)));
+
+  cout << "No" << endl;
 
 }
 

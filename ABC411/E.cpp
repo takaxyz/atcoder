@@ -33,46 +33,48 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
-
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
-    }
-  }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
+//using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
-  int n,k;
-  cin >> n >> k;
+  int n;
+  cin >> n;
+  vvi a(n,vi(6));
+  vi s;
+  REP(i,n)REP(j,6){
+    cin >> a[i][j];
+    s.pb(a[i][j]);
+  }
+  sort(ALL(s));
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
+  s.erase(unique(ALL(s)),s.end());
+  int sz = s.size();
+  vvi ds(sz);
+  REP(i,n)REP(j,6){
+    int id = lower_bound(ALL(s), a[i][j]) - s.begin();
+    ds[id].pb(i);
   }
 
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
+  mint ans = 0;
+  vi b(n);
+  mint prod = 1;
+  int nz = 0;
+  REP(i,sz-1){
+    for(auto x: ds[i]){
+      if(b[x]>0){
+        prod /= b[x];
+      }else{
+        nz++;
+      }
+      b[x]++;
+      prod *= b[x];
+    }
+    if(nz==n)ans -= prod * (s[i+1]-s[i]);
   }
+  ans /= mint(6).pow(n);
+  ans += s[sz-1];
 
-  REP(i,n)cout << ans[a[i]] << endl;
-  
-
+  cout << ans.val() << endl;
 
 }
 

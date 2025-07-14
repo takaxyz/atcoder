@@ -36,43 +36,38 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
-    }
-  }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
-
 int main(){
-  int n,k;
-  cin >> n >> k;
+  int t;
+  cin >> t;
+  REP(_,t){
+    int n;
+    cin >> n;
+    vi s(n);
+    REP(i,n)cin >> s[i];
+    if(n>2){
+      sort(s.begin()+1,s.end()-1);
+    }
+    //REP(i,n)cout << s[i] << (i==n-1 ? "\n" : " ");
 
-  vi a(n);
-  REP(i,n)cin >> a[i];
+    int l = 0;
+    int r = 1;
+    int ans=1;
+    while(r < n){
+      if(s[l] * 2 >= s[n-1]){
+        ans++;
+        cout << ans << endl;
+        break;
+      }
 
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
+      if(s[l] * 2 < s[r]){
+        cout << -1 << endl;
+        break;
+      }
+      while(r < n && 2*s[l] >= s[r])r++;
+      l = r - 1;
+      ans++;
+    }
+    if(r==n)cout << ans << endl;
   }
-
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
-  }
-
-  REP(i,n)cout << ans[a[i]] << endl;
-  
-
-
 }
 

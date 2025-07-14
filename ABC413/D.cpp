@@ -36,43 +36,61 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
+int main(){
+  int t;
+  cin >> t;
+  REP(_,t){
+    int n;
+    cin >> n;
+    vector<ll> a(n);
+    REP(i,n)cin >> a[i];
+
+    int cp=0;
+    REP(i,n)if(a[i]>0)cp++;
+
+    if(cp==n || cp ==0){
+      sort(ALL(a));
+
+      bool ok=true;
+      FOR(i,1,n-1){
+        if(a[i-1] * a[i+1] != a[i]*a[i])ok=false;
+      }
+
+      cout << (ok ? "Yes" : "No") << endl;
+    }else{
+      if(n%2==0 && n/2 != cp){
+        cout << "No" << endl;
+        continue;;
+      }
+      if(n%2==1 && n/2 != cp && (n/2 + 1) != cp){
+        cout << "No" << endl;
+        continue;;
+      }
+
+      vector<ll> b(n);
+      REP(i,n)b[i] = abs(a[i]);
+      bool ok =true;
+      REP(i,n-1){
+        if(b[i] != b[i+1])ok=false;
+      }
+      if(ok){
+        cout << "Yes" << endl;
+        continue;;
+      }
+    
+      vector<pair<ll,ll>> c(n);
+      REP(i,n)c[i] = {abs(a[i]),a[i]};
+      sort(ALL(c));
+      ok=true;
+
+      FOR(i,1,n-1){
+        if(c[i-1].second * c[i+1].second != c[i].second * c[i].second)ok=false;
+      }
+
+      cout << (ok ? "Yes" : "No") << endl;
+
+
     }
   }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
-
-int main(){
-  int n,k;
-  cin >> n >> k;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
-  }
-
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
-  }
-
-  REP(i,n)cout << ans[a[i]] << endl;
-  
-
-
 }
 

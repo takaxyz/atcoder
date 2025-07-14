@@ -45,35 +45,39 @@ ll pw(ll x, int p){
 }
 
 ll f(ll x){
-  string s = to_string(x);
-
-  ll ret = 0;
-  int sz = s.size();
-
-  // sz-1桁のもの
-  FOR(i,1,10)ret += pw()
-
-  // sz桁
-  int n = s[0] - '0';
-
-  for(int m = 1; m < n; m++){
-    // m ^ (sz-1-i)
-    ll tmp=1;
-    REP(_, sz-1-i)tmp *= m;
-    ret += tmp;
+  x++;
+  vi d;
+  for(auto c: to_string(x)){
+    d.pb(c-'0');
   }
 
+  ll ret = 0;
+  int sz = d.size();
 
+  int h = d[0];
+  for(int i = 1; i < sz; i++){
+    for(int j = 1; j < 10; j++){ 
+      ret += pw(j, i-1);
+    }
+  }
+
+  FOR(i,1,d[0])ret += pw(i,sz-1);
+
+  FOR(i, 1, sz){
+    if(h <= d[i]){
+      ret += pw(h, sz - i); 
+      return ret;
+    }
+    REP(j, d[i])ret += pw(h, sz - i - 1);
+  }
 
   return ret;
 }
 
 int main(){
-  int l,r;
+  ll l,r;
 
   cin >> l >> r;
-  cout << f(r) << endl;
-  cout << f(l-1) << endl;
 
   cout << f(r) - f(l-1) << endl;
 }

@@ -36,43 +36,35 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
+int main(){
+  int Q;
+  cin >> Q;
+  deque<pair<int,int>> q;
+  REP(_,Q){
+    int t;
+    cin >> t;
+    if(t == 1){
+      int c,x;
+      cin >> c >> x;
+      q.push_back({x,c});
+    }else{
+      int k;
+      cin >> k;
+      ll ans=0;
+      while(k > 0){
+        auto[x,c] = q.front();
+        if(c <= k){
+          ans += (ll)x*c;
+          k -= c;
+          q.pop_front();
+        }else{
+          ans += (ll)x*k;
+          q.front().second = c - k;
+          k = 0;
+        }
+      }
+      cout << ans << endl;
     }
   }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
-
-int main(){
-  int n,k;
-  cin >> n >> k;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
-  }
-
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
-  }
-
-  REP(i,n)cout << ans[a[i]] << endl;
-  
-
-
 }
 

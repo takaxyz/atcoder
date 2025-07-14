@@ -36,43 +36,33 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-map<int, int > prime_factor(int n) {
-  map<int, int > ret;
-  for(int i = 2; i * i <= n; i++) {
-    while(n % i == 0) {
-      ret[i]++;
-      n /= i;
+int main(){
+  int n,q;
+  cin >> n >> q;
+  vi a(n);
+  REP(i,n)a[i]=i+1;
+
+  int i = 0;
+  REP(_,q){
+    int t;
+    cin >> t;
+    if(t==1){
+      int p,x;
+      cin >> p >> x;
+      p = (p - 1 + i)%n;
+      a[p] = x;
+    }else if(t==2){
+      int p;
+      cin >> p;
+      p = (p - 1 + i)%n;
+      cout << a[p] << endl;
+    }else{
+      int k;
+      cin >> k;
+      i += k;
+      i %= n;
     }
   }
-  if(n != 1) ret[n] = 1;
-  return ret;
-}
-
-int main(){
-  int n,k;
-  cin >> n >> k;
-
-  vi a(n);
-  REP(i,n)cin >> a[i];
-
-  int MX=1000001;
-  vi c(MX);
-  REP(i,n)c[a[i]]++;
-  
-  vi d(MX);
-  FOR(i,1,MX){
-    for(int j = i; j < MX; j+=i)d[i] += c[j];
-  }
-
-  vi ans(MX);
-  FOR(i,1,MX){
-    if(d[i] < k)continue;
-    for(int j = i; j < MX; j+=i)chmax(ans[j],i);
-  }
-
-  REP(i,n)cout << ans[a[i]] << endl;
-  
-
 
 }
 
