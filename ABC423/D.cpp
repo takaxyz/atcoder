@@ -37,28 +37,35 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n,k;
+  cin >> n >> k;
+  vector<ll> a(n),b(n);
+  vi c(n);
+  REP(i,n)cin >> a[i] >> b[i] >> c[i];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
+  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> q;
+
+  vector<ll> ans(n);
+  int sum=0;
+  ll t = 0;
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+
+    if(t < a[i])t = a[i];
+    
+    while(sum + c[i] > k){
+      auto [tt, cc] = q.top();
+      q.pop();
+      sum -= cc;
+      chmax(t,tt);
+    }
+    sum += c[i];
+    ans[i] = t;
+    cout << t << endl;
+    q.push({t+b[i], c[i]});
   }
 
+  //for(auto x : ans)cout << x << endl;
+  
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
 }
 

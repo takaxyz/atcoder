@@ -37,28 +37,44 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n;
+  cin >> n;
+  vi a(3*n);
+  REP(i,3*n)cin >> a[i];
+  sort(ALL(a));
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
-  }
+  int ans=0;
+
+  auto dfs = [&](int s, vvi vs, auto dfs) -> void{
+    //cout << "s: " << s << endl;
+    if((int)vs.size()==n){
+      //cout << "s: " << s << endl;
+      bool ok=true;
+      for(auto vs2: vs){
+        if(a[vs2[0]] + a[vs2[1]] <= a[vs2[2]])ok=false;
+      }
+      if(ok)ans++;
+      return;
+    }
+
+    int i = 0;
+    while((1<<i) & s)i++;
+
+    FOR(j,i+1,3*n)FOR(k,j+1,3*n){
+      if((1<<j) & s || (1<<k) & s)continue;
+      vs.pb({i,j,k});
+      //printf("%d %d %d\n",i,j,k);
+      dfs(s | (1<<i)| (1<<j) | (1<<k), vs, dfs);
+      vs.pop_back();
+    }
+
+  };
+
+  vvi vs;
+
+  dfs(0,vs,dfs);
+  cout << ans << endl;
 
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
 }
 

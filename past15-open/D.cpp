@@ -36,29 +36,26 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int rec[2001];
+
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int a,b,c,d,r;
+  cin >> a >> b >> c >> d >> r;
+  
+  FOR(i,a,a+r)rec[i]=1;
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  for(int i = d; ; i+=d){
+    if(i >= b){
+      for(int j = max(c,i); j <= c+r; j++)rec[j]=1;
+      break;
+    }
   }
 
+  bool ok=true;
+  FOR(i,c,c+r)if(rec[i]!=1)ok=false;
+  cout << (ok ? "Yes" : "No") << endl;
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
 
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+
 }
 

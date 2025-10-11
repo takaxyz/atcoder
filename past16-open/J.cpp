@@ -36,29 +36,44 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int gcd(int a, int b)
+{
+   if (a%b == 0)
+   {
+       return(b);
+   }
+   else
+   {
+       return(gcd(b, a%b));
+   }
+}
+
+int lcm(int a, int b)
+{
+   return a / gcd(a, b) * b;
+}
+
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n,k;
+  cin >> n >> k;
+  vi a(k);
+  REP(i,k)cin >> a[i];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  int g = a[1]-a[0];
+  REP(i,k-2){
+    g = gcd(g,a[i+2]-a[i+1]);
   }
+  //cout << g << endl;
 
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+  vi vs;
+  for(int i = 1; i * i <= g; i++){
+    if(g % i !=0)continue;
+    if((a[k-1]-a[0])/i + 1 <= n)vs.pb(i);
+    if(g / i != i && (a[k-1]-a[0])/(g/i) + 1 <= n)vs.pb(g/i);
   }
+  sort(ALL(vs));
+  cout << vs.size() << endl;
+  for(auto x: vs)cout << x << endl;
+
 }
 

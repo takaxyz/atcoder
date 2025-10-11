@@ -36,29 +36,49 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int h,w;
+  cin >> h >> w;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  vector<P> vs,vs2;
+
+  auto count = [&](int i, int j) -> int{
+    int cnt = 0;
+    REP(k,4){
+      int ni = i + dx[k];
+      int nj = j + dy[k];
+      if(ni < 0 || ni >= h || nj < 0|| nj >=w )continue;
+      if(s[ni][nj]=='#')cnt++;
+    }
+    return cnt;
+  };
+
+  REP(i,h)REP(j,w)if(s[i][j]=='.' && count(i,j) == 1)vs.pb({i,j});
+
+  while(vs.size()){
+    vector<P> vs2, cand;
+    swap(vs2,vs);
+    for(auto [i,j]: vs2){
+      s[i][j]='#';
+      REP(k,4){
+        int ni = i + dx[k];
+        int nj = j + dy[k];
+        if(ni < 0 || ni >= h || nj < 0|| nj >=w )continue;
+        if(s[ni][nj] == '.')cand.pb({ni,nj});
+      }      
+    }
+    sort(ALL(cand));
+    cand.erase(unique(ALL(cand)),cand.end());
+
+    for(auto[i,j]: cand)if(s[i][j] == '.' && count(i,j)==1)vs.pb({i,j});
   }
-
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+  int ans=0;
+  REP(i,h)REP(j,w)if(s[i][j]=='#')ans++;
+  cout << ans << endl;
 }
 

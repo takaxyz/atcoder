@@ -35,30 +35,31 @@ const ll LINF = 1001001001001001001ll;
 
 using mint = modint1000000007;
 // using mint = modint998244353;
+int dx[] = {1,0};
+int dy[] = {0,1};
+
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  int h,w;
+  cin >> h >> w;
+  vvi a(h,vi(w));
+  REP(i,h)REP(j,w)cin >> a[i][j];
+  vector<P> ans;
+  REP(i,h)REP(j,w-1){
+    if(a[i][j] < a[i][j+1]){
+      ans.pb({a[i][j],a[i][j+1]});
+    }else{
+      ans.pb({a[i][j+1],a[i][j]});
+    }
   }
-
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+  REP(i,h-1)REP(j,w){
+    if(a[i][j] < a[i+1][j]){
+      ans.pb({a[i][j],a[i+1][j]});
+    }else{
+      ans.pb({a[i+1][j],a[i][j]});
+    }
   }
+  sort(ALL(ans));
+  for(auto [i,j]:ans)cout << i << " " << j << endl;
 }
 

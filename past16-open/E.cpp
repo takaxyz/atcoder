@@ -37,28 +37,15 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  string x;
+  cin >> x;
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  bool ok=true;
+  REP(i,x.size()){
+    if(i == 0 && x[i]!='1')ok=false;
+    if(i > 0 && x[i]!='0')ok=false;
   }
 
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+  cout << (ok ? x.size() - 1 : x.size() ) << endl;
 }
 

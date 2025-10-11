@@ -37,28 +37,38 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n;
+  cin >> n;
+  vvi edge(n+1);
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+    int a,b;
+    cin >> a >> b;
+    if(a==0 && b==0){
+      edge[0].pb(i+1);
+    }else{
+      edge[a].pb(i+1);
+      edge[b].pb(i+1);
+    }
+  }
+  vi visited(n+1);
+
+  queue<int> q;
+  q.push(0);
+  visited[0]=1;
+  while(q.size()){
+    int v = q.front(); q.pop();
+
+    for(auto nv: edge[v]){
+      if(visited[nv])continue;
+      visited[nv]=1;
+      q.push(nv);
+    }
   }
 
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+  int ans=0;
+  REP(i,n+1)ans += visited[i];
+  cout << ans-1 << endl;
 }
 

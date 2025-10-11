@@ -37,28 +37,28 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int d;
+  string a,b;
+  cin >> d >> a >> b;
+  string a0 = a.substr(0,a.size()-d-1);
+  string a1 = a.substr(a.size()-d);
+  string b0 = b.substr(0,b.size()-d-1);
+  string b1 = b.substr(b.size()-d);
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  string c1;
+  int c = 0;
+  for(int i = d-1; i >= 0; i--){
+    int aa = a1[i]-'0'; 
+    int bb = b1[i]-'0';
+
+    c1.pb((aa + bb + c) % 10 + '0');
+    if(aa + bb + c >= 10)c = 1;
+    else c = 0;
   }
+  reverse(ALL(c1));
+
+  printf("%d.%s\n",stoi(a0)+stoi(b0)+c, c1.c_str());
 
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
 }
 

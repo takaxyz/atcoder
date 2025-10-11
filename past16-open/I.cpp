@@ -31,34 +31,65 @@ template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } retu
 template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
 
 const int INF = 1001001001;
-const ll LINF = 1001001001001001001ll;
+//const ll LINF = 1001001001001001001ll;
+const ll LINF = (1LL << 60) - 6846976;
 
 using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
+  int n;
+  ll k;
+  ll m;
+  cin >> n >> m >> k;
+
   vector<ll> a(n);
   REP(i,n)cin >> a[i];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
+  auto f = [&](ll v) -> bool {
+    ll cnt = 0;
+    for(auto x: a){
+      if(x >= v)continue;
+
+      cnt += (v - x + k - 1) / k;
+      if(cnt > m)return false;
+    }
+    return cnt <= m;
+  };
+
+  ll ok=0, ng=LINF;
+
+  while(abs(ok-ng)>1){
+    ll mid = (ok+ng)/2;
+    //cout << l << " " << r << " " << mid << endl;
+    if(f(mid)){
+      ok=mid;
+    }else{
+      ng=mid;
+    }
+  }
+
+  vector<ll> b(n);
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+    if(a[i] >= ok){
+      b[i] = a[i];
+    }else{
+      b[i] = (ok - a[i] + k - 1) / k * k + a[i];
+      m -= (ok - a[i] + k - 1) / k;
+    }
   }
 
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+  priority_queue<pair<ll,int>, vector<pair<ll,int>>, greater<pair<ll,int>>> q;
+  REP(i,n)q.push({b[i],i});
+  while(m>0){
+    auto [v, i] = q.top();
+    q.pop();
+    b[i] += k;
+    q.push({b[i],i});
+    m--;
   }
+  for(auto x: b)cout << x << endl;
+
 }
+
 

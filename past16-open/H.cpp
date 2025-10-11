@@ -37,28 +37,27 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
+  int n,m;
+  cin >> n >> m;
   vector<ll> a(n);
   REP(i,n)cin >> a[i];
+  vector dp(m+1,vector<ll>(2, -1));
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
+  dp[0][0]=0;
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+    vector old(m+1,vector<ll>(2, -1));
+    swap(old,dp);
+    REP(j,m+1){
+      if(old[j][0]!=-1){
+        chmax(dp[j][0], old[j][0] + a[i]);
+        chmax(dp[min(m,j+1)][1], old[j][0]);
+      }
+      if(old[j][1]!=-1){
+        chmax(dp[j][0], old[j][1] + a[i]);
+      }
+    }
+    //REP(j,m+1)REP(k,2)printf("%d %d %d\n", i+1, j, k, dp[j][k]);
   }
-
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+  cout << max(dp[m][0], dp[m][1]) << endl;
 }
 

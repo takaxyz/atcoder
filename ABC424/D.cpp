@@ -36,29 +36,56 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+int toi(string s){
+  int ret=0;
+  for(auto c: s){
+    ret <<= 1;
+    ret += (c == '#');
   }
+  return ret;
+}
 
+int main(){
+  int t;
+  cin >> t;
+  REP(_, t){
+    int h,w;
+    cin >> h >> w;
+    vvi dp(h+1,vi((1<<w),INF));
+    vector<string> s(h);
+    REP(i,h)cin >> s[i];
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
+    dp[0][0]=0;
+    REP(i,h){
+      int x = toi(s[i]);
+      REP(j,(1<<w)){
+        int cnt=0;
+        bool ok=true;
+        REP(l,w){
+          int jj = (j>>l) & 1;
+          int xx = (x>>l) & 1;
+          if(jj == xx)continue;
+          if(jj == 0 && xx == 1)cnt++;
+          else ok=false;
+        }
+        if(!ok)continue;
 
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
+        REP(k,(1<<w)){
+          if(dp[i][k]==INF)continue;
+
+          bool ok=true;
+          REP(l,w-1){
+            if(((k>>l) & 1) + ((k>>(l+1)) & 1) + ((j>>l) & 1) + ((j>>(l+1)) & 1) == 4)ok=false;
+          }
+          if(ok)chmin(dp[i+1][j],dp[i][k]+cnt);
+        }
+      }
+    }
+
+    int ans = INF;
+    for(auto x: dp[h])chmin(ans,x);
     cout << ans << endl;
+
   }
 }
 

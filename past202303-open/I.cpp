@@ -37,28 +37,46 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int n;
+  string x;
+  cin >> n >> x;
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
+  vector<tuple<int, int, int>> score(n);
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+    vector<P> vs;
+    REP(j,(1<<4)){
+      if(__builtin_popcount(j) != 2)continue;
+      vector<int> cnt(26);
+      REP(jj,4){
+        if((j >> jj) & 1)cnt[s[i][jj] - 'A']++;
+      }
+      REP(k,(1<<5)){
+        if(__builtin_popcount(k) != 3)continue;
+        vector<int> cnt2 = cnt;
+        REP(kk,5){
+          if((k>>kk)&1){
+            cnt2[x[kk]- 'A']++;
+          }
+        }
+
+        int nn = -1;
+        int cc = -1;
+        REP(l, 26){
+          if(nn < cnt2[l]){
+            nn = cnt2[l];
+            cc = l;
+          }
+        }
+        vs.pb({-nn,cc});
+      }      
+    }
+    sort(ALL(vs));
+    score[i] = {vs[0].first,vs[0].second,i+1};
   }
+  sort(ALL(score));
 
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+  cout << get<2>(score[0]) << endl;
 }
 

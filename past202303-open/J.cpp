@@ -36,29 +36,47 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+vector< int > z_algorithm(const vector<string> &vs) {
+  vector< int > prefix(vs.size());
+  for(int i = 1, j = 0; i < vs.size(); i++) {
+    if(i + prefix[i - j] < j + prefix[j]) {
+      prefix[i] = prefix[i - j];
+    } else {
+      int k = max(0, j + prefix[j] - i);
+      while(i + k < vs.size() && vs[k] == vs[i + k]) ++k;
+      prefix[i] = k;
+      j = i;
+    }
+  }
+  prefix[0] = (int) vs.size();
+  return prefix;
+}
+
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  int h,w;
+  cin >> h >> w;
+  vector<string> vs(w * 3 + 1);
+  REP(i,h)REP(j,w){
+    char c;
+    cin >> c;
+    vs[j].pb(c);
+  }
+  REP(i,h)REP(j,w){
+    char c;
+    cin >> c;
+    vs[w + 1 + j].pb(c);
+    vs[w * 2 + 1 + j].pb(c);
   }
 
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+  vi l = z_algorithm(vs);
+  FOR(i,w+1,w+1+w){
+    if(l[i] == w){
+      cout << "Yes" << endl;
+      return 0;
+    }
   }
+  cout << "No" << endl;
+
+
 }
 

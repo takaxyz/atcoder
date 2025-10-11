@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <atcoder/all>
+#include <optional>
 using namespace std;
 using namespace atcoder;
 
@@ -33,32 +34,43 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+//using mint = modint1000000007;
+using mint = modint998244353;
+
+struct S{
+    mint value;
+    int size;
+};
+using F = optional<mint>;
+
+S op(S a, S b){ return {a.value+b.value, a.size+b.size}; }
+S e(){ return {0, 0}; }
+S mapping(F f, S x){
+    if(f) x.value = *f *x.size;
+    return x;
+}
+F composition(F f, F g){ return (f  ? f : g); }
+F id(){ return nullopt; }
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
+  int n,m;
+  cin >> n >> m;
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(n);
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+    ll a;
+    cin >> a;
+    seg.set(i,{mint(a),1});
   }
-
-
-  REP(_,q){
+  REP(_,m){
     int l,r;
     cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+    l--;
+    mint x = seg.prod(l,r).value;
+    x /= r-l;
+    seg.apply(l,r,x);
+  }
+  REP(i,n){
+    cout << seg.get(i).value.val() << endl;
   }
 }
 

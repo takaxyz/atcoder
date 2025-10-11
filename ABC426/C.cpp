@@ -39,26 +39,22 @@ using mint = modint1000000007;
 int main(){
   int n,q;
   cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
-  }
-
-
+  vi c(n,1);
+  int mi = 0;
   REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+    int x,y;
+    cin >> x >> y;
+    x--; y--;
+    int cnt = 0;
+    FOR(i,mi,x+1){
+      cnt += c[i];
+      c[i]=0;
+    }
+    chmax(mi,x+1);
+    cout << cnt << endl;
+    c[y] += cnt;
   }
+
+
 }
 

@@ -37,28 +37,39 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
-  }
-
-
+  int q;
+  cin >> q;
+  vector s(1,vector<string>());
+  int i=0,j=0;
+  string now;
   REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
+    int t;
+    char c;
+    cin >> t;
+    if(t==1){
+      cin >> c;
+      now += c;
+      j++;
+    }else if(t==2){
+      s[i].push_back(now);
+      now.clear();
+      j=0;
+    }else{
+      s[i].push_back(now);
+      i++;
+      s.pb(vector<string>());
+      now.clear();
+      j=0;
+    }
+  }
+  if(now != "")s[i].push_back(now);
 
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+  cout << i + 1 << " " << j + 1 << endl;
+  for(auto vs: s){
+    cout << "# ";
+    reverse(ALL(vs));
+    for(auto ss: vs)cout << ss;
+    cout << endl;
   }
 }
 

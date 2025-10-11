@@ -37,28 +37,32 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,q;
-  cin >> n >> q;
+  int n;
+  cin >> n;
   vector<ll> a(n);
   REP(i,n)cin >> a[i];
+  sort(ALL(a));
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  vector<pair<ll,int>> vs;
+  vs.pb({a[0],1});
+  FOR(i,1,n){
+    if(vs.back().first == a[i]){
+      vs.back().second++;
+    }else{
+      vs.pb({a[i],1});
+    }
   }
 
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
+  int ans=n;
+  REP(i,vs.size()-2){
+    if(vs[i].first == vs[i+1].first - 1 && vs[i+1].first == vs[i+2].first - 1){
+      int mi = min(vs[i].second, min(vs[i+1].second, vs[i+2].second));
+      ans -= mi * 3;
+      REP(j,3)vs[i+j].second -= mi;
+    }
   }
+  cout << ans << endl;
+
+
 }
 

@@ -36,28 +36,39 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+ll comb[5001][5001];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+int main(){
+  int t,m;
+  cin >> t >> m;
+  comb[0][0]=1;
+  comb[1][0]=1;
+  comb[1][1]=1;
+  
+  for(int i = 2; i <= 5000; i++){
+    comb[i][0]=1;
+    for(int j = 1; j <= i; j++){
+      comb[i][j] = comb[i-1][j] + comb[i-1][j-1];
+      comb[i][j] %= m;
+    }
   }
 
+//  REP(i,6)FOR(j,0,i+1)printf("%d %d: %d\n",i,j,comb[i][j]);
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
 
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
+  REP(_,t){
+    int n;
+    cin >> n;
+    vi c(n);
+    REP(i,n)cin >> c[i];
+    int sum = 0;
+    REP(i,n) sum += c[i];
+    ll ans=1;
+    REP(i,n){
+      ans *= comb[sum][c[i]];
+      ans %= m;
+      sum -= c[i];
+    }
     cout << ans << endl;
   }
 }

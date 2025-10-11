@@ -36,29 +36,69 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+void solve(){
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+
+  int prev = s[0] - '0';
+  int cnt=1;
+  vector<P> vs;
+  FOR(i,1,n){
+    int x = s[i]-'0';
+    if(prev == x)cnt++;
+    else{
+      vs.pb({prev,cnt});
+      prev=x;
+      cnt=1;
+    } 
+  }
+  vs.pb({prev,cnt});
+
+  vvi c(2,vi(n));
+  REP(k,2){
+    REP(i,n){
+      if(s[i]-'0' == k)c[k][i]=2;
+      else c[k][i]=1;
+    }
+  }
+
+  vvi sum(2,vi(n+1));
+  vvi sumr(2,vi(n+1));
+  REP(k,2)REP(i,n)sum[k][i+1] += sum[k][i] + c[k][i];
+  REP(k,2)for(int i = n-1; i >= 0; i--)sumr[k][i] += sumr[k][i+1] + c[k][i];
+
+  //REP(k,2)REP(i,n+1)printf("%d %d: %d\n",k,i,sum[k][i]);
+  //REP(k,2)REP(i,n+1)printf("%d %d: %d\n",k,i,sumr[k][i]);
+
+  // if(vs.size()==1){
+  //   cout << 0 << endl;
+  //   return;
+  // }
+
+  int l = 0;
+  int r;
+  int ans = INF;
+  REP(i,vs.size()){
+    r = l + vs[i].second;
+
+    int x = vs[i].first;
+    chmin(ans, sum[x][l] + sumr[x][r]);
+
+    l += vs[i].second;
+  }
+
+  cout << ans << endl;
+
+}
+
+
+
+
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
-  }
-
-
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+  int t;
+  cin >> t;
+  REP(_,t)solve();
 }
 

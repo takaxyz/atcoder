@@ -36,29 +36,57 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
+  int h,w;
+  cin >> h >> w;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
 
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
-  REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+  queue<tuple<int,int,int>> q;
+  map<tuple<int,int,int>,int> mp;
+
+  int v = 0;
+  for(int i = h-1; i >= 0; i--){
+    for(int j = w -1; j >=0; j--){
+      v <<= 1;
+      v += (s[i][j] == '#' ? 1 : 0);
+    }
+  }
+  //cout << v << endl;
+  q.push({v,0,0});
+  mp[{v,0,0}]=0;
+
+  while(!q.empty()){
+    auto [v, i, j] = q.front();
+    q.pop();
+
+    if(v == 0){
+      cout << mp[{v,i,j}] << endl;
+      return 0;
+    }
+
+    REP(k,4){
+      int ni = i + dx[k];
+      int nj = j + dy[k];
+      if(ni < 0 || ni >= h || nj < 0 || nj >= w)continue;
+
+      int p = ni * w + nj;
+
+      int nv = v ^ (1 << p);
+      //if(nv == v)cout << "a"
+      //printf("%d %d\n",nv,v);
+      if(mp.count({nv, ni, nj}))continue;
+      q.push({nv,ni,nj});
+      mp[{nv,ni,nj}] = mp[{v,i,j}] + 1;
+    }
   }
 
+  //int ans = INF;
+  //REP(i,h)REP(j,w)if(mp.count({0,i,j}))chmin(ans,mp[{0,i,j}]);
+  //cout << ans << endl;
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
-
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
 }
 

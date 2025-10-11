@@ -36,29 +36,47 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-int main(){
-  int n,q;
-  cin >> n >> q;
-  vector<ll> a(n);
-  REP(i,n)cin >> a[i];
-
-  vector<ll> s2(n+1),s1(n+1),s0(n+1);
+void solve(){
+  int n,k,x;
+  cin >> n >> k >> x;
+  
+  priority_queue<pair<double,ll>> q;
   REP(i,n){
-    s2[i+1] = s2[i] + (-a[i] * i * i);
-    s1[i+1] = s1[i] + a[i] * i;
-    s0[i+1] = s0[i] + a[i];
+    int a;
+    cin >> a;
+    q.push({a,1});
+  }
+
+  while(k){
+    auto [v, cnt] = q.top(); q.pop();
+    
+    if(k < cnt){
+      q.push({v, cnt-k});
+      q.push({v/2, k*2});
+      k = 0;
+    }else{
+      q.push({v/2, cnt*2});
+      k -= cnt;
+    }
+  }
+
+  while(q.size()){
+    auto [v, cnt] = q.top(); q.pop();
+    
+    if(x <= cnt){
+      printf("%.12f\n",v);
+      return;
+    }else x -= cnt;
+
   }
 
 
-  REP(_,q){
-    int l,r;
-    cin >> l >> r;
-    l--;r--;
+}
 
-    ll ans = s2[r+1] - s2[l];
-    ans += (s1[r+1]-s1[l])*(l+r);
-    ans += (s0[r+1]-s0[l])*(r+1)*(1-l);
-    cout << ans << endl;
-  }
+
+int main(){
+  int t;
+  cin >> t;
+  REP(_,t)solve();
 }
 
