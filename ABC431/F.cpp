@@ -33,46 +33,44 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+//using mint = modint1000000007;
+using mint = modint998244353;
+
+struct combination {
+  vector<mint> fact, ifact;
+  combination(int n):fact(n+1),ifact(n+1) {
+    fact[0] = 1;
+    for (int i = 1; i <= n; ++i) fact[i] = fact[i-1]*i;
+    ifact[n] = fact[n].inv();
+    for (int i = n; i >= 1; --i) ifact[i-1] = ifact[i]*i;
+  }
+  mint operator()(int n, int k) {
+    if (k < 0 || k > n) return 0;
+    return fact[n]*ifact[k]*ifact[n-k];
+  }
+};
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
-
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
-
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
-    }
+  int n,d;
+  cin >> n >> d;
+  vi cnt(1000001);
+  vi a(n);
+  int mx=0;
+  REP(i,n){
+    cin >> a[i];
+    chmax(mx,a[i]);
+    cnt[a[i]]++;
   }
+  sort(ALL(a));
 
-  cout << sum - ok*n << endl;
-
+  combination comb(n);
+  int sum=0;
+  mint ans=1;
+  FOR(i,1,mx+1){
+    sum += cnt[i];
+    ans *= comb(sum,cnt[i]);
+    if(i>d)sum -= cnt[i-d];
+  }
+  cout << ans.val() << endl;
 }
 

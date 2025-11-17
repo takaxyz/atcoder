@@ -37,42 +37,46 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n,m;
+  cin >> n >> m;
+  vi a(n);
+  REP(i,n)cin >> a[i];
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  vi a0(n/2),a1((n+1)/2);
+  REP(i,n/2)a0[i]=a[i];
+  REP(i,(n+1)/2)a1[i]=a[n-1-i];
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+  auto f = [&](const vi& vs) -> pair<vi,vi> {
+    vi used, unused;
+    unused.pb(0);
+
+    for(auto x: vs){
+      swap(used,unused);
+      REP(i,used.size()){
+        unused.emplace_back(used[i]);
+        used[i] += x;
+        used[i] %= m;
+      }
     }
-    return true;
+    sort(ALL(used));
+    sort(ALL(unused));
+    return {used, unused};
   };
 
-  ll ok=0, ng=3e9;
+  auto [used0,unused0] = f(a0);
+  auto [used1,unused1] = f(a1);
 
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
-    }
+  ll ans = 0;
+  for(auto x: used0){
+    int y = (m-x)%m;
+    ans += upper_bound(ALL(unused1), y) - lower_bound(ALL(unused1), y);
   }
-
-  cout << sum - ok*n << endl;
+  for(auto x: unused0){
+    int y = (m-x)%m;
+    ans += upper_bound(ALL(unused1), y) - lower_bound(ALL(unused1), y);
+    ans += upper_bound(ALL(used1), y) - lower_bound(ALL(used1), y);
+  }
+  cout << ans << endl;
 
 }
 

@@ -37,42 +37,44 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n,m,k;
+  cin >> n >> m >> k;
+  vi r(n),p(m);
+  REP(i,n)cin >> r[i];
+  REP(i,m)cin >> p[i];
+  sort(ALL(r));
+  reverse(ALL(r));
+  sort(ALL(p));
+  reverse(ALL(p));
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  int ans = -1;
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+  int sum=0;
+  // r -> p
+  if((k+1)/2 <= n && k/2 <= m){
+    REP(i,(k+1)/2){
+      sum += r[i];
     }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+    REP(i,k/2){
+      sum += p[i];
     }
+
+    chmax(ans,sum);
+
+  }
+  sum = 0;
+  // r -> p
+
+  if((k+1)/2 <= m && k/2 <= n){
+    REP(i,(k+1)/2){
+      sum += p[i];
+    }
+    REP(i,k/2){
+      sum += r[i];
+    }
+    chmax(ans,sum);
   }
 
-  cout << sum - ok*n << endl;
-
+  cout << ans << endl;
 }
 

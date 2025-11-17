@@ -37,42 +37,27 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int t;
+  cin >> t;
+  REP(_,t){
+    string a,b;
+    cin >> a >> b;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+    string x = b + a + a;
+    auto vs = z_algorithm(b+a+a);
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+    bool ok=false;
+    //REP(i,vs.size())printf("%d %d\n",i,vs[i]);
+    FOR(i,a.size(),a.size()*2){
+      if(vs[i] >= a.size()){
+        cout << i - a.size() << endl;
+        ok=true;
+        break;
+      }
     }
-    return true;
-  };
 
-  ll ok=0, ng=3e9;
+    if(!ok)cout << -1 << endl;
 
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
-    }
   }
-
-  cout << sum - ok*n << endl;
-
 }
 

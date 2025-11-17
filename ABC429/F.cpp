@@ -36,43 +36,63 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+using A = array<int,3>;
+using S = array<A,3>;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+S op(S x, S y){
+  S res = S{A{INF,INF,INF}, A{INF,INF,INF},A{INF,INF,INF}};
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
+  REP(i,3)REP(j,3)REP(k,3)chmin(res[i][j], x[i][k]+y[k][j]);
 
-  ll ok=0, ng=3e9;
+  return res;
+}
 
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+S e(){
+  return S{A{0,INF,INF}, A{INF,0,INF},A{INF,INF,0}};
+}
+
+S toS(string& s){
+  S res = S{A{0,1,2}, A{1,0,1},A{2,1,0}};
+
+  REP(i,3){
+    if(s[i]=='#'){
+      REP(j,3)res[i][j]=res[j][i]=INF;
+      if(i==1){
+        res[0][2] = res[2][0] = INF;
+      }
     }
   }
+  return res;
+}
 
-  cout << sum - ok*n << endl;
+int main(){
+  int n;
+  cin >> n;
+
+  vector s(n,string(3, ' '));
+  REP(i,3)REP(j,n)cin >> s[j][i];
+
+
+  vector<S> vs(n);
+  REP(i,n)vs[i]= toS(s[i]);
+  segtree<S, op, e> seg(vs);
+
+  int q;
+  cin >> q;
+  REP(_,q){
+    int r,c;
+    cin >> r >> c;
+    r--; c--;
+
+    s[c][r] ^= '#' ^ '.';
+    seg.set(c, toS(s[c]));
+    S res = seg.all_prod();
+
+    int ans = (res[0][2] == INF ? -1 : res[0][2] + n -1);
+
+    cout << ans << endl;
+
+  }
 
 }
 

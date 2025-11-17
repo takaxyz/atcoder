@@ -37,42 +37,55 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int t;
+  cin >> t;
+  REP(_,t){
+    int n;
+    string s;
+    cin >> n >> s;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+    vi c0(n);
+    vi c1(n);
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
+    int cnt=0;
     REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+      if(s[i]=='R')cnt++;
+      else cnt=0;
+      c0[i+1] += cnt;
     }
-    return true;
-  };
 
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+    cnt=0;
+    for(int i = n-2; i >=0; i--){
+      if(s[i]=='L')cnt++;
+      else cnt=0;
+      c0[i] += cnt;
     }
+
+    cnt=0;
+    REP(i,n){
+      if(s[i]=='L')cnt++;
+      else cnt=0;
+      c1[i+1] += cnt;
+    }
+
+    cnt=0;
+    for(int i = n-2; i >=0; i--){
+      if(s[i]=='R')cnt++;
+      else cnt=0;
+      c1[i] += cnt;
+    }
+    // for(auto x: c0)cout << x << endl;
+    // cout << endl;
+    // for(auto x: c1)cout << x << endl;
+    // cout << endl;
+
+    vi sum(n+1);
+    REP(i,n){
+      sum[c0[i]]++; 
+      sum[n-c1[i]]--; 
+    }
+    REP(i,n)sum[i+1] += sum[i];
+    REP(i,n)cout << sum[i] << endl;
   }
-
-  cout << sum - ok*n << endl;
-
 }
 

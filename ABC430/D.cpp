@@ -37,42 +37,47 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n;
+  cin >> n;
+  ll ans=0;
+  vector<ll> d(n+1);
+  set<ll> st;
+  map<ll,int> mp;
+  st.insert(0);
+  mp[0]=0;
+  d[0] = LINF;
+  ans = LINF;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  FOR(i,1,n+1){
+    int x;
+    cin >> x;
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+    st.insert(x);
+    mp[x] = i;
+    d[i]=LINF;
+
+    auto it1 = st.lower_bound(x);
+    if(it1 != st.begin()){
+      it1--;
+      chmin(d[i], x - *it1);
+      int id = mp[*it1];
+      ans -= d[id];
+      chmin(d[id], x - *it1);
+      ans += d[id];
     }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+    
+    auto it2 = st.upper_bound(x);
+    if(it2 != st.end()){
+      chmin(d[i], *it2 - x);
+      int id = mp[*it2];
+      ans -= d[id];
+      chmin(d[id], *it2-x);
+      ans += d[id];
     }
+    ans += d[i];
+    cout << ans << endl;
   }
 
-  cout << sum - ok*n << endl;
 
 }
 

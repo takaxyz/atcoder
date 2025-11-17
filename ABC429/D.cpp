@@ -37,42 +37,35 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n,c;
+  ll m;
+  cin >> n >> m >> c;
+  map<ll,int> mp;
+  REP(_,n){
+    ll a;
+    cin >> a;
+    mp[a]++;
+  }
+  vector<ll> sum(1,0);
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
-
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+  int sz = mp.size();
+  vector<ll> p;
+  REP(i,2){
+    for(auto [k,v]: mp){
+      p.pb(k + m * i);
+      sum.pb(sum.back() + v);
     }
   }
+  // cout << sz << endl;
+  // for(auto x: sum)cout << x << endl;
+  // cout <<  endl;
 
-  cout << sum - ok*n << endl;
-
+  // for(auto x: p)cout << x << endl;
+  ll ans=0;
+  FOR(i,1,sz+1){
+    auto it = lower_bound(ALL(sum), sum[i]+c);
+    ans += (*it - sum[i]) * (p[i] - p[i-1]);
+  }
+  cout << ans << endl;
 }
 

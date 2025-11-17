@@ -37,42 +37,26 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int h,w;
+  cin >> h >> w;
+  vector a(h,vector<ll>(w));
+  REP(i,h)REP(j,w)cin >> a[i][j];
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  vector<ll> p(h+w-1);
+  REP(i,h+w-1)cin >> p[i];
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
+  vector dp(h,vector<ll>(w,LINF));
 
-  ll ok=0, ng=3e9;
+  dp[h-1][w-1] = 0;
 
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+  for(int i = h-1; i >=0; i--){
+    for(int j = w-1; j >=0; j--){
+      if(i > 0)chmin(dp[i-1][j], max(0LL,-a[i][j] + p[i+j] + dp[i][j]));
+      if(j > 0)chmin(dp[i][j-1], max(0LL,-a[i][j] + p[i+j] + dp[i][j]));
     }
   }
 
-  cout << sum - ok*n << endl;
+  cout << max(0LL,dp[0][0] - a[0][0] + p[0]) << endl;
 
 }
 

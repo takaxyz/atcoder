@@ -37,42 +37,33 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n;
+  cin >> n;
+  const int MX = 250001;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
-
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+  vector<ll> dp(MX,-LINF);
+  dp[0]=0;
+  ll sum_h=0, sum_w=0;
+  REP(_,n){
+    vector<ll> old(MX,-LINF);
+    swap(old,dp);
+    int w;
+    ll h,b;
+    cin >> w >> h >> b;
+    sum_h += h;
+    sum_w += w;
+    REP(i,MX){
+      if(old[i]==-LINF)continue;
+      chmax(dp[i], old[i]);
+      chmax(dp[i+w], old[i]-h+b);
     }
   }
 
-  cout << sum - ok*n << endl;
+  ll ans = 0;
+  for(int i = (sum_w+1)/2; i < MX; i++){
+    chmax(ans, dp[i]+sum_h);
+  }
+  cout << ans << endl;
 
 }
 

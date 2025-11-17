@@ -36,43 +36,50 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n;
+  cin >> n;
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  auto cnt = [&](int x, int y){
+    int res=0;
+    REP(i,4){
+      int nx = x + dx[i];
+      int ny = y + dy[i];
+      if(nx < 0 || nx >= n || ny < 0 || ny >=n)continue;
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+      if(s[nx][ny] == '#')res++;
     }
-    return true;
+    return res;
   };
 
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
-    }
+  queue<P> q;
+  REP(i,n)REP(j,n){
+    if(cnt(i,j) > 2)q.push({i,j});
   }
 
-  cout << sum - ok*n << endl;
+  int ans=0;
+  while(q.size()){
+    auto [x,y] = q.front();
+    q.pop();
+    if(s[x][y]=='#')continue;;
+    
+    ans++;
+    s[x][y]='#';
+
+    REP(i,4){
+      int nx = x + dx[i];
+      int ny = y + dy[i];
+      if(nx < 0 || nx >= n || ny < 0 || ny >=n)continue;
+      if(s[nx][ny]=='#')continue;
+      if(cnt(nx,ny) > 2)q.push({nx,ny});
+    }
+  }
+  cout << ans << endl;
 
 }
 

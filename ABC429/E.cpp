@@ -37,42 +37,51 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n,m;
+  cin >> n >> m;
+  vvi edge(n);
+  REP(_,m){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[u].pb(v);
+    edge[v].pb(u);
+  }
+  string s;
+  cin >> s;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
-
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+  queue<tuple<int,int,int>> q;
+  vector d(n,vector<P>());
+  REP(i,n){
+    if(s[i]=='S'){
+      q.push({i,i,0});
+      d[i].pb({i,0});
     }
   }
 
-  cout << sum - ok*n << endl;
+  while(q.size()){
+    auto [v, r, dist] = q.front();
+    q.pop();
+
+    for(auto nv: edge[v]){
+      if(d[nv].size()==0){
+        d[nv].pb({r,dist+1});
+        q.push({nv,r,dist+1});
+      }else if(d[nv].size()==1){
+        if(d[nv][0].first == r)continue;
+
+        d[nv].pb({r,dist+1});
+        q.push({nv,r,dist+1});
+      }
+    }
+  }
+
+  REP(i,n){
+    if(s[i]=='D'){
+      cout << d[i][0].second + d[i][1].second << endl;
+    }
+  }
+
 
 }
 

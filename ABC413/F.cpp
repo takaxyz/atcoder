@@ -36,43 +36,47 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int h,w,k;
+  cin >> h >> w >> k;
+  queue<P> q;
+  vvi d(h,vi(w,-1));
+  vvi cnt(h,vi(w));
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
-
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
-    }
+  REP(_,k){
+    int r,c;
+    cin >> r >> c;
+    c--; r--;
+    q.push({r,c});
+    d[r][c]=0;
+    cnt[r][c]=4;
   }
 
-  cout << sum - ok*n << endl;
+  ll ans=0;
+
+  while(q.size()){
+    auto [i,j] = q.front();
+    q.pop();
+
+    REP(k,4){
+      int ni = i + dx[k];
+      int nj = j + dy[k];
+
+      if(ni < 0 || ni >= h || nj < 0 || nj >= w)continue;
+      if(d[ni][nj]!=-1)continue;
+
+      cnt[ni][nj]++;
+      if(cnt[ni][nj]==2){
+        d[ni][nj] = d[i][j]+1;
+        ans += d[ni][nj];
+        q.push({ni,nj});
+      }
+    }
+  }
+  cout << ans << endl;
 
 }
 

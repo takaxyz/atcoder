@@ -37,42 +37,29 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n,a,b;
+  cin >> n >> a >> b;
+  string s;
+  cin >> s;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  vi sa(n+1),sb(n+1);
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
-    }
-    return true;
-  };
-
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
-    }
+  REP(i,n){
+    sa[i+1] = sa[i]+(s[i]=='a');
+    sb[i+1] = sb[i]+(s[i]=='b');
   }
 
-  cout << sum - ok*n << endl;
+  ll ans=0;
+  REP(i,n){
+    int ai = lower_bound(ALL(sa),sa[i]+a) - sa.begin();
+    int bi = lower_bound(ALL(sb),sb[i]+b) - sb.begin();
+
+    //printf("%d %d %d\n",i,ai,bi);
+    ans += max(0, bi-ai);
+  }
+  cout << ans << endl;
+
+
 
 }
 

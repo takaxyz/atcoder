@@ -37,42 +37,31 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi u(n),d(n);
-  REP(i,n)cin >> u[i] >> d[i];
+  int n;
+  ll x,y;
+  cin >> n >> x >> y;
 
-  ll sum = 0;
-  REP(i,n)sum += u[i]+d[i];
+  vector<ll> a(n);
+  REP(i,n)cin >> a[i];
 
-  auto f = [&](ll h){
-    map<ll,int> mp;
-    ll l = 0;
-    ll r = h;
-    REP(i,n){
-      ll nl = max(0LL,h-d[i]);
-      ll nr = min(h,(ll)u[i]);
-      nl = max(nl,l-x);
-      nr = min(nr,r+x);
-      l = nl; r = nr;
-      if (l > r) return false;
+  sort(ALL(a));
+
+  ll ans=a[0];
+  FOR(i,1,n){
+    if(x * (a[i]-a[0]) % (x-y) != 0){
+      cout << -1 << endl;
+      return 0;
     }
-    return true;
-  };
 
-  ll ok=0, ng=3e9;
-
-  while(abs(ok-ng)>1){
-    ll mid = (ok+ng)/2;
-    //cout << l << " " << r << " " << mid << endl;
-    if(f(mid)){
-      ok=mid;
-    }else{
-      ng=mid;
+    ll now = x * (a[i]-a[0]) / (x-y) + a[0];
+    if(now < 0 || a[i] < now){
+      cout << -1 << endl;
+      return 0;
     }
+    ans += now;
   }
+  cout << ans << endl;
 
-  cout << sum - ok*n << endl;
 
 }
 
