@@ -37,32 +37,15 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi s(n),c(n);
-  vector<double> p(n);
-  REP(i,n)cin >> s[i] >> c[i] >> p[i];
-  REP(i,n)p[i] /= 100;
-
-  vector dp(x+1, vector<double>(1<<n));
-
-  REP(i,x+1){
-    REP(j,(1<<n)){
-      REP(k,n){
-        if((j >> k) & 1)continue;
-
-        int nj = j | (1<<k);
-        int ni = i - c[k];
-        
-        if(ni < 0)continue;
-
-        double val = p[k] * (dp[ni][nj] + s[k]) + (1.0 - p[k]) * dp[ni][j];
-        chmax(dp[i][j], val);
-      }
-    }
+  int n;
+  cin >> n;
+  int x = 1;
+  vi a(n);
+  REP(i,n)cin >> a[i];
+  REP(i,n){
+    if(x <= i)break;
+    chmax(x, i + a[i]);
   }
-
-  printf("%.9f\n",dp[x][0]);
-  
+  cout << min(x,n) << endl;
 }
 

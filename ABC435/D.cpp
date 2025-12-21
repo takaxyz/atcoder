@@ -37,32 +37,44 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi s(n),c(n);
-  vector<double> p(n);
-  REP(i,n)cin >> s[i] >> c[i] >> p[i];
-  REP(i,n)p[i] /= 100;
-
-  vector dp(x+1, vector<double>(1<<n));
-
-  REP(i,x+1){
-    REP(j,(1<<n)){
-      REP(k,n){
-        if((j >> k) & 1)continue;
-
-        int nj = j | (1<<k);
-        int ni = i - c[k];
-        
-        if(ni < 0)continue;
-
-        double val = p[k] * (dp[ni][nj] + s[k]) + (1.0 - p[k]) * dp[ni][j];
-        chmax(dp[i][j], val);
-      }
-    }
+  int n,m;
+  cin >> n >> m;
+  vvi edge(n);
+  REP(i,m){
+    int x,y;
+    cin >> x >> y;
+    x--; y--;
+    edge[y].pb(x);
   }
 
-  printf("%.9f\n",dp[x][0]);
-  
+
+  vi c(n);
+
+  auto dfs = [&](int v, int p, auto dfs) -> void{
+    c[v]=1;
+
+    for(auto nv : edge[v]){
+      if(nv == p)continue;
+      if(c[nv])continue;
+      dfs(nv,v,dfs);
+    }
+
+  };
+
+  int q;
+  cin >> q;
+  REP(_,q){
+    int t,v;
+    cin >> t >> v;
+    v--;
+    if(t==1){
+      if(c[v])continue;
+      dfs(v,-1,dfs);
+    }else{
+      cout << (c[v] == 1 ? "Yes" : "No") << endl;
+    }
+
+  }
+
 }
 

@@ -36,33 +36,41 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int f(ll x){
+  int res = 0;
+  while(x > 0){
+    x/=10;
+    res++;
+  }
+  return res;
+}
+
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi s(n),c(n);
-  vector<double> p(n);
-  REP(i,n)cin >> s[i] >> c[i] >> p[i];
-  REP(i,n)p[i] /= 100;
+  int n,m;
+  cin >> n >> m;
+  vector<ll> a(n);
+  REP(i,n)cin >> a[i];
 
-  vector dp(x+1, vector<double>(1<<n));
-
-  REP(i,x+1){
-    REP(j,(1<<n)){
-      REP(k,n){
-        if((j >> k) & 1)continue;
-
-        int nj = j | (1<<k);
-        int ni = i - c[k];
-        
-        if(ni < 0)continue;
-
-        double val = p[k] * (dp[ni][nj] + s[k]) + (1.0 - p[k]) * dp[ni][j];
-        chmax(dp[i][j], val);
-      }
+  vector<ll> d(10);
+  d[0]=10%m;
+  FOR(i,1,10)d[i] = d[i-1] * 10 % m;
+  
+  vector<map<int,int>> cnt(10);
+  REP(i,n){
+    REP(j,10){
+      cnt[j][a[i] * d[j] % m]++;
     }
   }
 
-  printf("%.9f\n",dp[x][0]);
-  
+  ll ans=0;
+  REP(i,n){
+    int j = f(a[i]) - 1;
+
+    int mm = (m - a[i] % m) % m;
+    if(cnt[j].count(mm))ans += cnt[j][mm];
+
+    //if(d[j] * a[i] % m == mm)ans--;
+  }
+  cout << ans << endl;
 }
 

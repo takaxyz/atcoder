@@ -36,33 +36,49 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+using S = long long;
+using F = long long;
+
+S op(S a, S b){ return std::min(a, b); }
+S e(){ return LINF; }
+S mapping(F f, S x){ return f+x; }
+F composition(F f, F g){ return f+g; }
+F id(){ return 0; }
+
+bool G(ll x){ return x >= 0;}
+
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi s(n),c(n);
-  vector<double> p(n);
-  REP(i,n)cin >> s[i] >> c[i] >> p[i];
-  REP(i,n)p[i] /= 100;
-
-  vector dp(x+1, vector<double>(1<<n));
-
-  REP(i,x+1){
-    REP(j,(1<<n)){
-      REP(k,n){
-        if((j >> k) & 1)continue;
-
-        int nj = j | (1<<k);
-        int ni = i - c[k];
-        
-        if(ni < 0)continue;
-
-        double val = p[k] * (dp[ni][nj] + s[k]) + (1.0 - p[k]) * dp[ni][j];
-        chmax(dp[i][j], val);
-      }
-    }
+  int n;
+  cin >> n;
+  fenwick_tree<int> fw(n);
+  lazy_segtree<S, op, e, F, mapping, composition, id> seg(n);
+  REP(i,n){
+    ll a;
+    cin >> a;
+    seg.set(i,a);
+    fw.add(i,1);
   }
+  int q;
+  cin >> q;
+  REP(_,q){
+    int l,r;
+    ll k;
+    cin >> l >> r >> k;
+    l--;
+    ll ans=0;
+    ans = k * fw.sum(l,r);
+    seg.apply(l,r,-k);
+    int pos = seg.max_right(l, G);
+    while(pos<n){
+      int val = seg.get(pos);
+      ans += val;
+      seg.set(pos, LINF);
+      fw.add(pos,-1);
+      pos = seg.max_right(l, G);
+    }
+    cout << ans << endl;
 
-  printf("%.9f\n",dp[x][0]);
-  
+
+  }
 }
 

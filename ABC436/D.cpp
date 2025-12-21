@@ -36,33 +36,64 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int n,x;
-  cin >> n >> x;
-  vi s(n),c(n);
-  vector<double> p(n);
-  REP(i,n)cin >> s[i] >> c[i] >> p[i];
-  REP(i,n)p[i] /= 100;
-
-  vector dp(x+1, vector<double>(1<<n));
-
-  REP(i,x+1){
-    REP(j,(1<<n)){
-      REP(k,n){
-        if((j >> k) & 1)continue;
-
-        int nj = j | (1<<k);
-        int ni = i - c[k];
-        
-        if(ni < 0)continue;
-
-        double val = p[k] * (dp[ni][nj] + s[k]) + (1.0 - p[k]) * dp[ni][j];
-        chmax(dp[i][j], val);
-      }
+  int h,w;
+  cin >> h >> w;
+  vector<string> s(h);
+  vector e(26,vector<P>());
+  REP(i,h)cin >> s[i];
+  REP(i,h)REP(j,w){
+    if(s[i][j] >= 'a' && s[i][j] <= 'z'){
+      e[s[i][j]-'a'].pb({i,j});
     }
   }
+  vvi d(h,vi(w,INF));
+  vi used(26);
 
-  printf("%.9f\n",dp[x][0]);
-  
+  queue<P> q;
+  q.push({0,0});
+  d[0][0]=0;
+  while(q.size()){
+    auto [i,j] = q.front();
+    q.pop();
+
+    REP(k,4){
+      int ni = i + dx[k];
+      int nj = j + dy[k];
+
+      if(ni < 0 || ni >= h || nj < 0 || nj >= w)continue;
+      if(d[ni][nj]!=INF)continue;
+      if(s[ni][nj]=='#')continue;
+
+      d[ni][nj] = d[i][j]+1;
+      q.push({ni,nj});
+    }  
+
+    if(s[i][j]!='.'){
+      if(used[s[i][j]-'a'])continue;
+      used[s[i][j]-'a'] = 1;
+      for(auto [ni,nj] : e[s[i][j]-'a']){
+        if(ni == i && nj == j)continue;
+        if(d[ni][nj]!=INF)continue;
+        d[ni][nj] = d[i][j]+1;
+        q.push({ni,nj});
+      }
+    }
+
+  }
+
+  // REP(i,h)REP(j,w){
+  //   cout << d[i][j] << (j==w-1 ? "\n" : " ");
+  // }
+
+  if(d[h-1][w-1] == INF){
+    cout <<  -1 << endl;
+  }else{
+    cout << d[h-1][w-1] << endl;
+  }
+
 }
 
