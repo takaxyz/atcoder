@@ -37,43 +37,42 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n;
+  cin >> n;
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
+  vvi c(n,vi(n+1));
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
-
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  REP(i,n){
+    int cnt_b = 0;
+    int cnt_w = 0;
+    REP(j,n)if(s[i][j]=='.')cnt_w++;
+    REP(j,n+1){
+      c[i][j] = cnt_b + cnt_w;
+      if(j<n && s[i][j] == '.')cnt_w--;
+      if(j<n && s[i][j] == '#')cnt_b++;
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+  // REP(i,n)REP(j,n+1){
+  //   cout << c[i][j] << (j==n ? "\n" : " ");
+  // }
+
+  vi dp = c[0];
+
+  FOR(i,1,n){
+    vi old(n+1);
+    swap(old,dp);
+
+    int mi = INF;
+    for(int j = n; j >=0; j--){
+      chmin(mi,old[j]);
+      dp[j] = c[i][j] + mi;
+    }
+  }
+
+  int ans = INF;
+  for(auto x: dp)chmin(ans,x);
+  cout << ans << endl;
 
 }
 

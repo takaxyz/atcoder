@@ -37,43 +37,44 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n,m;
+  cin >> n >> m;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
+  vvi edge(n+m);
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
-
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  REP(i,n){
+    int a;
+    cin >> a;
+    REP(_,a){
+      int s;
+      cin >> s;
+      s--;
+      edge[s].pb(i+m);
+      edge[i+m].pb(s);
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+
+  vi d(n+m,INF);
+  queue<int> q;
+  d[0] = 0;
+  q.push(0);
+  while(q.size()){
+    int v = q.front();
+    q.pop();
+
+    for(auto nv: edge[v]){
+      if(d[nv]!=INF)continue;
+      d[nv] = d[v] + 1;
+      q.push(nv);
+    }
+  }
+
+
+  if(d[m-1] == INF){
+    cout << -1 << endl;
+  }else{
+    cout << (d[m-1] - 2)/2 << endl;
+  }
 
 }
 

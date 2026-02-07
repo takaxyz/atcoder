@@ -36,44 +36,40 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int op(int a, int b) {
+    return a+b;
+}
+
+int e() {
+    return 0;
+}
+
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
-
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  int n,q;
+  cin >> n >> q;
+  segtree<int, op, e> seg(n);
+  REP(i,n){
+    int a;
+    cin >> a;
+    seg.set(i,a);
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  REP(_,q){
+    int t;
+    cin >> t;
+    if(t==1){
+      int x;
+      cin >> x;
+      int s = seg.get(x-1);
+      int t = seg.get(x);
+      seg.set(x-1, t);
+      seg.set(x, s);
+    }else{
+      int l,r;
+      cin >> l >> r;
+      cout << seg.prod(l-1,r) << endl;
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
 
 }
 

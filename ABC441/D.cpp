@@ -37,43 +37,37 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n,m,l,s,t;
+  cin >> n >> m >> l >> s >> t;
 
-  vvi edge(n);
+  vector edge(n,vector<pair<int,ll>>());
   REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+    int u,v,c;
+    cin >> u >> v >> c;
+    u--;v--;
+    edge[u].pb({v,c});
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
-    }
-  }
   vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+  auto dfs = [&](int v, int d, ll cost, auto dfs) -> void {
+    if(d == l){
+      if(s <= cost && cost <= t)ans.pb(v+1);
+      return;
+    }
+    for(auto [nv, c]: edge[v]){
+      dfs(nv, d+1, cost + c, dfs);
+    }
+  };
 
+  
+  dfs(0,0,0,dfs);
+
+  sort(ALL(ans));
+  ans.erase(unique(ALL(ans)),ans.end());
+  if(ans.size()==0){
+    cout << endl;
+  }else{
+    for(auto x: ans)cout << x << endl;
+  }
 }
 

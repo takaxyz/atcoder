@@ -37,43 +37,20 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n,m;
+  cin >> n >> m;
+  vi c(n,n-1);
 
-  vvi edge(n);
   REP(_,m){
     int a,b;
     cin >> a >> b;
     a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+    c[a]--; c[b]--;
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
-    }
+  REP(i,n){
+    cout << (ll)c[i] * (c[i]-1) * (c[i]-2) / 6 << endl;
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
 
 }
 

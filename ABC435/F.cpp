@@ -36,44 +36,48 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+P op(P a, P b) {
+    return max(a, b);
+}
+
+P e() {
+    return {0,0};
+}
+
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n;
+  cin >> n;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
+  segtree<P,op,e> tree(n);
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  REP(i,n){
+    int p;
+    cin >> p;
+    tree.set(i,{p,i});
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  auto dfs = [&](int v, int l, int r, auto dfs) -> ll{
+    if(r-l == 1)return 0;
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+    ll ret = 0;
+    
+    if(l != v){
+      P pp = tree.prod(l,v);
+
+      chmax(ret, dfs(pp.second,l,v,dfs) + v - pp.second);
     }
-  }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+
+    if(r-1 != v){
+      P pp = tree.prod(v+1,r);
+
+      chmax(ret, dfs(pp.second,v+1,r,dfs) + pp.second - v);
+    }
+
+
+    return ret;
+  };
+  //cout << tree.prod(0,n).second << endl;
+  cout << dfs(tree.prod(0,n).second,0,n,dfs) << endl;
 
 }
 

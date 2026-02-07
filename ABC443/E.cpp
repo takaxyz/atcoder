@@ -36,44 +36,49 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+void solve(){
+  int n,c;
+  cin >> n >> c;
+  c--;
+  vector<string> s(n);
+  REP(i,n)cin >> s[i];
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
+  vi mx(n);
+  REP(i,n)REP(j,n)if(s[i][j]=='#')mx[j]=i;
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
+  vvi d(n,vi(n,0));
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  d[n-1][c] = 1;
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  for(int i = n-1; i > 0; i--){
+    for(int j = 0; j < n; j++){
+      if(d[i][j]==0)continue;
+
+      for(int k = -1; k <2; k++){
+        int nj = j + k;
+        if(nj < 0 || nj >= n)continue;
+        if(s[i-1][nj]=='#'){
+          if(mx[nj]==i-1 || mx[nj] == -1){
+            mx[nj] = -1;
+            d[i-1][nj]=1;
+          }
+        }else{
+          d[i-1][nj]=1;
+        }
+      }
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
 
+  REP(i,n)cout << d[0][i];
+  cout << endl;
+
+
+}
+
+
+int main(){
+  int t;
+  cin >> t;
+  REP(_,t)solve();
 }
 

@@ -37,43 +37,33 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  string s;
+  cin >> s;
+  ll n;
+  cin >> n;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  ll x = 0;
+  for(auto c: s){
+    x *= 2;
+    if(c == '1')x += 1;
   }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  if(x > n){
+    cout << -1 << endl;
+    return 0;
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  ll d = 1;
+  REP(_,s.size()-1)d *= 2;
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  REP(i,s.size()){
+    if(s[i] == '?'){
+      if(d + x <= n){
+        s[i] = '1';
+        x += d;
+      }
     }
+    d /= 2;
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
-
+  cout << x << endl;
 }
 

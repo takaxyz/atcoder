@@ -37,43 +37,29 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
-
+  int n;
+  cin >> n;
   vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  REP(_,n-1){
+    int u,v;
+    cin >> u >> v;
+    u--; v--;
+    edge[u].pb(v);
+    edge[v].pb(u);
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  vi deg(n);
+  REP(i,n)deg[edge[i].size()]++;
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
-    }
-  }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+  //REP(i,n)if(deg[i])cout << i << " " << deg[i] << endl;
+
+  int sum=0;
+  FOR(i,3,n)sum += deg[i] * (i+1);
+
+  REP(i,(n - sum) / 3)cout << 2 << endl;
+  FOR(i,3,n)REP(j,deg[i])cout << i << endl;
+
+
 
 }
 

@@ -36,44 +36,63 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int op(int a, int b) {
+    return min(a, b);
+}
+
+int e() {
+    return (int)(1e9);
+}
+
+segtree<int, op, e> seg(10);
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
-
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  int n;
+  cin >> n;
+  vi h(n),w(n),d(n);
+  REP(i,n){
+    vi vs(3);
+    REP(i,3)cin >> vs[i];
+    sort(ALL(vs));
+    h[i] = vs[0];
+    w[i] = vs[1];
+    d[i] = vs[2];
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  auto compress = [&](vi vs){
+    vi x = vs;
+    sort(ALL(x));
+    REP(i,n)vs[i] = lower_bound(ALL(x), vs[i]) - x.begin(); 
+    return vs;
+  };
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  h = compress(h);
+  w = compress(w);
+  d = compress(d);
+
+  vi ids(n);
+  iota(ALL(ids),0);
+
+  sort(ALL(ids),[&](const int& i, const int& j){
+      if(h[i] == h[j]){
+        if(w[i] != w[j])return w[i] > w[j];
+        else return d[i] < d[j];
+      }else{
+        return h[i] < h[j];
+      }
+    }
+  );
+
+  segtree<int,op,e> seg(n);
+  for(auto i : ids){
+    if(seg.prod(0,w[i]) < d[i]){
+      cout << "Yes" << endl;
+      return 0;
+    }else{
+      if(seg.get(w[i]) > d[i])seg.set(w[i], d[i]);
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+  cout << "No" << endl;
+
 
 }
 

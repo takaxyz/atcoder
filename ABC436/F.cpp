@@ -37,43 +37,22 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
-
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  int n;
+  cin >> n;
+  vector<P> bi(n);
+  REP(i,n){
+    int b;
+    cin >> b;
+    bi[i] = {b,i};
   }
-  vi d(n,-INF);
+  sort(ALL(bi));
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  fenwick_tree<int> fw(n);
+  ll ans=0;
+  for(auto [b,i]: bi){
+    ans += (ll)(fw.sum(0,i) + 1) * (fw.sum(i,n) + 1);
+    fw.add(i,1);
   }
-
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
-    }
-  }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
-
+  cout << ans << endl;
 }
 

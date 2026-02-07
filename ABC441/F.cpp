@@ -37,43 +37,61 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n, m;
+  cin >> n >> m;
+  vi p(n);
+  vector<ll> v(n);
+  REP(i,n)cin >> p[i] >> v[i];
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
+  vector dp(n+1,vector<ll>(m+1, -LINF));
+  dp[0][0]=0;
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  REP(i,n)REP(j,m+1){
+    if(dp[i][j]==-LINF)continue;
+
+    chmax(dp[i+1][j],dp[i][j]);
+    if(j+p[i] <= m)chmax(dp[i+1][j+p[i]],dp[i][j] + v[i]);
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  ll mx=0;
+  REP(i,m+1)chmax(mx,dp[n][i]);
+  //REP(i,n+1)REP(j,m+1)printf("%d %d: %lld\n",i,j,dp[i][j]);
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  vvi route(n+1,vi(m+1));
+  REP(i,m+1)if(dp[n][i] == mx)route[n][i]=1;
+
+  vi skip(n);
+  vi use(n);
+
+  for(int i = n; i > 0; i--){
+    for(int j = 0; j <= m; j++){
+      if(route[i][j]==0)continue;
+
+      if(dp[i][j] == dp[i-1][j]){
+        route[i-1][j]=1;
+        skip[i-1]=1;
+      }
+
+      if(j-p[i-1] >=0){
+        if(dp[i][j] == dp[i-1][j-p[i-1]] + v[i-1]){
+          use[i-1]=1;
+          route[i-1][j-p[i-1]]=1;
+        }
+      }
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+
+  //REP(i,n+1)REP(j,m+1)printf("%d %d: %d\n",i,j,route[i][j]);
+
+  REP(i,n){
+    if(use[i]){
+      if(skip[i])cout << "B";
+      else cout << "A";
+    }else{
+      cout << "C";
+    }
+  }
+  cout << endl;
 
 }
 

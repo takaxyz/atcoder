@@ -36,44 +36,49 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
-int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+void solve(){
+  int n;
+  cin >> n;
+  vi r(n);
+  REP(i,n)cin >> r[i];
+  vi org = r;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
+  priority_queue<P,vector<P>,greater<P>> q;
+  REP(i,n)q.push({r[i],i});
 
+  vi visited(n);
   while(q.size()){
-    auto [h,p] = q.top();
+    auto [x,v] = q.top();
     q.pop();
-    if(d[p] > h)continue;
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+    if(visited[v])continue;
+    visited[v] = 1;
+
+    for(int i = -1; i < 2; i+=2){
+      int nv = v + i;
+      if(nv < 0 || nv >= n)continue;
+      if(visited[nv])continue;
+
+      if(r[v] == r[nv]){
+        q.push({r[nv], nv});
+      }else if(r[v] < r[nv]){
+        r[nv] = r[v]+1;
+        q.push({r[nv],nv});
+      }
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+//  REP(i,n)cout << r[i] << (i==n-1 ? "\n" : " ");
+  ll ans=0;
+  REP(i,n)ans += (ll)abs(r[i]-org[i]);
+  cout << ans << endl;
+//  cout << endl;
+}
 
+
+int main(){
+  int t;
+  cin >> t;
+  REP(_,t)solve();
 }
 

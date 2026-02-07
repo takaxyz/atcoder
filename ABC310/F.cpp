@@ -33,47 +33,37 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+// using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n;
+  cin >> n;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
+  int sz = 1<<11;
+  vector<mint> dp(sz,0);
+  dp[1]=1;
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
+  REP(_,n){
+    int a;
+    cin >> a;
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+    vector<mint> old(sz); swap(old,dp);
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+    REP(i,sz){
+      for(int k = 1; k <= min(a,10); k++){
+        int ni = (i | (i<<k)) & (sz - 1);
+
+        dp[ni] += old[i] / a;
+      }
+      if(a > 10)dp[i] += old[i] * (a-10)/a;
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+  mint ans=0;
+  REP(i,sz){
+    if((i >> 10) & 1)ans += dp[i];
+  }    
+  cout << ans.val() << endl;
 
 }
 

@@ -37,43 +37,43 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n,m;
+  cin >> n >> m;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
+  vi visited(n+1);
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
+  stack<int> st;
+  visited[1]=1;
+  st.push(1);
+  while(true){
+    string s;
+    cin >> s;
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+    if(s == "OK")return 0;
+    if(s == "-1")return 0;
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+    int k = stoi(s);
+
+    vi v(k);
+    REP(i,k)cin >> v[i];
+
+    bool ok = false;
+    for(auto x: v){
+      if(visited[x])continue;
+
+      visited[x] = 1;
+      st.push(x);
+      cout << x << endl;
+      ok = true;
+      break;
     }
-  }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
 
+    if(!ok){
+      st.pop();
+      cout << st.top() << endl;
+    }
+
+
+  }
 }
 

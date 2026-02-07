@@ -33,47 +33,47 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-using mint = modint1000000007;
-// using mint = modint998244353;
+//using mint = modint1000000007;
+using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n;
+  cin >> n;
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  vi p(n);
+  REP(i,n){
+    cin >> p[i];
+    p[i]--;
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  fenwick_tree<int> fw(n);
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
-    }
+  vi a(n), b(n);
+  for(int i = 0; i < n; i++){
+    a[i] = fw.sum(0,p[i]);
+    fw.add(p[i],1);
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+
+  fw = fenwick_tree<int>(n);
+  for(int i = n-1; i >= 0; i--){
+    b[i] = fw.sum(0,p[i]);
+    fw.add(p[i],1);
+  }
+//  REP(i,n)cout << a[i] << (i==n-1 ? "\n" : " ");
+//  REP(i,n)cout << b[i] << (i==n-1 ? "\n" : " ");
+
+  mint ans = 0;
+
+  REP(i,n){
+    ans += mint(a[i]) * b[i];
+  }
+
+  mint s = 0;
+  REP(i,n){
+    ans += s * b[i];
+    s = s*2 + a[i];
+  }
+  cout << ans.val() << endl;
 
 }
 

@@ -37,43 +37,45 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
-
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
-
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
-
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  int n,m;
+  cin >> n >> m;
+  vi a,b,c;
+  REP(_,n){
+    int t,x;
+    cin >> t >> x;
+    if(t==0){
+      a.pb(x);
+    }else if(t==1){
+      b.pb(x);
+    }else{
+      c.pb(x);
     }
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+
+  sort(RALL(a));
+  sort(RALL(b));
+  sort(RALL(c));
+
+  vector<ll> sa(a.size()+1);
+  vector<ll> sb(b.size()+1);
+  vector<ll> sc(c.size()+1);
+  REP(i,a.size())sa[i+1] = sa[i]+a[i];
+  REP(i,b.size())sb[i+1] = sb[i]+b[i];
+  REP(i,c.size())sc[i+1] = sc[i]+c[i];
+
+  ll ans=0;
+  int j = 0;
+  for(int i = 0; i < sb.size(); i++){
+    ll sum = sb[i];
+
+    while(j < sc.size() && sc[j]<i)j++;
+    if(j==sc.size())break;
+    if(i+j>m)break;
+    sum += sa[min(m-i-j, (int)sa.size()-1)];
+    chmax(ans,sum);
+  }
+
+  cout << ans << endl;
 
 }
 

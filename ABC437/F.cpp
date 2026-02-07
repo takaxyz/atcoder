@@ -36,44 +36,66 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+ll op1(ll x, ll y){
+  return max(x,y);
+}
+
+ll e1(){
+  return (ll)-LINF;
+}
+
+ll op2(ll x, ll y){
+  return min(x,y);
+}
+
+ll e2(){
+  return (ll)LINF;
+}
+
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n,q;
+  cin >> n >> q;
+  segtree<ll,op1,e1> mx1(n), mx2(n);
+  segtree<ll,op2,e2> mi1(n), mi2(n);
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
-  }
-  vi d(n,-INF);
-
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
+  REP(i,n){
+    int x,y;
+    cin >> x >> y;
+    mx1.set(i,x+y);
+    mi1.set(i,x+y);
+    mx2.set(i,x-y);
+    mi2.set(i,x-y);
   }
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  REP(_,q){
+    int t;
+    cin >> t;
+    if(t==1){
+      int i;
+      ll x,y;
+      cin >> i >> x >> y;
+      i--;
+      mx1.set(i,x+y);
+      mi1.set(i,x+y);
+      mx2.set(i,x-y);
+      mi2.set(i,x-y);
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+    }else{
+      int l,r;
+      ll x,y;
+      cin >> l >> r >> x >> y;
+      l--;
+      ll ans = -1;
+      chmax(ans,abs(mx1.prod(l,r) - x - y));
+      chmax(ans,abs(mi1.prod(l,r) - x - y));
+      chmax(ans,abs(mx2.prod(l,r) - x + y));
+      chmax(ans,abs(mi2.prod(l,r) - x + y));
+      cout << ans << endl;
     }
+
+
+
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
 
 }
 

@@ -37,43 +37,37 @@ using mint = modint1000000007;
 // using mint = modint998244353;
 
 int main(){
-  int n,m,k;
-  cin >> n >> m >> k;
+  int n,m;
+  cin >> n >> m;
+  vvi a(n,vi(m));
 
-  vvi edge(n);
-  REP(_,m){
-    int a,b;
-    cin >> a >> b;
-    a--; b--;
-    edge[a].pb(b);
-    edge[b].pb(a);
+  vi b(n*m);
+  REP(i,n)REP(j,m){
+    cin >> a[i][j];
+    b[i * m + j] = a[i][j];
   }
-  vi d(n,-INF);
+  sort(ALL(b));
 
-  priority_queue<P> q;
-  REP(_,k){
-    int p,h;
-    cin >> p >> h;
-    p--;
-    d[p]=h;
-    q.push({h,p});
-  }
+  REP(i,n)REP(j,m)a[i][j] = lower_bound(ALL(b), a[i][j]) - b.begin();
 
-  while(q.size()){
-    auto [h,p] = q.top();
-    q.pop();
-    if(d[p] > h)continue;
+  // REP(i,n)REP(j,m){
+  //   printf("%d ", a[i][j]);
+  //   if(j == m-1)cout << endl;
+  // }
 
-    for(auto nv: edge[p]){
-      if(d[nv] >= h - 1)continue;
-      d[nv] = h - 1;
-      if(d[nv] > 0)q.push({h-1,nv});
+  fenwick_tree<int> fw(n*m);
+
+  FOR(i,1,n)REP(j,m)fw.add(a[i][j],1);
+
+  ll ans=0;
+  REP(i,n-1){
+    REP(j,m){
+      ans += (j+1)*(n-1-i);
+      ans += fw.sum(0,a[i][j]);
     }
+    REP(j,m)fw.add(a[i+1][j],-1);
   }
-  vi ans;
-  REP(i,n)if(d[i]!=-INF)ans.pb(i+1);
-  cout << ans.size() << endl;
-  REP(i,ans.size())cout << ans[i] << (i==ans.size()-1 ? "\n" : " ");
+  cout << ans << endl;
 
 }
 
