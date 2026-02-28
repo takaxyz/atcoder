@@ -51,38 +51,35 @@ int main(){
     ccnt[i][a]++;
   }
 
- int ans=h*w;
+  int H=h,W=w; 
   while(true){
-    vvi rcnt2(h, vi(26,0));
-    vvi ccnt2(w, vi(26,0));
+    vvi rcnt2(H, vi(26,0));
+    vvi ccnt2(W, vi(26,0));
 
-    REP(i,h)REP(j,26)rcnt2[i][j]=rcnt[i][j];
-    REP(i,w)REP(j,26)ccnt2[i][j]=ccnt[i][j];
+    REP(i,H)REP(j,26)rcnt2[i][j]=rcnt[i][j];
+    REP(i,W)REP(j,26)ccnt2[i][j]=ccnt[i][j];
 
     int hh = 0;
     int ww = 0;
-    REP(i,h){
+    REP(i,H){
       REP(j,26){
         if(rcnt[i][j]==w && rcnt[i][j]>=2){
           rcnt2[i][j]=0;
-          REP(k,w)ccnt2[k][j]--;
+          REP(k,W)ccnt2[k][j]--;
           hh++;
         }
       }
     }
-    REP(i,w){
+    REP(i,W){
       REP(j,26){
         if(ccnt[i][j]==h && ccnt[i][j]>=2){
           ccnt2[i][j]=0;
-          REP(k,h)rcnt2[k][j]--;
+          REP(k,H)rcnt2[k][j]--;
           ww++;
         }
       }
     }
     //cout << hh << " " << ww << endl;
-    ans -= hh * w;
-    ans -= ww * h;
-    ans += ww*hh;
 
     h -= hh;
     w -= ww;
@@ -90,7 +87,7 @@ int main(){
     swap(rcnt,rcnt2); swap(ccnt,ccnt2);
     if(hh+ww==0)break;
   }
-  cout << ans << endl;
+  cout << h*w << endl;
 
 
 }
