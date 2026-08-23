@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+#include <atcoder/all>
+using namespace std;
+using namespace atcoder;
+
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
+#define REP(i,n)   FOR(i,0,n)
+#define ALL(a)     (a).begin(),(a).end()
+#define RALL(a)     (a).rbegin(),(a).rend()
+#define PRINT(a)   cout << (a) << endl
+
+#define pb push_back
+#define eb emplace_back
+#define mp make_pair
+#define Fi first
+#define Se second
+
+#define debug(x) cerr << x << " " << "(L:" << __LINE__ << ")" << '\n';
+
+using ll = long long int;
+using P = pair<int,int>;
+using vi = vector<int>;
+using vvi = vector<vi>;
+using vvvi = vector<vvi>;
+using pii = pair<int, int>;
+
+template <typename T> using PQ = priority_queue<T>;
+template <typename T> using minPQ = priority_queue<T, vector<T>, greater<T>>;
+
+template<class T>bool chmax(T &a, const T &b) { if (a<b) { a=b; return 1; } return 0; }
+template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } return 0; }
+
+const int INF = 1001001001;
+const ll LINF = 1001001001001001001ll;
+
+//using mint = modint1000000007;
+using mint = modint998244353;
+
+mint dp[501][2][3][1024];
+
+int main(){
+  string n;
+  cin >> n;
+
+  dp[0][0][0][0]=1;
+
+  int sz = n.size();
+  for(int i = 0; i <sz; i++){
+    for(int smaller = 0; smaller < 2; smaller++){
+      for(int j = 0; j < 3; j++){
+        for(int k = 0; k < 1024; k++){
+          for(int x = 0; x <= (smaller ? 9 : n[i]-'0'); x++){
+            int nj = (j + x)%3;
+            int nk = (k == 0  && x == 0 ? 0 : (k | (1<<x)));;
+            dp[i + 1][smaller || x < (n[i] - '0')][nj][nk] += dp[i][smaller][j][k];
+          }
+        }
+      }
+    }
+  }
+
+  mint ans = 0;
+  REP(smaller,2)REP(i,3)REP(j,1024){
+    int cnt=0;
+    if(i==0)cnt++;
+    if((j >> 3) & 1)cnt++;
+    if(__builtin_popcount(j)==3)cnt++;
+
+    if(cnt==1)ans += dp[sz][smaller][i][j];
+  }
+  ans -= 1;
+  cout << ans.val() << endl;
+
+
+}
+
