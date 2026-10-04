@@ -36,29 +36,52 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+int dx[] = {1,0,-1,0};
+int dy[] = {0,1,0,-1};
+
 int main(){
-  int q, v;
-  cin >> q >> v;
-  priority_queue<int> que;
+  int h,w,k;
+  cin >> h >> w >> k;
 
-  REP(_,q){
-    int p;
-    cin >> p;
-    int t,w;
-    if(p == 1){
-      cin >> t >> w;
-      que.push(w - t);
-    }else{
-      cin >> t;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
 
-      if(que.size()==0){
-        cout << -1 << endl;
-      }else{
-        cout << min(v, que.top() + t) << endl;
-        que.pop();
-      }
-
+  vi bh(h), bw(w);
+  REP(i,h)REP(j,w){
+    if(s[i][j]=='#'){
+      bh[i]=1;
+      bw[j]=1;
     }
   }
+
+  vector d(h, vector<int>(w,INF));
+  queue<P> q;
+  REP(i,h)REP(j,w){
+    if(bh[i]+bw[j]==0){
+      q.push({i,j});
+      d[i][j]=0;
+    }
+  }
+
+  while(q.size()){
+    auto [i,j] = q.front();
+    q.pop();
+    REP(k,4){
+      int ni = i + dx[k];
+      int nj = j + dy[k];
+
+      if(ni < 0 || ni >= h || nj < 0 || nj >= w)continue;
+      if(s[ni][nj]=='#')continue;
+      if(d[ni][nj]!=INF)continue;
+
+      d[ni][nj] = d[i][j] + 1;
+      q.push({ni,nj});
+    }
+  }
+
+  int ans = 0;
+  REP(i,h)REP(j,w)if(d[i][j]<=k)ans++;
+  
+  cout << ans << endl;
 }
 
