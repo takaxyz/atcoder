@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
+#include <atcoder/all>
 using namespace std;
+using namespace atcoder;
 
-#define FOR(i,a,b) for(int i=(a);i<(b);++i)
+#define FOR(i,a,b) for(int i=(a);i<(int)(b);++i)
 #define REP(i,n)   FOR(i,0,n)
 #define ALL(a)     (a).begin(),(a).end()
 #define RALL(a)     (a).rbegin(),(a).rend()
@@ -30,51 +32,43 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
-const int MOD = 1e9 + 7;
 
-int n,m;
-vvi edge;
-vi visited;
-
-int dfs(int v, set<int> st, int p = -1){
-  int ret=0;
-  cout << " " << v << endl;
-  for(auto x: edge[v]){
-    if(x==p)continue;
-    if(visited[x] || st.count(x)){
-      ret = 1;
-    }else{
-      st.insert(x);
-      int tmp = dfs(x, st, v);
-      if(tmp)ret=1;
-      st.erase(st.find(x));
-    }
-  }
-  if(ret)visited[v]=1;
-  return ret;
-}
+using mint = modint1000000007;
+// using mint = modint998244353;
 
 int main(){
+  int n,m;
   cin >> n >> m;
-  edge.resize(n);
+  scc_graph g(n);
+
+  vvi edge(n);
   REP(_,m){
     int u,v;
     cin >> u >> v;
     u--; v--;
-    edge[u].push_back(v);
+    g.add_edge(u,v);
+    edge[u].pb(v);
   }
 
-  visited.resize(n);
-  REP(i,n)visited[i]=0;
+  vvi scc = g.scc();
+  int sz = scc.size();
 
-  REP(i,n){
-    set<int> st;
-    st.insert(i);
-    if(visited[i]==0)dfs(i, st);
+  vi id(n);
+  REP(i,sz){
+    for(auto v: scc[i])id[v]=i;
   }
 
-  REP(i,n){
-    cout << visited[i] << endl;
+  vi dp(sz);
+  int ans = 0;
+  for(int i = sz-1; i>=0; i--){
+    if(scc[i].size()>1){
+      dp[i]=1;
+    }else{
+      for(auto v: edge[scc[i][0]])dp[i] |= dp[id[v]];
+    }
+    if(dp[i])ans += scc[i].size();
   }
+  cout << ans << endl;
+
 }
 

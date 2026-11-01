@@ -44,27 +44,45 @@ int main(){
   vector<string> s(n);
   REP(i,n)cin >> s[i];
 
-  deque<P> q;
-  vvi d(n,vi(n,INF));
-  q.push_back({ax,ay});
-  d[ax][ay]=0;
+  deque<pair<P,int>> q;
+  vector d(n,vector(n,vi(4,INF)));
+  vector visited(n,vector(n,vi(4,0)));
+  REP(i,4){
+    d[ax][ay][i]=1;
+    q.push_back({{ax,ay},i});
+  }
 
   while(q.size()){
-    auto v = q.front(); q.pop_front();
+    auto [v, i] = q.front(); q.pop_front();
     int x = v.first;
     int y = v.second;
 
-    REP(i,4){
+    if(visited[x][y][i])continue;
+    visited[x][y][i]=1;
+
+
+    REP(j,4){
       int nx = x + dx[i];
       int ny = y + dy[i];
-      while(1){
-        if(nx >= n || ny >= n || nx < 0 || ny < 0)break;
-        if(s[nx][ny]=='#')break;
-        nx += dx[i];
-        ny += dy[i];
+      if(nx >= n || ny >= n || nx < 0 || ny < 0)break;
+      if(s[nx][ny]=='#')break;
+
+      if(i == j){
+        if(d[nx][ny][j] > d[x][y][i]){
+          d[nx][ny][j] = d[x][y][i];
+          q.push_front({{nx,ny}, j});
+        }
+      }else{
+        if(d[nx][ny][j] > d[x][y][i] + 1){
+          d[nx][ny][j] = d[x][y][i] + 1;
+          q.push_back({{nx,ny}, j});
+        }
       }
     }
-
   }
+
+  int ans = INF;
+  REP(i,4)chmin(ans, d[bx][by][i]);
+  cout << (ans == INF ? -1 : ans) << endl;
 }
 
