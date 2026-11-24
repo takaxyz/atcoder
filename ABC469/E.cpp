@@ -42,44 +42,49 @@ int main(){
   string s;
   cin >> s;
 
-  vector<P> vs;
-
-  int si = -1;
-  int c = 0;
-  REP(i,n){
-    if(s[i]=='o'){
-      if(si < 0)si=i;
-      c++;
-    }else{
-      if(c>0){
-        vs.pb({si,c});
-        si=-1;
-        c=0;
+  auto f = [&](double p) -> bool{
+    vector<double> sum(n+1), msum(n+1);
+    REP(i,n){
+      if(s[i]=='o'){
+        sum[i+1] += sum[i] + 1 - p;
+      }else{
+        sum[i+1] += sum[i] - p;  
       }
     }
-  }
 
-  if(c>0){
-    vs.pb({si,c});
-  }
+    FOR(i,1,n+1)msum[i] = min(msum[i-1], sum[i]);
 
-  double ans = 0;
-  int now = 0;
-  int r = 0;
-  REP(l, vs.size()){
-    while(r < vs.size() && now < k){
-      now += vs[r].second;
-      r++;
+    int l = 0;
+    int cnt = 0;
+    double mi = 1e8; 
+    REP(r, n){
+      if(s[r]=='o')cnt++;
+
+      if(cnt < k)continue;
+      while(cnt >= k){
+        mi = min(mi, sum[l]);
+        if(s[l]=='o')cnt--;
+        l++;
+      }
+      //printf("%.10f\n", mi);
+
+      if(sum[r+1] - msum[l] >= 0)return true; 
     }
-    if(now >= k){
-      //cout << l << " " << r << endl;
-      //cout << vs[r-1].first << " " << vs[r-1].second << " " << vs[l].first << endl; 
-      chmax(ans, (double)now/(vs[r-1].first+vs[r-1].second-vs[l].first));
-      //cout << ans << endl;
-    }
-    now -= vs[l].second;
-  }
-  printf("%.9f\n",ans);
 
+    return false;
+  };
+
+  double ok=0, ng=1;
+
+  REP(_,25){
+    double mid = (ok+ng)/2;
+    //cout << l << " " << r << " " << mid << endl;
+    if(f(mid)){
+      ok=mid;
+    }else{
+      ng=mid;
+    }
+  }
+  printf("%.10f\n", ok);
 }
 

@@ -36,27 +36,33 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+void solve(){
+  ll a,b,x,y;
+  cin >> a >> b >> x >> y;
+
+  auto f = [&](ll a, ll b, ll x, ll y){
+    x = abs(x);
+    y = abs(y);
+    if(x > y)swap(x,y);
+    if(a > b)swap(a,b);
+    return min(a*x*2 + (y-x)/2*(a+b), y*a*2);
+  };
+
+  if((x+y)%2==0){
+    cout << f(a,b,x,y) << endl;
+  }else{
+    ll ans=f(a,b,x-1,y)+a;
+    chmin(ans, f(a,b,x+1,y)+a);
+    chmin(ans, f(a,b,x,y-1)+b);
+    chmin(ans, f(a,b,x,y+1)+b);
+    cout << ans << endl;
+  }
+}
+
 int main(){
   int t;
   cin >> t;
-  REP(_,t){
-    ll a,b,x,y;
-    cin >> a >> b >> x >> y;
-    x = abs(x);
-    y = abs(y);
-
-    ll xo,yo;
-    if(a - b < 0){
-      xo = min((x+y+1)/2,x);
-      yo = (x+y+1)/2 - xo;
-    }else{
-      yo = min((x+y+1)/2,y);
-      xo = (x+y+1)/2 - yo;
-    }
-
-    cout << xo * a + yo * b + (x-xo) * b + (y-yo)*a << endl;
-
-  }
+  REP(_,t)solve();
 
 }
 

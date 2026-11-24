@@ -17,8 +17,7 @@ using namespace atcoder;
 
 #define debug(x) cerr << x << " " << "(L:" << __LINE__ << ")" << '\n';
 
-//using ll = long long int;
-using ll = unsigned long long int;
+using ll = long long int;
 using P = pair<int,int>;
 using vi = vector<int>;
 using vvi = vector<vi>;
@@ -34,50 +33,59 @@ template<class T>bool chmin(T &a, const T &b) { if (b<a) { a=b; return 1; } retu
 const int INF = 1001001001;
 const ll LINF = 1001001001001001001ll;
 
-//using mint = modint1000000007;
-using mint = modint998244353;
+using mint = modint1000000007;
+// using mint = modint998244353;
 
-void solve(){
-  ll n;
-  int m;
-  cin >> n >> m;
-
-
-  // n以下の正整数でx桁の数がいくつあるか
-  auto f = [&](int x) -> ll{
-    int len = to_string(n).size();
-    if(x > len)return 0;
-    else if(x == len){
-      ll ret=1;
-      REP(_,x-1)ret *= 10;
-      return n - ret + 1;
-    }else{
-      ll ret=9;
-      REP(_,x-1)ret *= 10;
-      return ret;
-    }
-  };
-
-  mint ans = 0;
-  FOR(i,1,20){
-    ll x = 1;
-    REP(_,i){
-      x *= 10;
-    }
-
-    //cout << f(i) << endl;
-    ans += mint(n / (m / gcd(x-1, m))) * f(i);
-  }
-  cout << ans.val() << endl;
-
-}
+int dx[] = {1,0,-1,0,1,-1,-1,1};
+int dy[] = {0,1,0,-1,1,-1,1,-1};
 
 
 int main(){
-  int t;
-  cin >> t;
+  int h,w;
+  cin >> h >> w;
+  vector<string> s(h);
+  REP(i,h)cin >> s[i];
 
-  REP(_,t)solve();
+  vvi d(h,vi(w,INF));
+
+  queue<P> q;
+
+  vector<string> e(h,string(w,'.'));
+
+  REP(i,h)REP(j,w){
+    if(s[i][j]=='#'){
+      REP(k,8){
+        int ni = i + dx[k];
+        int nj = j + dy[k];
+        if(ni < 0 || ni >= h || nj < 0 || nj >= w)continue;
+        if(s[ni][nj]=='#')continue;
+        e[ni][nj]='#';
+      }
+    }
+  }
+
+  REP(i,h)REP(j,w){
+    if(e[i][j]=='#'){
+      q.push({i,j});
+      d[i][j]=1;
+    }
+  }
+
+  while(!q.empty()){
+    auto [i,j] = q.front();
+    q.pop();
+    REP(k,8){
+      int ni = i + dx[k];
+      int nj = j + dy[k];
+      if(ni < 0 || ni >= h || nj < 0 || nj >= w)continue;
+      if(d[ni][nj]!=INF)continue;
+      d[ni][nj]=d[i][j]+1;
+      q.push({ni,nj});
+    }
+  }
+  //REP(i,h)REP(j,w)cout << d[i][j] << (j == w-1 ? "\n" : " ");
+
+  REP(i,h)REP(j,w)cout << (d[i][j]%2 == 0 ? "#" : ".") << (j == w-1 ? "\n" : "");
 
 }
 

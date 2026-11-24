@@ -36,6 +36,69 @@ const ll LINF = 1001001001001001001ll;
 using mint = modint1000000007;
 // using mint = modint998244353;
 
+void solve(){
+  int n,m;
+  cin >> n >> m;
+
+  vector edge(n,vector<P>());
+  vector<P> e(m);
+  REP(i,m){
+    int a,b;
+    cin >> a >> b;
+    a--; b--;
+    edge[a].pb({b,i});
+    edge[b].pb({a,i});
+    e[i] = {a,b};
+  }
+
+  vi col(n);
+  vi visited(n);
+  vi use(m);
+
+  auto dfs = [&](auto dfs, int v, int p, int c) -> void{
+    col[v]=c;
+    visited[v]=1;
+
+    for(auto [nv, i]: edge[v]){
+      if(nv == p)continue;
+      if(visited[nv])continue;
+      use[i]=1;
+      dfs(dfs,nv,v,c^1);
+    }
+  };
+
+  dfs(dfs,0,-1,0);
+
+  REP(i,m){
+    if(use[i])continue;
+    if(col[e[i].first] == col[e[i].second]){
+      vi ans;
+      auto dfs2 = [&](auto dfs2, int v, int p, int g) -> void{
+        ans.pb(v);
+        if(v == g){
+          cout << ans.size() << endl;
+          REP(i,ans.size())cout << ans[i] + 1 << (i == (int)ans.size()-1 ? "\n" : " ");
+          return;
+        }
+        for(auto [nv, i]: edge[v]){
+          if(nv == p)continue;
+          if(use[i]==0)continue;
+          dfs2(dfs2, nv, v, g);
+        }
+        ans.pop_back();
+      };
+
+      dfs2(dfs2, e[i].first, -1, e[i].second);
+      return;
+    }
+  }
+  cout << -1 << endl;
+
+}
+
+
+
+
 int main(){
   int t;
   cin >> t;

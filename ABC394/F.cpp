@@ -50,33 +50,32 @@ int main(){
 
   vi dp(n);
 
+  int ans = -1;
+
   auto dfs = [&](int v, int p, auto dfs) -> int {
-    printf("%d - %d\n",v,p);
-    int ret=1;
-
-    vi vs;
-    for(auto nv: edge[v]){
+    int ret=0;
+    for(auto nv : edge[v]){
       if(nv == p)continue;
-      vs.pb(dfs(nv, v, dfs));
+      ret += dfs(nv,v,dfs);
     }
-    sort(RALL(vs));
 
-    if(vs.size() >= 3){
-      REP(i,3)ret += vs[i];
-      if(p!=-1)ret += dp[p];
+    if(edge[v].size()==4){
+      chmax(ans, ret + 1);
+      return ret + 1;
+    }else{
+      return 0;
     }
-    //printf("%d %d\n",v,dp[v]);
-    return dp[v] = ret;
   };
 
   dfs(0,-1,dfs);
 
-  int ans = -1;
-  REP(i,n){
-    cout << dp[i] << endl;
-    chmax(ans,dp[i]);
+  if(ans == 1){
+    cout << 4 << endl;
+  }else if(ans == -1){
+    cout << -1 << endl;
+  }else{
+    cout << ans * 3 + 2 << endl;
   }
-  cout << ans << endl;
 
 }
 
